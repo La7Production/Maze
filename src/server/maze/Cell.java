@@ -8,7 +8,19 @@ package server.maze;
 public class Cell {
 	
 	public enum Type {
-		VOID, TRAP;
+		
+		VOID("_"), TRAP("P"), WALL("#");
+		
+		private String image;
+		
+		private Type(String image) {
+			this.image = image;
+		}
+		
+		public String toString() {
+			return this.image;
+		}
+		
 	}
 	
 	private int x;
@@ -65,6 +77,43 @@ public class Cell {
 	 */
 	public void setType(Type type) {
 		this.type = type;
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public Cell add(int x, int y) {
+		return new Cell(this.x+x, this.y+y);
+	}
+	
+	/**
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public Cell add(Cell c) {
+		return add(c.getX(), c.getY());
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public Cell subtract(int x, int y) {
+		return new Cell(this.x-x, this.y-y);
+	}
+	
+	public Cell subtract(Cell c) {
+		return subtract(c.getX(), c.getY());
+	}
+	
+	public String toString() {
+		return this.type.toString();
 	}
 
 }

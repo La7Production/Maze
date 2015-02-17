@@ -1,5 +1,7 @@
 package server.maze;
 
+import server.maze.Cell.Type;
+
 /**
  * 
  * @author Edouard CATTEZ
@@ -12,14 +14,19 @@ public class Maze {
 	
 	private int width;
 	private int height;
-	private Cell[] cell;
+	private Cell[] cells;
 	private Generator generator;
 	
 	public Maze(int width, int height, Generator generator) {
 		this.width = width;
 		this.height = height;
-		this.cell = new Cell[width*height];
+		this.cells = new Cell[width*height];
 		this.generator = generator;
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				cells[y * width + x] = new Cell(x, y, Type.WALL);
+			}
+		}
 	}
 	
 	public Maze(int width, int height) {
@@ -57,27 +64,51 @@ public class Maze {
 	public void setHeight(int height) {
 		this.height = height;
 	}
-
+	
 	/**
-	 * @return the cell
+	 *
+	 * @return the size (width*height)
 	 */
-	public Cell[] getCell() {
-		return cell;
+	public int size() {
+		return width * height;
 	}
 
 	/**
-	 * @param cell the cell to set
+	 * @return the cells
 	 */
-	public void setCell(Cell[] cell) {
-		this.cell = cell;
+	public Cell[] getCells() {
+		return cells;
+	}
+
+	/**
+	 * @param cells the cells to set
+	 */
+	public void setCells(Cell[] cell) {
+		this.cells = cell;
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public Cell getCell(int x, int y) {
-		return cell[y * width + x];
+		return cells[y * width + x];
 	}
 	
-	public void setCell(int x, int y) {
-		this.cell[y*width+x] = new Cell(x,y);
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public void setCell(int x, int y, Type type) {
+		this.cells[y * width + x].setType(type);
+	}
+	
+	public boolean contains(Cell cell) {
+		int r = cell.getY() * width + cell.getX();
+		return r >= 0 && r < size();
 	}
 
 	/**
@@ -99,6 +130,41 @@ public class Maze {
 	 */
 	public Maze generate() {
 		return this.generator.generate(this);
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @return the display
+	 */
+	public String display(int x, int y, int width, int height) {
+		String disp = "";
+		for (int i = y; i < height; i++) {
+			for (int j = x; j < width; j++) {
+				disp += cells[i * width + j].toString();
+			}
+			disp += "\n";
+		}
+		return disp;
+	}
+	
+	/**
+	 * 
+	 * @return the display
+	 */
+	@Deprecated
+	public String display() {
+		return this.display(0, 0, width, height);
+	}
+	
+	/**
+	 * 
+	 */
+	public String toString() {
+		return this.display();
 	}
 
 }
