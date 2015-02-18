@@ -1,119 +1,44 @@
 package server.maze;
 
-/**
- * 
- * @author Edouard CATTEZ
- *
- */
-public class Cell {
+import server.maze.util.Coordinates;
+import server.maze.util.Direction;
+
+public class Cell extends Coordinates {
 	
-	public enum Type {
-		
-		VOID("_"), TRAP("P"), WALL("#");
-		
-		private String image;
-		
-		private Type(String image) {
-			this.image = image;
-		}
-		
-		public String toString() {
-			return this.image;
-		}
-		
-	}
-	
-	private int x;
-	private int y;
-	private Type type;
-	
-	public Cell(int x, int y, Type type) {
-		this.x = x;
-		this.y = y;
-		this.type = type;
-	}
+	private int value;
 	
 	public Cell(int x, int y) {
-		this(x, y, Type.VOID);
-	}
-
-	/**
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
-	}
-
-	/**
-	 * @param x the x to set
-	 */
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	/**
-	 * @return the y
-	 */
-	public int getY() {
-		return y;
-	}
-
-	/**
-	 * @param y the y to set
-	 */
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public Type getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(Type type) {
-		this.type = type;
+		super(x, y);
 	}
 	
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
+	public int getValue() {
+		return this.value;
+	}
+	
+	public void setValue(int value) {
+		this.value = value;
+	}
+	
 	public Cell add(int x, int y) {
-		return new Cell(this.x+x, this.y+y);
+		return new Cell(this.getX() + x, this.getY() + y);
 	}
 	
-	/**
-	 * 
-	 * @param c
-	 * @return
-	 */
-	public Cell add(Cell c) {
+	public Cell add(Coordinates c) {
 		return add(c.getX(), c.getY());
 	}
 	
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public Cell subtract(int x, int y) {
-		return new Cell(this.x-x, this.y-y);
+	public Cell add(Direction d) {
+		return add(d.getCoordinates());
 	}
 	
-	public Cell subtract(Cell c) {
-		return subtract(c.getX(), c.getY());
+	@Override
+	public boolean equals(Object o) {
+		return super.equals(o) && this.value == ((Cell)o).value;
 	}
 	
+	@Override
 	public String toString() {
-		return this.type.toString();
+		return "Cell" + super.toString();
 	}
 
 }
