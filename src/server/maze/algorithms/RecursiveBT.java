@@ -12,10 +12,13 @@ public class RecursiveBT extends MazeAlgorithm {
 		Cell n;
 		for (Direction d : directions) {
 			n = c.add(d);
-			if (maze.include(n) && (n = maze.getCell(n.getX(), n.getY())).getValue() == 0) {
-				c.setValue(c.getValue() | d.exponent());
-				n.setValue(n.getValue() | d.getOpposite().exponent());
-				carve(n, maze);
+			if (maze.include(n)) {
+				n = maze.getCell(n.getX(), n.getY());
+				if (n.getValue() == 0) {
+					c.setValue(c.getValue() | d.exponent());
+					n.setValue(n.getValue() | d.getOpposite().exponent());
+					carve(n, maze);
+				}
 			}
 		}
 	}

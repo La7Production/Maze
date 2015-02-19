@@ -1,5 +1,7 @@
 package server.maze.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,26 +20,45 @@ public class TestsMazeAlgorithms {
 	public static int height = 10;
 	public static MazeAlgorithm algo;
 	
-	public boolean verifier_sortie(Maze maze, Cell start, Cell end) {
-		Queue<Cell> q = new ArrayDeque<Cell>();
-		Map<Cell, Integer> marque = new HashMap<Cell, Integer>();
-		final int VIDE = 0;
-		final int MARQUE = 1;
-		final int RETOUR = 2;
-		
+	private void display(Maze maze, Map<Cell, Integer> marks) {
+		String result = "";
+		int y=0;
 		for (Cell c : maze.getCells()) {
-			marque.put(c, VIDE);
+			if (y != c.getY()) {
+				y = c.getY();
+				result += "\n";
+			}
+			result += marks.get(c) + "\t";
 		}
-		
+		result += "\n";
+		System.out.println(result);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private boolean verifier_sortie(Maze maze, Cell start, Cell end) {
+		Queue<Cell> q = new ArrayDeque<Cell>();
+		Map<Cell, Integer> marks = new HashMap<Cell, Integer>();
+		final int available = 0;
+		final int used = 1;
+		final int back = 2;
 		Cell c;
 		Cell n;
 		
+		for (Cell cell : maze.getCells())
+			marks.put(cell, available);
+		
 		q.offer(start);
-		marque.put(start, MARQUE);
+		marks.put(start, used);
 		
 		while (!q.isEmpty()) {
+			display(maze, marks);
+			System.out.println(algo.toString(maze));
 			c = q.remove();
-			marque.put(c, RETOUR);
+			marks.put(c, back);
 			
 			if (c.equals(end))
 				return true;
@@ -47,13 +68,12 @@ public class TestsMazeAlgorithms {
 					
 					n = new Cell(x,y);
 					
-					// Si le & logique entre la cellule courante et la cellule voisine = exposant de 2
-					// alors un mur les séparent.
 					if (maze.include(n)) {
 						n = maze.getCell(n.getX(), n.getY());
-						if (Math.abs(y) != Math.abs(x) && !maze.hasWallBetween(c, n) && marque.get(n) != VIDE) {
-							marque.put(n, MARQUE);
+						if (Math.abs(y) != Math.abs(x) && !maze.hasWallBetween(c, n) && marks.get(n) != available) {
+							marks.put(n, used);
 							q.offer(n);
+							System.out.println("offer");
 						}
 					}
 				}
@@ -68,7 +88,7 @@ public class TestsMazeAlgorithms {
 		Maze maze;
 		algo = new RecursiveBT();
 		maze = algo.generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
-		System.out.println(algo.toString(maze));
+		//System.out.println(algo.toString(maze));
 	}
 	
 	@Test
@@ -76,7 +96,7 @@ public class TestsMazeAlgorithms {
 		Maze maze;
 		algo = new RecursiveBT();
 		maze = algo.generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
-		verifier_sortie(maze, maze.getCell(0,0), maze.getCell(width-1,height-1));
+		assertTrue(verifier_sortie(maze, maze.getCell(0,0), maze.getCell(width-1,height-1)));
 	}
 
 }
