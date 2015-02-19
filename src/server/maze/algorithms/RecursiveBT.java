@@ -47,7 +47,7 @@ public class RecursiveBT extends MazeAlgorithm {
 				result += ((c.getValue() | maze.getCell(c.getX()+1, c.getY()).getValue()) & Direction.SOUTH.exponent()) != 0 ? " " : "_";
 			else
 				result += "|";
-		}
+		}		
 		return result;
 	}
 

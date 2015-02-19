@@ -27,13 +27,5 @@ public class TestsDirection {
 		assertEquals(Direction.SOUTH.exponent(), 4);
 		assertEquals(Direction.WEST.exponent(), 8);
 	}
-	
-	@Test
-	public void test_shuffle() {
-		Direction[] directions = Direction.shuffles();
-		for (Direction d : directions) {
-			System.out.print(d + " ");
-		}
-	}
 
 }

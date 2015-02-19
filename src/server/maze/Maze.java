@@ -1,5 +1,7 @@
 package server.maze;
 
+import server.maze.util.Direction;
+
 public class Maze {
 	
 	public static final int DEFAULT_WIDTH = 10;
@@ -78,6 +80,14 @@ public class Maze {
 	
 	public void setCell(Cell c, int value) {
 		c.setValue(value);
+	}
+	
+	public boolean hasWallBetween(Cell c1, Cell c2) {
+		for (Direction d : Direction.values()) {
+			if ((c1.getValue() & c2.getValue()) == d.exponent())
+				return true;
+		}
+		return false;
 	}
 
 }
