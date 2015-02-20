@@ -1,4 +1,4 @@
-package server.maze.util;
+package fr.la7prod.maze.util;
 
 import java.util.Arrays;
 import java.util.Collections;

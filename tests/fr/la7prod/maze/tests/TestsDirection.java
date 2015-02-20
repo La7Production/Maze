@@ -1,10 +1,10 @@
-package server.maze.tests;
+package fr.la7prod.maze.tests;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import server.maze.util.Direction;
+import fr.la7prod.maze.util.Direction;
 
 public class TestsDirection {
 

@@ -1,8 +1,8 @@
-package server.maze.algorithms;
+package fr.la7prod.maze.algorithms;
 
-import server.maze.Cell;
-import server.maze.Maze;
-import server.maze.util.Direction;
+import fr.la7prod.maze.Cell;
+import fr.la7prod.maze.Maze;
+import fr.la7prod.maze.util.Direction;
 
 public class RecursiveBT extends MazeAlgorithm {
 

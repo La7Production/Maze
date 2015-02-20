@@ -1,6 +1,6 @@
-package server.maze;
+package fr.la7prod.maze;
 
-import server.maze.util.Direction;
+import fr.la7prod.maze.util.Direction;
 
 public class Maze {
 	
@@ -27,7 +27,7 @@ public class Maze {
 	}
 
 	public int getWidth() {
-		return width;
+		return this.width;
 	}
 
 	public void setWidth(int width) {
@@ -35,7 +35,7 @@ public class Maze {
 	}
 
 	public int getHeight() {
-		return height;
+		return this.height;
 	}
 
 	public void setHeight(int height) {
@@ -43,11 +43,11 @@ public class Maze {
 	}
 	
 	public int size() {
-		return width * height;
+		return this.width * this.height;
 	}
 
 	public Cell[] getCells() {
-		return cells;
+		return this.cells;
 	}
 
 	public void setCells(Cell[] cells) {
@@ -67,11 +67,11 @@ public class Maze {
 	}
 	
 	public Cell getCell(int x, int y) {
-		return cells[y * width + x];
+		return this.cells[y * width + x];
 	}
 	
 	public int getValue(int x, int y) {
-		return cells[y * width + x].getValue();
+		return this.cells[y * width + x].getValue();
 	}
 	
 	public void setCell(int x, int y, int value) {
@@ -82,12 +82,8 @@ public class Maze {
 		c.setValue(value);
 	}
 	
-	public boolean hasWallBetween(Cell c1, Cell c2) {
-		for (Direction d : Direction.values()) {
-			if ((c1.getValue() & c2.getValue()) == d.exponent())
-				return true;
-		}
-		return false;
+	public boolean hasWall(Cell c, Direction d) {
+		return (c.getValue() & d.exponent()) == 0;
 	}
 
 }

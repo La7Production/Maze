@@ -1,7 +1,7 @@
-package server.maze;
+package fr.la7prod.maze;
 
-import server.maze.util.Coordinates;
-import server.maze.util.Direction;
+import fr.la7prod.maze.util.Coordinates;
+import fr.la7prod.maze.util.Direction;
 
 // Note : mettre comparator pour pouvoir faire des arbres
 public class Cell extends Coordinates {
