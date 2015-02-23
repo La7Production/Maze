@@ -4,7 +4,7 @@ import fr.la7prod.maze.Cell;
 import fr.la7prod.maze.Maze;
 import fr.la7prod.maze.util.Direction;
 
-public class RecursiveBT extends MazeAlgorithm {
+public class RecursiveBT implements MazeAlgorithm {
 
 	@Override
 	public void carve(Cell c, Maze maze) {

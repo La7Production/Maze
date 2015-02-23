@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
 
 public class TestsDirection {
@@ -18,6 +19,11 @@ public class TestsDirection {
 		assertEquals(Direction.SOUTH.getY(), 1);
 		assertEquals(Direction.WEST.getX(), -1);
 		assertEquals(Direction.WEST.getY(), 0);
+		
+		assertEquals(Direction.NORTH.getCoordinates(), new Coordinates(0,-1));
+		assertEquals(Direction.EAST.getCoordinates(), new Coordinates(1,0));
+		assertEquals(Direction.SOUTH.getCoordinates(), new Coordinates(0,1));
+		assertEquals(Direction.WEST.getCoordinates(), new Coordinates(-1,0));
 	}
 	
 	@Test

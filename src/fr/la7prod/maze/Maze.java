@@ -83,7 +83,7 @@ public class Maze {
 	}
 	
 	public boolean hasWall(Cell c, Direction d) {
-		return (c.getValue() & d.exponent()) == 0;
+		return c.hasWall(d);
 	}
 
 }

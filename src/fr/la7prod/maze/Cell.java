@@ -32,6 +32,10 @@ public class Cell extends Coordinates {
 		return add(d.getCoordinates());
 	}
 	
+	public boolean hasWall(Direction d) {
+		return (value & d.exponent()) == 0;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		return super.equals(o) && this.value == ((Cell)o).value;
