@@ -1,4 +1,4 @@
-package fr.la7prod.maze.tests;
+package fr.la7prod.maze;
 
 import static org.junit.Assert.assertTrue;
 
@@ -15,7 +15,7 @@ import fr.la7prod.maze.algorithms.MazeAlgorithm;
 import fr.la7prod.maze.algorithms.RecursiveBT;
 import fr.la7prod.maze.util.Direction;
 
-public class TestsMazeAlgorithms {
+public class MazeTest {
 	
 	public static int width = 10;
 	public static int height = 10;
@@ -26,7 +26,7 @@ public class TestsMazeAlgorithms {
 		return maze.getCell((int)(Math.random()*width), (int)(Math.random()*height));
 	}
 	
-	private void displayVisited(Maze maze, Cell start, Cell end) {
+	/*private void displayVisited(Maze maze, Cell start, Cell end) {
 		String result = "";
 		boolean bool;
 		int y=0;
@@ -47,7 +47,7 @@ public class TestsMazeAlgorithms {
 		}
 		result += "\n";
 		System.out.println(result);
-	}
+	}*/
 	
 	private boolean checkPath(Maze maze, Cell start, Cell end) {
 		Queue<Cell> q = new ArrayDeque<Cell>();
@@ -107,6 +107,14 @@ public class TestsMazeAlgorithms {
 		algo = new RecursiveBT();
 		maze = algo.generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
 		assertTrue(checkPath(maze, randomCell(maze), randomCell(maze)));
+	}
+	
+	@Test
+	public void test_JSON() {
+		Maze m = new RecursiveBT().generate(10, 10, 0, 0);
+		MazeZone zone = new MazeZone(m, 3, 3);
+		System.out.println(m.toJson());
+		System.out.println(zone.toJson());
 	}
 
 }

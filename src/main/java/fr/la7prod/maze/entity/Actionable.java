@@ -1,7 +1,9 @@
 package fr.la7prod.maze.entity;
 
+import fr.la7prod.maze.Cell;
+
 public interface Actionable {
 	
-	// TODO
+	public void activate(Cell c);
 
 }

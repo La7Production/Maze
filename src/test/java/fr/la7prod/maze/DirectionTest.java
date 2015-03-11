@@ -1,4 +1,4 @@
-package fr.la7prod.maze.tests;
+package fr.la7prod.maze;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,7 +7,7 @@ import org.junit.Test;
 import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
 
-public class TestsDirection {
+public class DirectionTest {
 
 	@Test
 	public void test_directions() {

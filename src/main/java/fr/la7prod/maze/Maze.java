@@ -1,5 +1,7 @@
 package fr.la7prod.maze;
 
+import org.json.JSONObject;
+
 import fr.la7prod.maze.util.Direction;
 
 public class Maze {
@@ -84,6 +86,14 @@ public class Maze {
 	
 	public boolean hasWall(Cell c, Direction d) {
 		return c.hasWall(d);
+	}
+	
+	public JSONObject toJson() {
+		JSONObject json = new JSONObject();
+		json.put("width", width);
+		json.put("height", height);
+		json.put("cells", this.getCells());
+		return json;
 	}
 
 }
