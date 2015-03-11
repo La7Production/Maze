@@ -7,8 +7,8 @@ ws.onopen = function() {
 };
 
 ws.onmessage = function (evt) {
-	maze = JSON.parse(evt.data);
-	console.log(maze);
+	//maze = JSON.parse(evt.data);
+	console.log(JSON.parse(evt.data));
 };
 
 ws.onclose = function() {
