@@ -1,4 +1,4 @@
-package fr.univ_lille.iut;
+package fr.la7prod.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +27,7 @@ public class UserResourceTest extends JerseyTest {
 	*/
 	@Override
 	protected Application configure() {
-		return new ResourceConfig(UserResource.class);  
+		return new ResourceConfig(UserDBIResource.class);
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class UserResourceTest extends JerseyTest {
 	*/
 	@Test
 	public void test_B_CreateUser() {
-		User user = new User("jsteed", "Steed", "jsteed@mi5.uk");
+		User user = new User("jsteed", "secret", "Steed", "John", "01-01-1970", "jsteed@mi5.uk");
 		
 		// Conversion de l'instance de User au format JSON pour l'envoi
 		Entity<User> userEntity = Entity.entity(user, MediaType.APPLICATION_JSON);
@@ -67,7 +67,7 @@ public class UserResourceTest extends JerseyTest {
 	*/
 	@Test
 	public void test_C_CreateSameUser() {
-		User user = new User("jsteed", "Steed", "jsteed@mi5.uk");
+		User user = new User("jsteed", "secret", "Steed", "John", "01-01-1970", "jsteed@mi5.uk");
 		Entity<User> userEntity = Entity.entity(user, MediaType.APPLICATION_JSON);
 		int same = target("/users").request().post(userEntity).getStatus();
 		assertEquals(409, same);
@@ -78,7 +78,7 @@ public class UserResourceTest extends JerseyTest {
 	*/
 	@Test
 	public void test_D_GetTwoUsers() {
-		User user = new User("epeel", "Peel", "epeel@mi5.uk");
+		User user = new User("epeel", "magic", "Peel", "Edgard", "01-01-1980", "epeel@mi5.uk");
 		Entity<User> userEntity = Entity.entity(user, MediaType.APPLICATION_JSON);
 		target("/users").request().post(userEntity);
 		List<User> list = target("/users").request().get(new GenericType<List<User>>(){});
@@ -90,7 +90,7 @@ public class UserResourceTest extends JerseyTest {
 	*/
 	@Test
 	public void test_E_GetOneUser() {
-		User user = new User("jsteed", "Steed", "jsteed@mi5.uk");
+		User user = new User("jsteed", "secret", "Steed", "John", "01-01-1970", "jsteed@mi5.uk");
 		User result = target("/users").path("jsteed").request().get(User.class);
 		assertEquals(user, result);
 	}
@@ -132,7 +132,7 @@ public class UserResourceTest extends JerseyTest {
 	*/
 	@Test
 	public void test_I_ModifyUser() {
-		User modified = new User("epeel", "Peel", "epeel@cia.usa");
+		User modified = new User("epeel", "magic", "Peel", "Edgard", "01-01-1980", "epeel@cia.usa");
 		Entity<User> userEntity = Entity.entity(modified, MediaType.APPLICATION_JSON); 
 		int noContent = target("/users").path("epeel").request().put(userEntity).getStatus();
 		assertEquals(204, noContent);
@@ -146,7 +146,7 @@ public class UserResourceTest extends JerseyTest {
 	*/
 	@Test
 	public void test_J_ModifyInexistantUser() {
-		User inexistant = new User("jsteed", "Steed", "jsteed@mi5.uk");
+		User inexistant = new User("jsteed", "secret", "Steed", "John", "01-01-1970", "jsteed@mi5.uk");
 		Entity<User> userEntity = Entity.entity(inexistant, MediaType.APPLICATION_JSON);
 		int notFound = target("/users").path("jsteed").request().put(userEntity).getStatus();
 		assertEquals(404, notFound);
@@ -157,8 +157,11 @@ public class UserResourceTest extends JerseyTest {
 	public void test_K_CreateUserFromForm() {
 		Form form = new Form();
 		form.param("login", "tking");
-		form.param("name", "King");
-		form.param("mail", "tking@mi5.uk");
+		form.param("password", "iloveburgers");
+		form.param("firstname", "King");
+		form.param("lastname", "Terry");
+		form.param("birthday","07-08-2004");
+		form.param("email", "tking@mi5.uk");
 
 		Entity<Form> formEntity = Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
 		int code = target("/users").request().post(formEntity).getStatus(); 

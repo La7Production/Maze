@@ -14,7 +14,6 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import fr.la7prod.maze.Cell;
 import fr.la7prod.maze.Maze;
 import fr.la7prod.maze.algorithms.RecursiveBT;
-import fr.univ_lille.iut.User;
 
 @WebSocket
 public class JettyWeb {
