@@ -9,8 +9,6 @@ import java.util.Queue;
 
 import org.junit.Test;
 
-import fr.la7prod.maze.Cell;
-import fr.la7prod.maze.Maze;
 import fr.la7prod.maze.algorithms.MazeAlgorithm;
 import fr.la7prod.maze.algorithms.RecursiveBT;
 import fr.la7prod.maze.util.Direction;

@@ -44,7 +44,7 @@ public class JettyWeb {
 	
 	@OnWebSocketMessage
 	public void onMessage(String message) {
-		System.out.println("Message: " + message);
+		System.out.println("Simple Message: " + message);
 	}
 
 }

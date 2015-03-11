@@ -7,6 +7,11 @@ public class UserMessage {
 	private String user;
 	
 	public UserMessage() {}
+	
+	public UserMessage(String direction, String user) {
+		this.direction = direction;
+		this.user = user;
+	}
 
 	public String getDirection() {
 		return direction;
@@ -22,6 +27,11 @@ public class UserMessage {
 
 	public void setUser(String user) {
 		this.user = user;
+	}
+	
+	@Override
+	public String toString() {
+		return "direction: " + direction + ", user: " + user;
 	}
 
 }
