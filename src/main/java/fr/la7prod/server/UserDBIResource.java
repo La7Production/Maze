@@ -22,7 +22,7 @@ import org.skife.jdbi.v2.DBI;
 /**
 * Ressource User (accessible avec le chemin "/users")
 */
-@Path("users")
+@Path("/users")
 public class UserDBIResource {
 	
 	private static final DBI dbi = new DBI("jdbc:sqlite:l7p_db");
