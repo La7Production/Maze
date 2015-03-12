@@ -65,7 +65,7 @@ public class JettyWeb {
 	public void onMessage(String message) {
 		System.out.println("Simple Message: " + message);
 		JSONObject json = new JSONObject();
-		json.put("nbjoueurs", sessions.size());
+		json.put("User", message);
 		for (Session s : sessions) {
 			try {
 				s.getRemote().sendString(json.toString());

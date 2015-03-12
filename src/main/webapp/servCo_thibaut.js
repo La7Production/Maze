@@ -4,6 +4,7 @@ String = JSON.stringify(monobjetjson)
 */
 
 var ws = new WebSocket("ws://127.0.0.1:9876/");
+var login;
 
 ws.onopen = function() {
 	alert("Opened!");
@@ -21,7 +22,6 @@ ws.onclose = function() {
 ws.onerror = function(err) {
 	alert("Error: " + err);
 };
-
 
 
 function hideMenuCrea() {
@@ -44,14 +44,14 @@ function paintCanvas(){
 	var c = document.getElementById("exemple");
 	var ctx = c.getContext("2d");
 	
-	for(var i = 0; i < 5; i++){
-		for(var j = 0; j < 5; j++){
+	for(var i = 0; i < 10; i++){
+		for(var j = 0; j < 10; j++){
 			if((i+j)%2 === 0) {
 				ctx.fillStyle = "rgba(0,0,128,128)";
-   			ctx.fillRect(i*100, j*100, 100, 100);
+   			ctx.fillRect(i*50, j*50, 50, 50);
 			} else {
 				ctx.fillStyle = "rgba(0,0,255,0.5)";
-   			ctx.fillRect(i*100, 100*j, 100, 100);
+   			ctx.fillRect(i*50, 50*j, 50, 50);
 			}
 					
 		}		    	
@@ -80,14 +80,15 @@ function creaCompte(){
 }
 
 function coCompte() {
-	$('#co').click(function (event) {
+	login = $('#pseudoCo').val();
+	/*$('#co').click(function (event) {
 		$.ajax({
 				url: "url du serveur",
 				type: "GET"	,
 				dataType: "json",
 				
 				data : {
-					'pseudo' : $('#pseudo').val(),
+					'pseudoCo' : $('#pseudoCo').val(),
 					'mdp' : $('#mdp').val(),				
 				},
 				
@@ -96,10 +97,10 @@ function coCompte() {
 				},
 						
 			});
-	});
+	});*/
 }
 
-function deplacementJoueur(login, event) {
+function deplacementJoueur(event) {
 	var envoi;
 	if(event.keyCode===37){
 		envoi={
@@ -124,7 +125,7 @@ function deplacementJoueur(login, event) {
 	}	
 	
 	console.log(envoi);
-	/*ws.send(JSON.stringify(envoi));*/
+	ws.send(JSON.stringify(envoi));
 	
 	/*$.ajax({
 				url: "url du serveur",
