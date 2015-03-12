@@ -81,7 +81,7 @@ function creaCompte(){
 
 function coCompte() {
 	login = $('#pseudoCo').val();
-	$('#co').click(function (event) {
+	/*$('#co').click(function (event) {
 		$.ajax({
 				url: "url du serveur",
 				type: "GET"	,
@@ -97,7 +97,7 @@ function coCompte() {
 				},
 						
 			});
-	});
+	});*/
 }
 
 function deplacementJoueur(event) {
