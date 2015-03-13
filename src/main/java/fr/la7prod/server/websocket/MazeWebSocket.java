@@ -20,7 +20,7 @@ import fr.la7prod.maze.algorithms.RecursiveBT;
 import fr.la7prod.server.User;
 
 @WebSocket
-public class JettyWeb {
+public class MazeWebSocket {
 	
 	private static Maze maze = new RecursiveBT().generate(10, 10, 0, 0);
 	private static Map<User, Cell> position = new HashMap<User, Cell>();
