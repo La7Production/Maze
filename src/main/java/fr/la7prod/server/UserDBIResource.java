@@ -17,22 +17,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.skife.jdbi.v2.DBI;
-
 /**
-* Ressource User (accessible avec le chemin "/users")
+* Ressource User (accessible avec le chemin "/usersdb")
 */
-@Path("/users")
+@Path("/usersdb")
 public class UserDBIResource {
 	
-	private static final DBI dbi = new DBI("jdbc:sqlite:l7p_db");
-	
-	static {
-		UserDAO dao = dbi.open(UserDAO.class);
-		dao.createTable();
-		dao.close();
-	}
-
 	// L'annotation @Context permet de récupérer des informations sur le contexte d'exécution de la ressource.
 	// Ici, on récupère les informations concernant l'URI de la requête HTTP, ce qui nous permettra de manipuler
 	// les URI de manière générique.
@@ -50,7 +40,7 @@ public class UserDBIResource {
 	 * @return un objet java permettant de manipuler la table des users
 	 */
 	private UserDAO openUserDAO() {
-		return dbi.open(UserDAO.class);
+		return App.dbi.open(UserDAO.class);
 	}
 
 	/**

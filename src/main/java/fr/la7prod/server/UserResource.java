@@ -17,14 +17,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 /**
 * Ressource User (accessible avec le chemin "/users")
 */
-@Path("/users2")
+@Path("/users")
 public class UserResource {
 	
 	/*
@@ -38,7 +37,6 @@ public class UserResource {
 	 * comme son arrêt par exemple
 	 */
 	
-	// Pour l'instant, on se contentera d'une variable statique pour conserver l'état
 	private static Map<String, User> users = new HashMap<>();
 
 	// L'annotation @Context permet de récupérer des informations sur le contexte d'exécution de la ressource.
