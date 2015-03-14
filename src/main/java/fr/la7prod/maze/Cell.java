@@ -1,12 +1,13 @@
 package fr.la7prod.maze;
 
+import fr.la7prod.maze.entity.Actionable;
 import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
 
-// Note : mettre comparator pour pouvoir faire des arbres
 public class Cell extends Coordinates {
 	
 	private int value;
+	private Actionable actionable;
 	
 	public Cell(int x, int y) {
 		super(x, y);
@@ -18,6 +19,14 @@ public class Cell extends Coordinates {
 	
 	public void setValue(int value) {
 		this.value = value;
+	}
+	
+	public Actionable getActionable() {
+		return this.actionable;
+	}
+	
+	public void setActionable(Actionable actionable) {
+		this.actionable = actionable;
 	}
 	
 	public Cell add(int x, int y) {
@@ -43,7 +52,7 @@ public class Cell extends Coordinates {
 	
 	@Override
 	public String toString() {
-		return "Cell" + super.toString();
+		return "Cell:" + super.toString() + " Actionable: " + actionable.toString();
 	}
 
 }
