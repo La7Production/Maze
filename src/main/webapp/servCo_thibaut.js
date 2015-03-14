@@ -3,7 +3,7 @@ on utilise ws.send(String) pour l'envoyer au serveur.
 String = JSON.stringify(monobjetjson)
 */
 
-var ws = new WebSocket("ws://127.0.0.1:9876/");
+var ws = new WebSocket("ws://localhost:8080/");
 var login;
 
 ws.onopen = function() {

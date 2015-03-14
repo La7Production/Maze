@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://localhost:8080/");
+var ws = new WebSocket("ws://localhost:8080/maze");
 
 ws.onopen = function() {
 	alert("Opened!");

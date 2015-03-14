@@ -9,7 +9,7 @@ import javax.ws.rs.core.Application;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.skife.jdbi.v2.DBI;
 
-@ApplicationPath("/maze/")
+@ApplicationPath("/")
 public class App extends Application {
 	
 	public static final DBI dbi = new DBI("jdbc:sqlite:l7p_db");
