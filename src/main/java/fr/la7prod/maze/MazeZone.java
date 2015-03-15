@@ -36,7 +36,7 @@ public class MazeZone {
 	}
 	
 	public JSONObject toJson() {
-		List<Cell> cells = new ArrayList<Cell>(range * range);
+		List<Cell> cells = new ArrayList<Cell>();
 		int r = range / 2;
 		for (int y = cell.getY() - r; y <= cell.getY() + r; y++) {
 			for (int x = cell.getX() - r; x <= cell.getX() + r; x++) {

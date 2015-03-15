@@ -19,10 +19,10 @@ public enum Direction {
 	}
 
 	public int getX() {
-		return c.getX();
+		return (int)c.getX();
 	}
 	public int getY() {
-		return c.getY();
+		return (int)c.getY();
 	}
 
 	public Direction getOpposite() {

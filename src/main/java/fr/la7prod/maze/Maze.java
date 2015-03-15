@@ -88,10 +88,19 @@ public class Maze {
 		return c.hasWall(d);
 	}
 	
+	public Cell getStart() {
+		return cells[0];
+	}
+	
+	public Cell getExit() {
+		return cells[size()-1];
+	}
+	
 	public JSONObject toJson() {
 		JSONObject json = new JSONObject();
 		json.put("width", width);
 		json.put("height", height);
+		json.put("pixel", Cell.PIXEL_SIZE);
 		json.put("cells", this.getCells());
 		return json;
 	}

@@ -77,6 +77,9 @@ public class UserDBIResource {
 	public List<User> getUsers() {
 		UserDAO dao = openUserDAO();
 		List<User> users = dao.getAllUsers();
+		for (User user : users) {
+			user.setPassword("protected");
+		}
 		dao.close();
 		return users;
 	}
@@ -98,6 +101,7 @@ public class UserDBIResource {
 			throw new NotFoundException();
 		}
 		else {
+			user.setPassword("protected");
 			return user;
 		}
 	}

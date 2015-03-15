@@ -1,0 +1,11 @@
+#!/bin/bash
+
+git add --all
+
+echo "Titre du commit : "
+read commit_name
+
+git commit -m $commit_name
+git push
+
+echo "Déposer un tag ? (y/n)" && read yesno && expr $yesno = "y" && (printf "Titre du tag : "; read tag_name; git push --tag)

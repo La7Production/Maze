@@ -1,12 +1,16 @@
-var ws = new WebSocket("ws://localhost:8080/maze");
+var ws = new WebSocket("ws://localhost:8080/");
 
 ws.onopen = function() {
-	alert("Opened!");
-	ws.send("Hello Server i'm a client");
+	ws.send("{playername: MisterV}");
+	ws.send("{playername: MisterV, direction: EAST}");
 };
 
 ws.onmessage = function (evt) {
-	alert(evt.data);
+	var data = JSON.parse(evt.data);
+	if (data.motd !== undefined)
+		alert(data);
+	else
+		$("body").innerHTML = evt.data;
 };
 
 ws.onclose = function() {

@@ -38,13 +38,13 @@ public class Coordinates {
 		return add(d.getCoordinates());
 	}
 	
-	public boolean equals(Coordinates c) {
+	private boolean equals(Coordinates c) {
 		return this.x == c.x && this.y == c.y;
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Coordinates && equals((Coordinates)o);
+		return (o instanceof Coordinates) && equals((Coordinates)o);
 	}
 	
 	@Override
