@@ -1,16 +1,14 @@
-var ws = new WebSocket("ws://localhost:8080/");
+var ws = new WebSocket("ws://127.0.0.1:9876/");
+var maze;
 
 ws.onopen = function() {
-	ws.send("{playername: MisterV}");
-	ws.send("{playername: MisterV, direction: EAST}");
+	alert("Opened!");
+	ws.send("Hello Server i'm a client");
 };
 
 ws.onmessage = function (evt) {
-	var data = JSON.parse(evt.data);
-	if (data.motd !== undefined)
-		alert(data);
-	else
-		$("body").innerHTML = evt.data;
+	//maze = JSON.parse(evt.data);
+	console.log(JSON.parse(evt.data));
 };
 
 ws.onclose = function() {
@@ -20,4 +18,9 @@ ws.onclose = function() {
 ws.onerror = function(err) {
 	alert("Error: " + err);
 };
+
+$("#submit").click(function() {
+	alert($("#tosend").val());
+	ws.send($("#tosend").val());
+});
 
