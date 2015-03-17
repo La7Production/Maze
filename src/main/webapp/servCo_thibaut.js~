@@ -38,7 +38,7 @@ ws.onmessage = function (evt) {
 	var sizeTab = (canvas.height/10);
 	console.log(maze);
 	maze=JSON.parse(evt.data);
-	console.log(maze);
+		console.log(maze);
 	var c = document.getElementById("canvas");
 	var ctx = c.getContext("2d");
 	for(ligne = 0; ligne < 10; ligne++){

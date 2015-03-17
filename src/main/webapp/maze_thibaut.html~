@@ -6,7 +6,7 @@
     <script src='jquery-2.1.3.js'></script>
     
     </head> 
-  <body onload="hideMenuCo(); hideMenuCrea();">
+  <body onload="hideMenuCo(); hideMenuCrea();paintCanvas();">
     <h1>Interface graphique de Samuel</h1>
     <button type='submit' id="menuCrea" name="menuCrea" onclick="showMenuCrea();">Créer un compte</button>
     <div id="creerCompte">
