@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
-@WebServlet(name="MazeWebServlet", urlPatterns = { "/" })
+@WebServlet(name="MazeWebServlet", urlPatterns = { "/maze/websocket" })
 public class MazeWebServlet extends WebSocketServlet {
 
 	private static final long serialVersionUID = 1L;
