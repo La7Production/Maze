@@ -117,7 +117,7 @@ public class MazeGame {
 	public JSONObject toJson() {
 		JSONObject json = new JSONObject();
 		json.put("maze", maze.toJson());
-		json.put("master", master);
+		json.put("master", master.getName());
 		json.put("players", map.values());
 		return json;
 	}
