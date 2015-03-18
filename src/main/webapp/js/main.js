@@ -12,7 +12,7 @@ var playername;
 // Données envoyées par le serveur via une websocket
 var data;
 // La websocket (instanciée uniquement au succès de la fonction de connexion)
-var ws = new WebSocket("ws://localhost:8080/maze/websocket");
+var ws = new WebSocket("ws://172.18.49.21:8080/maze/websocket");
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
 var items = [];
 
@@ -72,7 +72,8 @@ playername = function signup() {
 /* Fonction appelée à l'ouverture d'une websocket */
 ws.onopen = function() {
 	//TODO
-	ws.send("{playername: nomdujoueur, direction: EAST}");
+	console.log("Open");
+	ws.send("{playername: monnom}");
 };
 
 /* Fonction appelée lorsque des données sont envoyées du serveur au client */
@@ -86,20 +87,22 @@ ws.onmessage = function (evt) {
 	// les données envoyées par le serveur seront les données du jeu
 	// à savoir le maze, le master et les players
 	data = JSON.parse(evt.data);
-	
 	// Traiter l'information selon les deux cas
 	// 1) Tous les joueurs ne sont pas encore arrivés
 	// 2) Tous les joueurs sont là
+	alert(data.slots);
 };
 
 /* Fonction appelée lorsque la websocket est fermée */
 ws.onclose = function() {
 	//TODO
+	console.log("Close");
 };
 
 /* Fonction appelée en cas d'erreur dans la websocket */
 ws.onerror = function(err) {
 	//TODO
+	console.log(err.data);
 };
 
 /*************************

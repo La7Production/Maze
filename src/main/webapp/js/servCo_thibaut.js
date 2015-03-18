@@ -3,7 +3,7 @@ on utilise ws.send(String) pour l'envoyer au serveur.
 String = JSON.stringify(monobjetjson)
 */
 
-var ws = new WebSocket("ws://127.0.0.1:9876/");
+var ws = new WebSocket("ws://172.18.49.21:8080/maze/websocket");
 var login;
 var maze = 1;
 var canvasJeu = Create2DArray(10);
@@ -27,7 +27,7 @@ canvas.addEventListener("mousedown", mouseClicked, false);
 
 ws.onopen = function() {
 	alert("Opened!");
-	ws.send("Hello Server i'm a client");
+	ws.send("{hello:Hello Server i'm a client}");
 };
 
 ws.onmessage = function (evt) {

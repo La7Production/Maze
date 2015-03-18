@@ -1,6 +1,8 @@
 package fr.la7prod.server.websocket;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -18,10 +20,12 @@ import fr.la7prod.maze.util.Direction;
 public class MazeWebSocket {
 	
 	private static MazeGame game = new MazeGame(10,10);
+	private static List<Session> sessions = new ArrayList<Session>();
 	
 	@OnWebSocketClose
-	public void onClose(int statusCode, String reason) {
+	public void onClose(Session session, int statusCode, String reason) {
 		System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
+		System.out.println("Success: " + sessions.remove(session));
 	}
 	
 	@OnWebSocketError
@@ -31,14 +35,15 @@ public class MazeWebSocket {
 	
 	@OnWebSocketConnect
 	public void onConnect(Session session) {
+		sessions.add(session);
 		JSONObject json = new JSONObject();
 		json.put("motd", "Welcome in Maze");
-		json.put("slots", game.availableSlots() + "/" + MazeGame.MAX_SLOTS);
+		json.put("slots", sessions.size() + "/" + MazeGame.MAX_SLOTS);
 		try {
 			session.getRemote().sendString(json.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 	
 	@OnWebSocketMessage
@@ -72,7 +77,7 @@ public class MazeWebSocket {
 			//session.getRemote().sendString(game.toJsonFromPlayer(p).toString());
 		}
 		
-		System.out.println("Message from " + session.getRemoteAddress() + ": " + json + " ; success: " + success);
+		System.out.println("Message from " + session.getRemoteAddress() + ": " + json + " ; success: " + success + " ; exist :" + sessions.contains(session));
 	}
 
 }
