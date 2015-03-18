@@ -48,7 +48,15 @@ public class MazeWebSocket {
 	
 	@OnWebSocketMessage
 	public void onMessage(Session session, String message) throws IOException {
-		JSONObject json = new JSONObject(message);
+		for(Session s : sessions){
+			if(s!=session){
+	
+				JSONObject json = new JSONObject();
+				json.put("slots", sessions.size());
+				s.getRemote().sendString(json.toString());
+			}
+		}
+		/*JSONObject json = new JSONObject(message);
 		JSONObject toSend = game.toJson();
 		boolean success = false;
 		
@@ -77,7 +85,8 @@ public class MazeWebSocket {
 			//session.getRemote().sendString(game.toJsonFromPlayer(p).toString());
 		}
 		
-		System.out.println("Message from " + session.getRemoteAddress() + ": " + json + " ; success: " + success + " ; exist :" + sessions.contains(session));
+		System.out.println("Message from " + session.getRemoteAddress() + ": " + json + " ; success: " + success);
+	}*/
 	}
 
 }

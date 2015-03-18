@@ -22,7 +22,7 @@ public class MazeWebServlet extends WebSocketServlet {
 
 	@Override
 	public void configure(WebSocketServletFactory factory) {
-		factory.getPolicy().setIdleTimeout(10000);
+		factory.getPolicy().setIdleTimeout(15000);
 		factory.register(MazeWebSocket.class);
 	}	
 
