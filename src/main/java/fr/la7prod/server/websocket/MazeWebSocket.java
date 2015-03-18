@@ -1,8 +1,6 @@
 package fr.la7prod.server.websocket;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -10,22 +8,57 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.la7prod.maze.MazeGame;
 import fr.la7prod.maze.entity.Player;
-import fr.la7prod.maze.util.Direction;
 
 @WebSocket
 public class MazeWebSocket {
 	
 	private static MazeGame game = new MazeGame(10,10);
-	private static List<Session> sessions = new ArrayList<Session>();
+	
+	private void addToGame(Session session) {
+		game.addPlayer(session, new Player());
+	}
+	
+	private Player removeToGame(Session session) {
+		return game.removePlayer(session);
+	}
+	
+	private Player getFromGame(Session session) {
+		return game.getPlayer(session);
+	}
+	
+	private boolean isJSON(String message) {
+		try {
+			new JSONObject(message);
+		} catch (JSONException e) {
+			try {
+				new JSONArray(message);
+			} catch (JSONException e1) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private void send(Session session, JSONObject json) throws IOException {
+		session.getRemote().sendString(json.toString());
+	}
+	 
+	private JSONObject slotsToJSON() {
+		JSONObject json = new JSONObject();
+		json.put("slots", game.countPlayers() + "/" + MazeGame.MAX_SLOTS);
+		return json;
+	}
 	
 	@OnWebSocketClose
 	public void onClose(Session session, int statusCode, String reason) {
 		System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
-		System.out.println("Success: " + sessions.remove(session));
+		System.out.println("Success: " + (removeToGame(session) != null));
 	}
 	
 	@OnWebSocketError
@@ -34,27 +67,25 @@ public class MazeWebSocket {
 	}
 	
 	@OnWebSocketConnect
-	public void onConnect(Session session) {
-		sessions.add(session);
-		JSONObject json = new JSONObject();
-		json.put("motd", "Welcome in Maze");
-		json.put("slots", sessions.size() + "/" + MazeGame.MAX_SLOTS);
-		try {
-			session.getRemote().sendString(json.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void onConnect(Session session) throws IOException {
+		addToGame(session);
+		send(session, slotsToJSON());
 	}
 	
 	@OnWebSocketMessage
 	public void onMessage(Session session, String message) throws IOException {
-		for(Session s : sessions){
-			if(s!=session){
-	
-				JSONObject json = new JSONObject();
-				json.put("slots", sessions.size());
-				s.getRemote().sendString(json.toString());
-			}
+		JSONObject data = slotsToJSON();
+		for (Session s : game.getSessions()) {
+			send(s, data);
+		}
+		
+		// Traitement des informations uniquement si le message est en JSON
+		if (isJSON(message)) {
+			
+			JSONObject receive = new JSONObject(message);
+			
+			
+			
 		}
 		/*JSONObject json = new JSONObject(message);
 		JSONObject toSend = game.toJson();

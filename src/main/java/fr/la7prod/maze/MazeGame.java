@@ -1,10 +1,13 @@
 package fr.la7prod.maze;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONObject;
 
 import fr.la7prod.maze.algorithms.RecursiveBT;
@@ -18,11 +21,11 @@ public class MazeGame {
 	
 	private Maze maze;
 	private Player master;
-	private Map<String, Player> map;
+	private Map<Session, Player> map;
 	
 	public MazeGame(int width, int height) {
 		this.maze = new RecursiveBT().generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
-		this.map = new HashMap<String, Player>();
+		this.map = new HashMap<Session, Player>();
 	}
 	
 	public Maze getMaze() {
@@ -33,16 +36,28 @@ public class MazeGame {
 		return MAX_SLOTS - map.size();
 	}
 	
-	public Player addPlayer(String name, Player p) {
-		return map.put(name, p);
+	public int countPlayers() {
+		return map.size();
 	}
 	
-	public Player removePlayer(String name) {
-		return map.remove(name);
+	public Set<Session> getSessions() {
+		return map.keySet();
 	}
 	
-	public Player getPlayer(String name) {
-		return map.get(name);
+	public Collection<Player> getPlayers() {
+		return map.values();
+	}
+	
+	public Player addPlayer(Session s, Player p) {
+		return map.put(s, p);
+	}
+	
+	public Player removePlayer(Session s) {
+		return map.remove(s);
+	}
+	
+	public Player getPlayer(Session s) {
+		return map.get(s);
 	}
 	
 	public void setMazeMaster(Player master) {
