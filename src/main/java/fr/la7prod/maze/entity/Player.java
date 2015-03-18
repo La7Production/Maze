@@ -24,7 +24,7 @@ public class Player {
 	}
 	
 	public Player() {
-		this("unknown");
+		this(null);
 	}
 	
 	public String getName() {

@@ -19,6 +19,7 @@ public class MazeGame {
 	
 	public static final int MAX_SLOTS = 5;
 	
+	private boolean running;
 	private Maze maze;
 	private Player master;
 	private Map<Session, Player> map;
@@ -30,6 +31,10 @@ public class MazeGame {
 	
 	public Maze getMaze() {
 		return this.maze;
+	}
+	
+	public boolean isRunning() {
+		return this.running;
 	}
 	
 	public int availableSlots() {
@@ -104,7 +109,7 @@ public class MazeGame {
 		return getLocation(p).equals(maze.getExit());
 	}
 	
-	public void start() {
+	public void initPlayers() {
 		Cell start = maze.getStart();
 		this.setMazeMasterRandomly();
 		for (Player p : map.values()) {
@@ -112,8 +117,14 @@ public class MazeGame {
 		}
 	}
 	
+	public void start() {
+		// TODO
+		this.running = true;
+	}
+	
 	public void stop() {
 		// TODO
+		this.running = false;
 	}
 	
 	/*public MazeZone getZone(Player p) {
@@ -132,8 +143,9 @@ public class MazeGame {
 	public JSONObject toJson() {
 		JSONObject json = new JSONObject();
 		json.put("maze", maze.toJson());
-		json.put("master", master.getName());
 		json.put("players", map.values());
+		if (master != null)
+			json.put("master", master.getName());
 		return json;
 	}
 
