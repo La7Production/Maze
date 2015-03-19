@@ -58,11 +58,14 @@ function Item(name, url) {
 
 /* Crée un nouvel utilisateur dans le serveur */
 /* On récupèrera les données suivantes : login, password, firstname, lastname, birthday, email */
-/* Ces données sont contenues dans le formulaire d'id = "signin" */
-/* On peut donc parcourir le formulaire avec form[i].value (cf. fichier 'exemple_form') */
+/* Ces données sont contenues dans le div d'id = "signin" */
+/* On peut donc parcourir le div comme un formulaire avec form[i].value (cf. fichier 'exemple_form') */
 function signin() {	
-	var form = document.forms['#signin'].elements;
-	$.ajax({ 
+
+	// A TERMINER
+
+	var form = document.getElementById('#signin').children;
+	$.ajax({
 		url: "/maze/usersdb",
 		type: "POST",
 		dataType: "json",
@@ -85,14 +88,14 @@ function signin() {
 };
 
 /* Identifie un utilisateur dans le serveur et en ressort un joueur */
-/* De la même manière, on récupèrera les données du formulaire "signup" */
-/* Ce formulaire contient le login et le password de l'utilisateur */
+/* De la même manière, on récupèrera les données du div "signup" */
+/* Ce div servant de formulaire contient le login et le password de l'utilisateur */
 function signup() {
 
 	// PAS TERMINE
 	
-	var form = document.forms['#signup'].elements;
-	$.ajax({ 
+	var form = document.getElementById('#signup').children;
+	$.ajax({
 		url: "/maze/usersdb/" + form[0].value,
 		type: "GET",
 		dataType: "json",
