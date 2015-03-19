@@ -25,7 +25,7 @@
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>${jetty.version}</version>
-				<configuration>
+					<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 				</configuration>
 			</plugin>
@@ -45,18 +45,22 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Jersey Server -->
-		<!-- Uncomment to use jersey server
+		<!-- Uncomment to get Jersey Core
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-server</artifactId>
 		</dependency>
 		-->
+		<!-- Jersey Media (json/xml support for tests)-->
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-moxy</artifactId>
+		</dependency>
 		<!-- Jersey Tests -->
 		<dependency>
 			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
 			<artifactId>jersey-test-framework-provider-jetty</artifactId>
-		</dependency>
+		</dependency>	
 		<!-- Jetty Rest, Websocket, Http request -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -92,7 +96,7 @@
 	</dependencies>
 	
 	<properties>
-		<jersey.version>2.16</jersey.version>
+		<jersey.version>2.17</jersey.version>
 		<jetty.version>9.3.0.M1</jetty.version>
 		<websocket.version>1.1</websocket.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

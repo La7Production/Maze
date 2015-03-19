@@ -11,8 +11,8 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 @RegisterMapper(UserMapper.class)
 public interface UserDAO {
 	
-	@SqlUpdate("create table if not exists users (login text primary key, password text,"
-			+ " firstname text, lastname text, birthday date, email text)")
+	@SqlUpdate("create table if not exists users (login text primary key, password text not null,"
+			+ " firstname text not null, lastname text not null, birthday date not null, email text not null)")
 	public void createTable();
 	
 	@SqlUpdate("insert into users values (:login, :password, :firstname, :lastname,"
@@ -34,6 +34,9 @@ public interface UserDAO {
 	
 	@SqlQuery("select * from users where login = :login")
 	public User findByLogin(@Bind("login") String login);
+	
+	@SqlQuery("select * from users where login = :login and password = :password")
+	public User findByLogin(@Bind("login") String login, @Bind("password") String password);
 	
 	@SqlQuery("select * from users")
 	public List<User> getAllUsers();

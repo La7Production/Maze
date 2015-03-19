@@ -171,7 +171,7 @@ public class UserDBIResource {
 			return Response.status(Response.Status.CONFLICT).build();
 		}
 		else {
-			dao.addUser(new User(login, password, firstname, birthday, lastname, email));
+			dao.addUser(new User(login, password, firstname, lastname, birthday, email));
 			dao.close();
 			// On renvoie 201 et l'instance de la ressource dans le Header HTTP 'Location'
 			URI instanceURI = uriInfo.getAbsolutePathBuilder().path(login).build();

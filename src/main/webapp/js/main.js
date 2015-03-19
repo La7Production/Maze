@@ -60,15 +60,16 @@ function Item(name, url) {
 /* On récupèrera les données suivantes : login, password, firstname, lastname, birthday, email */
 /* Ces données sont contenues dans le div d'id = "signin" */
 /* On peut donc parcourir le div comme un formulaire avec form[i].value (cf. fichier 'exemple_form') */
-function signin() {	
+function signup() {	
 
-	// A TERMINER
+	// A TERMINER avec vérification des champs non vides
 
-	var form = document.getElementById('#signin').children;
+	var form = document.getElementById('#signup').children;
 	$.ajax({
 		url: "/maze/usersdb",
 		type: "POST",
-		dataType: "json",
+		// Attention: coté serveur on retourne la réponse HTTP, pas un objet parseable en JSON !
+		//dataType: "json",
 		data : {
 			'login' : form[0].value,
 			'password' : form[1].value,
@@ -79,10 +80,10 @@ function signin() {
 		},
 	
 		success: function(data, textStatus, jqXHR) {
-			alert("Création du compte : " + textStatus);
+			alert("Création du compte : " + data + "; " + jqXHR);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			alert("Erreur lors de la création du compte: " + textStatus);
+			alert("Erreur lors de la création du compte: " + jqXHR + "; " + errorThrown);
 		}
 	});
 };
@@ -90,11 +91,11 @@ function signin() {
 /* Identifie un utilisateur dans le serveur et en ressort un joueur */
 /* De la même manière, on récupèrera les données du div "signup" */
 /* Ce div servant de formulaire contient le login et le password de l'utilisateur */
-function signup() {
+function signin() {
 
 	// PAS TERMINE
 	
-	var form = document.getElementById('#signup').children;
+	var form = document.getElementById('#signin').children;
 	$.ajax({
 		url: "/maze/usersdb/" + form[0].value,
 		type: "GET",
@@ -143,7 +144,7 @@ ws.onmessage = function (evt) {
 	// Traiter l'information selon les deux cas
 	// 1) Tous les joueurs ne sont pas encore arrivés
 	// 2) Tous les joueurs sont là
-	alert(evt.data);
+	$("#slots").innerHTML = evt.data;
 };
 
 /* Fonction appelée lorsque la websocket est fermée */
