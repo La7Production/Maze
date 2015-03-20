@@ -1,1 +1,182 @@
-/* Feuille de style principale */
+body {
+	padding: 0;
+	margin: 0;
+	background-image: url(../img/maze.png);
+	background-repeat: no-repeat;
+	min-width:900px;
+}
+
+#menuHead{
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	background-image: linear-gradient(#BDBDBD,#D8D8D8);
+	border-bottom: 1px solid;
+	border-color: black;
+	font-family: 'Arial';
+	text-shadow: #E6E6E6 0px 1px 0;
+	color:#2E2E2E;
+	min-width: 900px;
+}
+
+#menuBar, #menuBar ul{
+	padding:0;
+	margin:0;
+	list-style:none;
+	text-align:center;
+}
+
+#menuBar ul{
+	position:absolute;
+	background-color: #BDBDBD;
+	max-height:0;
+	left: 0;
+	right: 0;
+	overflow:hidden;
+	transition: .8s all;
+}
+
+#menuBar li{
+	position:relative;
+	float: left;
+	transition: 0.5s all;
+}
+
+#menuBar ul li{
+	width:150px;
+	margin-top: 10px;
+	font-size:12px;
+}
+
+#menuBar li:hover{
+	background-color: #BDBDBD;
+}
+
+#menuBar li:hover ul{
+	width:150px;
+	max-height:500px;
+	border-color: black;
+	overflow:hidden;
+}
+
+#menuBar li:first-child:hover  ul{
+	box-shadow: 1px 1px 0px black;
+}
+
+#menuBar li:nth-child(2):hover ul{
+	box-shadow: -1px 0px black;
+	border-right: thin solid black;
+	border-bottom: thin solid black;
+}
+
+#menuBar li:last-child:hover ul{
+	box-shadow: -1px 1px black;
+}
+
+#menuBar a{
+	text-decoration:none;
+	color:#2E2E2E;
+	font-family:arial;
+	line-height:40px;
+	cursor: default;
+}
+
+#menuBar li:first-child{
+	width: 150px;
+	border-right: 1px solid;
+	border-color: black;
+	text-align: center;
+}
+
+#menuBar li:first-child li:nth-child(3){
+	cursor: pointer;
+	background: #A4A4A4;
+	margin-left: 17px;
+	padding: 3px;
+	width: 110px;
+	color:#2E2E2E;
+	border: 1px solid #A4A4A4;
+	text-shadow: none;
+}
+
+#menuBar li:first-child li:nth-child(3):hover {
+	border: 1px solid #424242;
+	background: #585858;
+	color: white;
+}
+
+#menuBar li:first-child li:last-child{
+	cursor: pointer;
+	background: #A4A4A4;
+	margin-right: 15px;
+	padding: 3px;
+	width: 110px;
+	color:#2E2E2E;
+	border: 1px solid #A4A4A4;
+	text-shadow: none;
+	margin-bottom: 10px;
+	font-size: 10px;
+}
+
+#menuBar li:first-child li:last-child:hover {
+	border: 1px solid #424242;
+	background: #585858;
+	color: white;
+}
+
+#menuBar li:nth-child(2){
+	width: 150px;
+	border-right: 1px solid;
+	border-color: black;
+	text-align: center;
+}
+
+#menuBar li:nth-child(2) li:last-child{
+	cursor: pointer;
+	background: #A4A4A4;
+	margin-right: 16px;
+	padding: 3px;
+	width: 110px;
+	color:#2E2E2E;
+	border: 1px solid #A4A4A4;
+	text-shadow: none;
+	margin-bottom:10px;
+}
+
+#menuBar li:nth-child(2) li:last-child:hover{
+	border: 1px solid #424242;
+	background: #585858;
+	color: white;
+}
+
+#menuBar li:last-child{
+	width: 150px;
+	border-left:1px solid;
+	border-color: black;
+	text-align: center;
+	float:right;
+}
+
+#title {
+	position:absolute;
+	right:50%;
+	padding:0;
+	margin:0;
+	line-height:40px;
+	font-size:20px;
+}
+
+#content {
+	background-color: white;
+	margin-left:22%;
+	width: 56%;
+	height: 94%;
+	border-left: thin solid #585858;
+	border-right: thin solid #585858;
+	box-shadow: 5px 6px 50px gray, -5px 6px 50px gray;
+	min-width: 900px;
+	margin-top: 40px;
+}

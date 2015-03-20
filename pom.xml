@@ -62,9 +62,47 @@
 			<artifactId>jersey-test-framework-provider-jetty</artifactId>
 		</dependency>	
 		<!-- Jetty Rest, Websocket, Http request -->
+		<!-- Uncomment to have full Jetty Packages
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-maven-plugin</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		-->
+		<!-- To write basic websockets against -->
+	    <dependency>
+	    	<groupId>org.eclipse.jetty.websocket</groupId>
+	    	<artifactId>websocket-api</artifactId>
+	    	<version>${jetty.version}</version>
+	    </dependency>
+	    <!-- To run servlets in embedded server -->
+	    <dependency>
+			<groupId>org.eclipse.jetty.websocket</groupId>
+			<artifactId>websocket-servlet</artifactId>
+			<version>${jetty.version}</version>
+	    </dependency>
+	    <!-- To run websockets in embedded server -->
+	    <dependency>
+			<groupId>org.eclipse.jetty.websocket</groupId>
+			<artifactId>websocket-server</artifactId>
+			<version>${jetty.version}</version>
+	    </dependency>
+	    <!-- To run websockets client -->
+	    <dependency>
+	    	<groupId>org.eclipse.jetty.websocket</groupId>
+	    	<artifactId>websocket-client</artifactId>
+	    	<version>${jetty.version}</version>
+	    </dependency>
+	    <!-- To run http request -->
+	    <dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-http</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<!-- Other util stuff -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
 			<version>${jetty.version}</version>
 		</dependency>
 		<!-- JSON simple library -->
@@ -73,14 +111,6 @@
 			<artifactId>json</artifactId>
 			<version>20140107</version>
 		</dependency>
-		<!-- Postgresql -->
-		<!-- Uncomment to use Postgresql
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.4-1201-jdbc41</version>
-		</dependency>
-		-->
 		<!-- SQLite -->
 		<dependency>
 			<groupId>org.xerial</groupId>
@@ -97,7 +127,7 @@
 	
 	<properties>
 		<jersey.version>2.17</jersey.version>
-		<jetty.version>9.3.0.M1</jetty.version>
+		<jetty.version>9.2.10.v20150310</jetty.version>
 		<websocket.version>1.1</websocket.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

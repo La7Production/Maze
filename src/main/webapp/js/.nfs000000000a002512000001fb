@@ -20,10 +20,6 @@ var player;
 var direction;
 // Données envoyées par le serveur via une websocket
 var data;
-// Labyrinthe récupéré dans les données
-var maze;
-// Image du labyrinthe
-var imaze;
 // La websocket (instanciée uniquement au succès de la fonction de connexion)
 var ws = new WebSocket("ws://" + address + ":8080/maze/websocket");
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
@@ -36,6 +32,7 @@ var items = [];
 function Player(playername) {
 	this.playername = playername;
 }
+
 
 /***********************************************************************
  * DIRECTION : représenté par une cardinalité (NORTH, SOUTH, EAST, WEST)
@@ -64,26 +61,29 @@ function Item(name, url) {
 /* Ces données sont contenues dans le div d'id = "signin" */
 /* On peut donc parcourir le div comme un formulaire avec form[i].value (cf. fichier 'exemple_form') */
 function signup() {	
-	var form = function(i) { return document.getElementById("signup").children.item(i).children[0].value; }
+
+	// A TERMINER avec vérification des champs non vides
+
+	var form = document.getElementById('#signup').children;
 	$.ajax({
 		url: "/maze/usersdb",
 		type: "POST",
 		// Attention: coté serveur on retourne la réponse HTTP, pas un objet parseable en JSON !
 		//dataType: "json",
 		data : {
-			'login' : form(0),
-			'password' : form(1),
-			'firstname' : form(2),
-			'lastname' : form(3),
-			'birthday' : form(4),
-			'email' : form(5)
+			'login' : form[0].value,
+			'password' : form[1].value,
+			'firstname' : form[2].value,
+			'lastname' : form[3].value,
+			'birthday' : form[4].value,
+			'email' : form[5].value
 		},
 	
 		success: function(data, textStatus, jqXHR) {
-			document.getElementById("notif").innerHTML = "Votre compte est désormais créé";
+			alert("Création du compte : " + data + "; " + jqXHR);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			document.getElementById("notif").innerHTML = "Erreur lors du chargement du compte: " + errorThrown;
+			alert("Erreur lors de la création du compte: " + jqXHR + "; " + errorThrown);
 		}
 	});
 };
@@ -92,22 +92,23 @@ function signup() {
 /* De la même manière, on récupèrera les données du div "signup" */
 /* Ce div servant de formulaire contient le login et le password de l'utilisateur */
 function signin() {
-	var form = function(i) { return document.getElementById("signin").children.item(i).children[0].value; }
+
+	// PAS TERMINE
+	
+	var form = document.getElementById('#signin').children;
 	$.ajax({
-		url: "/maze/usersdb/" + form(0),
+		url: "/maze/usersdb/" + form[0].value,
 		type: "GET",
 		dataType: "json",
 		data : {
-			'login' : form(0)
+			'login' : form[0].value
 		},
+	
 		success: function(data, textStatus, jqXHR) {
-			player = new Player(data.login);
-			ws.send(JSON.stringify(player));
-			ws.send("{direction: NORTH}");
-			document.getElementById("notif").innerHTML = "Bonjour " + data.login;
+			alert("Chargement du compte : " + data.login);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			document.getElementById("notif").innerHTML = "Nom d'utilisateur ou mot de passe incorrect";
+			alert("Erreur lors du chargement du compte: " + textStatus);
 		}
 	});
 };
@@ -140,16 +141,10 @@ ws.onmessage = function (evt) {
 	// les données envoyées par le serveur (donc reçu par tous les clients) seront les données du jeu
 	// à savoir le maze, le master et les players
 	data = JSON.parse(evt.data);
-	
-	if (data.maze !== undefined) {
-		maze = data.maze;
-		drawMaze();
-	}
-	
 	// Traiter l'information selon les deux cas
 	// 1) Tous les joueurs ne sont pas encore arrivés
 	// 2) Tous les joueurs sont là
-	document.getElementById("slots").innerHTML = evt.data;
+	$("#slots").innerHTML = evt.data;
 };
 
 /* Fonction appelée lorsque la websocket est fermée */
@@ -186,8 +181,7 @@ function waitPlayers() {
 /* Dessine le labyrinthe vide en considérant la variable data comme définie (data.maze.cells)*/
 /* On préviligiera un parcours à 1 seul indice cells[i] et on récupèrera x et y (cells[i].x et cells[i].y) pour dessiner */
 function drawMaze() {
-	var cells = maze.cells;
-	var cell;
+	var cells = data.maze.cells;
 	for (var i=0; i < cells.length; i++) {
 		// cells[i].x
 		// cells[i].y
