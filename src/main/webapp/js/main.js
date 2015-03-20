@@ -13,7 +13,7 @@
  ***********************************************/
 
 // Adresse du serveur
-var address = "localhost";
+var address = location.hostname;
 // Le joueur client
 var player;
 // Direction du joueur dans le labyrinthe
