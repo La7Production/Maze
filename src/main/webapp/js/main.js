@@ -29,6 +29,8 @@ var ws = new WebSocket("ws://" + address + ":8080/maze/websocket");
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
 var items = [];
 
+window.addEventListener('keydown', actionPerformed, true);
+
 /********************************
  * PLAYER : représenté par un nom
  ********************************/
@@ -169,8 +171,18 @@ ws.onerror = function(err) {
  *************************/
 
 /* Fonction appelée lorsque l'utilisateur appuie sur des touches précises de son clavier */
-function actionPerformed() {
-	//TODO
+function actionPerformed(evt) {
+	//90 68 83 81
+	var key = evt.keyCode;
+	direction = null;
+	if (key === 90) { direction = new Direction("NORTH"); }
+	else if (key === 68) { direction = new Direction("EAST"); }
+	else if (key === 83) { direction = new Direction("SOUTH"); }
+	else if (key === 81) { direction = new Direction("WEST"); }
+	
+	console.log(direction);
+	ws.send(JSON.parse(direction));
+	drawPlayers();
 };
 
 /* Fonction appelée lorsque l'utilisateur clique avec sa souris */
