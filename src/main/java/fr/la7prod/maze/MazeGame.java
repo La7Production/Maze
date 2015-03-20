@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import fr.la7prod.maze.algorithms.RecursiveBT;
 import fr.la7prod.maze.entity.Player;
-import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
 
 public class MazeGame {
@@ -78,12 +77,12 @@ public class MazeGame {
 		return this.master.equals(p);
 	}
 	
-	public Cell getLocation(Player p) {
-		return p.getLocation(maze);
+	public Cell getLocation(Player p, final int PIXEL_SIZE) {
+		return p.getLocation(maze, PIXEL_SIZE);
 	}
 	
-	public boolean canMove(Player p, Direction d) {
-		Cell c = getLocation(p);
+	public boolean canMove(Player p, Direction d, final int PIXEL_SIZE) {
+		Cell c = getLocation(p, PIXEL_SIZE);
 		return c != null && !c.hasWall(d);
 	}
 	
@@ -97,23 +96,23 @@ public class MazeGame {
 		this.map.clear();
 	}
 	
-	public boolean movePerformed(Player p, Direction d) {
-		if (canMove(p, d)) {
+	public boolean movePerformed(Player p, Direction d, final int PIXEL_SIZE) {
+		if (canMove(p, d, PIXEL_SIZE)) {
 			move(p, d);
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean win(Player p) {
-		return getLocation(p).equals(maze.getExit());
+	public boolean win(Player p, final int PIXEL_SIZE) {
+		return getLocation(p, PIXEL_SIZE).equals(maze.getExit());
 	}
 	
 	public void initPlayers() {
 		Cell start = maze.getStart();
 		this.setMazeMasterRandomly();
 		for (Player p : map.values()) {
-			p.place(new Coordinates(start.getX() + Cell.PIXEL_SIZE/2, start.getY() + Cell.PIXEL_SIZE/2));
+			p.place(start);
 		}
 	}
 	

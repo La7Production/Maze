@@ -100,7 +100,6 @@ public class Maze {
 		JSONObject json = new JSONObject();
 		json.put("width", width);
 		json.put("height", height);
-		json.put("pixel", Cell.PIXEL_SIZE);
 		json.put("cells", this.getCells());
 		return json;
 	}

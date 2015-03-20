@@ -4,7 +4,7 @@
 
 // Données à envoyer au serveur
 // 1) référencé le nom du joueur au serveur : ws.send(JSON.stringify(player)";
-// 2) envoyer le déplacement du joueur : ws.send(JSON.stringify(direction));
+// 2) envoyer le déplacement du joueur : ws.send(JSON.stringify([direction, {"pixel" : PIXEL_SIZE}]));
 // 3) envoyer les placements du maître : {coming soon}
 
 
@@ -18,6 +18,8 @@ var address = location.hostname;
 var player;
 // Direction du joueur dans le labyrinthe
 var direction;
+// Taille en pixel d'une case qui sera a envoyer avec la direction
+var PIXEL_SIZE = 32;
 // Données envoyées par le serveur via une websocket
 var data;
 // Labyrinthe récupéré dans les données
@@ -45,6 +47,7 @@ function Player(playername) {
  
 function Direction(direction) {
 	this.direction = direction;
+	this.pixel = PIXEL_SIZE;
 }
 
 /***********************************************
@@ -105,7 +108,6 @@ function signin() {
 		success: function(data, textStatus, jqXHR) {
 			player = new Player(data.login);
 			ws.send(JSON.stringify(player));
-			ws.send("{direction: NORTH}");
 			document.getElementById("notif").innerHTML = "Bonjour " + data.login;
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -143,16 +145,20 @@ ws.onmessage = function (evt) {
 	// à savoir le maze, le master et les players
 	data = JSON.parse(evt.data);
 	
+	// Traiter l'information selon les deux cas
+	// 1) Tous les joueurs ne sont pas encore arrivés
+	// 2) Tous les joueurs sont là
 	if (data.maze !== undefined) {
 		maze = data.maze;
 		drawMaze();
 		drawPlayers();
 	}
-	
-	// Traiter l'information selon les deux cas
-	// 1) Tous les joueurs ne sont pas encore arrivés
-	// 2) Tous les joueurs sont là
-	document.getElementById("slots").innerHTML = evt.data;
+	else if (data.slots !== undefined) {
+		waitPlayers(data.slots);
+	}
+	else if (data.winner !== undefined) {
+		console.log("Vainqueur: " + data.winner);
+	}
 };
 
 /* Fonction appelée lorsque la websocket est fermée */
@@ -174,15 +180,20 @@ ws.onerror = function(err) {
 function actionPerformed(evt) {
 	//90 68 83 81
 	var key = evt.keyCode;
+	var s;
 	direction = null;
-	if (key === 90) { direction = new Direction("NORTH"); }
-	else if (key === 68) { direction = new Direction("EAST"); }
-	else if (key === 83) { direction = new Direction("SOUTH"); }
-	else if (key === 81) { direction = new Direction("WEST"); }
+	switch(key) {
+		case 38:s = "NORTH"; break;
+		case 39:s = "EAST"; break;
+		case 40:s = "SOUTH"; break;
+		case 37:s = "WEST"; break;
+	}
 	
-	console.log(direction);
-	ws.send(JSON.parse(direction));
-	drawPlayers();
+	if (s !== undefined) {
+		direction = new Direction(s);
+		ws.send(JSON.stringify(direction));
+		drawPlayers();
+	}
 };
 
 /* Fonction appelée lorsque l'utilisateur clique avec sa souris */
@@ -192,74 +203,85 @@ function mouseClicked() {
 };
 
 /* Affiche un message d'attente lorsque le nombre minimal de joueurs requis dans une partie n'est pas atteint */
-function waitPlayers() {
-	//TODO
+function waitPlayers(slots) {
+	document.getElementById("slots").innerHTML = slots;
 };
 
 /* Dessine le labyrinthe vide en considérant la variable data comme définie (data.maze.cells)*/
 /* On préviligiera un parcours à 1 seul indice cells[i] et on récupèrera x et y (cells[i].x et cells[i].y) pour dessiner */
 function drawMaze() {
-	var c;
-	var cells = maze.cells;
 	var canvas = document.getElementById("maze");
 	var ctx = canvas.getContext("2d");
-	ctx.canvas.width = maze.pixel * maze.width;
-	ctx.canvas.height = maze.pixel * maze.height;
-	var draw = function(cell,mx,my,px,py) {
-				ctx.moveTo(maze.pixel * cell.x + mx, maze.pixel * cell.y + my);
-				ctx.lineTo(maze.pixel * cell.x + px, maze.pixel * cell.y + py);
-				ctx.stroke();
-			};
-	
-	// Entrée
-	c = cells[0];
-	ctx.fillStyle = "rgba(255, 0, 0, .5)"
-	ctx.fillRect(maze.pixel*c.x,maze.pixel*c.y,maze.pixel,maze.pixel);	
-	ctx.stroke();
-	
-	// Sortie
-	c = cells[cells.length-1];
-	ctx.fillStyle = "rgba(0, 255, 0, .5)";
-	ctx.fillRect(maze.pixel*c.x,maze.pixel*c.y,maze.pixel,maze.pixel);	
-	ctx.stroke();
-	
-	for (var i=0; i < cells.length; i++) {
-		c = cells[i];
-		if (((c.value) & 1) === 0) {
-			draw(c,0,0,maze.pixel,0);
-		} 
-		if (((c.value) & 2) === 0) {
-			draw(c,maze.pixel,0,maze.pixel,maze.pixel);
-		}
-		if (((c.value) & 4) === 0) {
-			draw(c,0,maze.pixel,maze.pixel,maze.pixel);
-		}
-		if (((c.value) & 8) === 0) {
-			draw(c,0,0,0,maze.pixel);
-		}
+	if (imaze !== undefined) {
+		ctx.fillStyle = "white";
+		ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+		ctx.drawImage(imaze, 0, 0);
 	}
+	else {
+		var c;
+		var cells = maze.cells;
+		ctx.canvas.width = PIXEL_SIZE * maze.width;
+		ctx.canvas.height = PIXEL_SIZE * maze.height;
+		var draw = function(cell,mx,my,px,py) {
+					ctx.moveTo(PIXEL_SIZE * cell.x + mx, PIXEL_SIZE * cell.y + my);
+					ctx.lineTo(PIXEL_SIZE * cell.x + px, PIXEL_SIZE * cell.y + py);
+					ctx.stroke();
+				};
 	
-	imaze = new Image();
-	imaze.src = canvas.toDataURL("image/png");
+		// Entrée
+		c = cells[0];
+		ctx.fillStyle = "rgba(255, 0, 0, .5)"
+		ctx.fillRect(PIXEL_SIZE*c.x,PIXEL_SIZE*c.y,PIXEL_SIZE,PIXEL_SIZE);
+		ctx.stroke();
+	
+		// Sortie
+		c = cells[cells.length-1];
+		ctx.fillStyle = "rgba(0, 255, 0, .5)";
+		ctx.fillRect(PIXEL_SIZE*c.x,PIXEL_SIZE*c.y,PIXEL_SIZE,PIXEL_SIZE);	
+		ctx.stroke();
+	
+		for (var i=0; i < cells.length; i++) {
+			c = cells[i];
+			if (((c.value) & 1) === 0) {
+				draw(c,0,0,PIXEL_SIZE,0);
+			} 
+			if (((c.value) & 2) === 0) {
+				draw(c,PIXEL_SIZE,0,PIXEL_SIZE,PIXEL_SIZE);
+			}
+			if (((c.value) & 4) === 0) {
+				draw(c,0,PIXEL_SIZE,PIXEL_SIZE,PIXEL_SIZE);
+			}
+			if (((c.value) & 8) === 0) {
+				draw(c,0,0,0,PIXEL_SIZE);
+			}
+		}
+	
+		imaze = new Image();
+		imaze.src = canvas.toDataURL("image/png");
+	}
 	return imaze;
 };
+
+/* Dessine le joueur avec la couleur voulue */
+/* Cette méthode est aussi utilisée pour effacer les traces des déplacements précédents des joueurs */
+function drawPlayer(ctx, player, color) {
+	ctx.beginPath();
+	ctx.arc(player.coordinates.x + (PIXEL_SIZE/2), player.coordinates.y + (PIXEL_SIZE/2), 1, 0, 2 * Math.PI);
+	ctx.fillStyle = color;
+	ctx.fill();
+	ctx.lineWidth = 5;
+	ctx.strokeStyle = color;
+	ctx.stroke();
+}
 
 /* Dessine les joueurs dans le labyrinthe */
 function drawPlayers() {
 	var players = data.players;
 	var canvas = document.getElementById("maze");
 	var ctx = canvas.getContext("2d");
-	var xp;
-	var yp;
-	var p = 10;
+	var colors = ['red', 'blue', 'green', 'orange', 'grey'];
 	for (var i=0; i < players.length; i++) {
-		xp = players[i].coordinates.x;
-		yp = players[i].coordinates.y;
-		ctx.beginPath();
-		ctx.fillStyle = "blue";
-		ctx.fill();
-		ctx.arc(xp, yp, 5, 0, 2 * Math.PI);
-		ctx.stroke();
+		drawPlayer(ctx, players[i], colors[i%players.length]);
 	}
 };
 

@@ -174,10 +174,15 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	width: 56%;
-	height: 94%;
+	height: 90%;
 	border-left: thin solid #585858;
 	border-right: thin solid #585858;
 	box-shadow: 5px 6px 50px gray, -5px 6px 50px gray;
 	min-width: 900px;
 	margin-top: 40px;
+}
+
+canvas {
+	margin-left: auto;
+	margin-right: auto;
 }

@@ -86,6 +86,7 @@ public class MazeWebSocket extends GameService {
 			JSONObject receive = new JSONObject(message);
 			Player p = getFromGame(session);
 			Direction d;
+			int pixel;
 			
 			// L'utilisateur référence son pseudo au serveur de jeu
 			// Il ne peut le référencé que s'il ne l'est pas déjà
@@ -95,19 +96,19 @@ public class MazeWebSocket extends GameService {
 			}
 			// L'utilisateur indique son intention de déplacer son personnage
 			else {
-				if (receive.has("direction")) {
+				if (receive.has("direction") && receive.has("pixel")) {
 					d = toDirection(receive.getString("direction"));
+					pixel = receive.getInt("pixel");
 					if (d != null) {
-						
 						// Si le joueur peut se déplacer
 						// on effectue les instructions suivantes
-						if (game.movePerformed(p, d)) {
-							p.incHaste();
+						if (game.movePerformed(p, d, pixel)) {
+							//p.incHaste();
 						}
 						
 						// Si le joueur a gagné, on notifie tous les joueurs
 						// et on arrête la partie
-						if (game.win(p)) {
+						if (game.win(p, pixel)) {
 							game.stop();
 							data = new JSONObject();
 							data.put("winner", p.getName());

@@ -6,8 +6,6 @@ import fr.la7prod.maze.util.Direction;
 
 public class Cell extends Coordinates {
 	
-	public static final int PIXEL_SIZE = 32;
-	
 	private int value;
 	private Actionable actionable;
 	

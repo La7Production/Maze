@@ -57,7 +57,8 @@ public class Player {
 	}
 	
 	public void place(Coordinates c) {
-		this.c = c;
+		this.c.setX(c.getX());
+		this.c.setY(c.getY());
 	}
 	
 	public void move(int x, int y) {
@@ -76,9 +77,9 @@ public class Player {
 		this.haste = 1.0;
 	}
 	
-	public Cell getLocation(Maze maze) {
-		int x = c.getX() / Cell.PIXEL_SIZE;
-		int y = c.getY() / Cell.PIXEL_SIZE;
+	public Cell getLocation(Maze maze, final int PIXEL_SIZE) {
+		int x = c.getX() / PIXEL_SIZE;
+		int y = c.getY() / PIXEL_SIZE;
 		return maze.include(x, y) ? maze.getCell(x, y) : null;
 	}
 	
