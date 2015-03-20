@@ -17,7 +17,7 @@ public class MazeWebServlet extends WebSocketServlet {
 	
 	@Override
 	public void doGet(HttpServletRequest rq, HttpServletResponse rs) throws ServletException, IOException {
-		rq.getRequestDispatcher("/WEB-INF/index.jsp").forward(rq, rs);
+		rs.sendRedirect("../index.html");
 	}
 
 	@Override

@@ -85,10 +85,10 @@ public class UserDBIResourceTest extends JerseyTest {
 	}
 
 	/**
-	* Vérifie la récupération d'un utilisateur spécifique
+	* Vérifie la récupération d'un utilisateur spécifique en GET
 	*/
 	@Test
-	public void test_E_GetOneUser() {
+	public void test_E_GetOneUser_Get() {
 		User user = new User("jsteed", "secret", "Steed", "John", "01-01-1970", "jsteed@mi5.uk");
 		User result = target("/usersdb").path("jsteed").request().get(User.class);
 		assertEquals(user, result);
@@ -166,14 +166,29 @@ public class UserDBIResourceTest extends JerseyTest {
 		int code = target("/usersdb").request().post(formEntity).getStatus(); 
 		assertEquals(201, code);
 	}
+	
+	/**
+	* Vérifie la récupération d'un utilisateur spécifique en POST
+	*/
+	@Test
+	public void test_L_GetUserFromForm() {
+		Form form = new Form();
+		form.param("password", "magic");
+		
+		User user = new User("epeel", "magic", "Peel", "Edgard", "01-01-1980", "epeel@mi5.uk");
+		Entity<Form> userEntity = Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+		User result = target("/usersdb").path("epeel").request().post(userEntity, User.class);
+		assertEquals(user, result);
+	}
 
 
 	/**
 	* Vérifie qu'on récupère bien un utilisateur avec le type MIME application/xml
 	*/
 	@Test
-	public void test_L_GetUserAsXml() { 
+	public void test_M_GetUserAsXml() { 
 		int code = target("/usersdb").path("tking").request(MediaType.APPLICATION_XML).get().getStatus();
 		assertEquals(code, 200);
 	}
+	
 }

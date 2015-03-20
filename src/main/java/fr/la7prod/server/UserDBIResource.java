@@ -74,6 +74,7 @@ public class UserDBIResource {
 	* @return Une liste d'utilisateurs
 	*/
 	@GET
+	@Produces("application/json,application/xml")
 	public List<User> getUsers() {
 		UserDAO dao = openUserDAO();
 		List<User> users = dao.getAllUsers();
@@ -85,7 +86,7 @@ public class UserDBIResource {
 	}
 
 	/** 
-	* Méthode prenant en charge les requêtes HTTP GET sur /users/{login}
+	* Méthode prenant en charge les requêtes HTTP GET sur /usersdb/{login}
 	*
 	* @return Une instance de User
 	*/
@@ -124,7 +125,7 @@ public class UserDBIResource {
 	}
 
 	/** 
-	* Méthode prenant en charge les requêtes HTTP DELETE sur /users/{login}
+	* Méthode prenant en charge les requêtes HTTP PUT sur /usersdb/{login}
 	*
 	* @param login le login de l'utilisateur à modifier
 	* @param user l'entité correspondant à la nouvelle instance
@@ -176,6 +177,32 @@ public class UserDBIResource {
 			// On renvoie 201 et l'instance de la ressource dans le Header HTTP 'Location'
 			URI instanceURI = uriInfo.getAbsolutePathBuilder().path(login).build();
 			return Response.created(instanceURI).build();
+		}
+	}
+	
+	/**
+	* Méthode de récupération d'un utilisateur qui prend en charge les requêtes HTTP POST au format application/x-www-form-urlencoded
+	* La méthode renvoie l'utilisateur recherché en cas de succès
+	*
+	* @param login login de l'utilisateur
+	* @param password mdp de l'utilisateur
+	* @return Une instance de User
+	*/
+	@POST
+	@Path("{login}")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("application/json, application/xml")
+	public User getUser(@PathParam("login") String login, @FormParam("password") String password) {
+		UserDAO dao = openUserDAO();
+		User user = dao.findByLogin(login, password);
+		dao.close();
+		// Si l'utilisateur est inconnu, on renvoie 404
+		if (user == null) {
+			throw new NotFoundException();
+		}
+		else {
+			user.setPassword("protected");
+			return user;
 		}
 	}
 

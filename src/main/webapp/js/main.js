@@ -100,10 +100,12 @@ function signin() {
 	var form = function(i) { return document.getElementById("signin").children.item(i).children[0].value; }
 	$.ajax({
 		url: "/maze/usersdb/" + form(0),
-		type: "GET",
+		type: "POST",
 		dataType: "json",
 		data : {
-			'login' : form(0)
+			// Note: le login est déjà utilisé dans l'url, on a seulement le mot de passe à envoyer en POST
+			//'login' : form(0),
+			'password' : form(1)
 		},
 		success: function(data, textStatus, jqXHR) {
 			player = new Player(data.login);

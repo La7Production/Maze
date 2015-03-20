@@ -74,7 +74,7 @@ public class Player {
 	}
 	
 	public void resetHaste() {
-		this.haste = 1.0;
+		this.haste = 8.0;
 	}
 	
 	public Cell getLocation(Maze maze, final int PIXEL_SIZE) {
