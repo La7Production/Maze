@@ -171,7 +171,8 @@ body {
 
 #content {
 	background-color: white;
-	margin-left:22%;
+	margin-left: auto;
+	margin-right: auto;
 	width: 56%;
 	height: 94%;
 	border-left: thin solid #585858;

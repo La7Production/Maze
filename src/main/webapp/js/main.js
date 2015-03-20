@@ -144,6 +144,7 @@ ws.onmessage = function (evt) {
 	if (data.maze !== undefined) {
 		maze = data.maze;
 		drawMaze();
+		drawPlayers();
 	}
 	
 	// Traiter l'information selon les deux cas
@@ -186,20 +187,68 @@ function waitPlayers() {
 /* Dessine le labyrinthe vide en considérant la variable data comme définie (data.maze.cells)*/
 /* On préviligiera un parcours à 1 seul indice cells[i] et on récupèrera x et y (cells[i].x et cells[i].y) pour dessiner */
 function drawMaze() {
+	var c;
 	var cells = maze.cells;
-	var cell;
+	var canvas = document.getElementById("maze");
+	var ctx = canvas.getContext("2d");
+	ctx.canvas.width = maze.pixel * maze.width;
+	ctx.canvas.height = maze.pixel * maze.height;
+	var draw = function(cell,mx,my,px,py) {
+				ctx.moveTo(maze.pixel * cell.x + mx, maze.pixel * cell.y + my);
+				ctx.lineTo(maze.pixel * cell.x + px, maze.pixel * cell.y + py);
+				ctx.stroke();
+			};
+	
+	// Entrée
+	c = cells[0];
+	ctx.fillStyle = "rgba(255, 0, 0, .5)"
+	ctx.fillRect(maze.pixel*c.x,maze.pixel*c.y,maze.pixel,maze.pixel);	
+	ctx.stroke();
+	
+	// Sortie
+	c = cells[cells.length-1];
+	ctx.fillStyle = "rgba(0, 255, 0, .5)";
+	ctx.fillRect(maze.pixel*c.x,maze.pixel*c.y,maze.pixel,maze.pixel);	
+	ctx.stroke();
+	
 	for (var i=0; i < cells.length; i++) {
-		// cells[i].x
-		// cells[i].y
-		// TODO
+		c = cells[i];
+		if (((c.value) & 1) === 0) {
+			draw(c,0,0,maze.pixel,0);
+		} 
+		if (((c.value) & 2) === 0) {
+			draw(c,maze.pixel,0,maze.pixel,maze.pixel);
+		}
+		if (((c.value) & 4) === 0) {
+			draw(c,0,maze.pixel,maze.pixel,maze.pixel);
+		}
+		if (((c.value) & 8) === 0) {
+			draw(c,0,0,0,maze.pixel);
+		}
 	}
+	
+	imaze = new Image();
+	imaze.src = canvas.toDataURL("image/png");
+	return imaze;
 };
 
 /* Dessine les joueurs dans le labyrinthe */
 function drawPlayers() {
 	var players = data.players;
-	var master = data.master;
-	// TODO
+	var canvas = document.getElementById("maze");
+	var ctx = canvas.getContext("2d");
+	var xp;
+	var yp;
+	var p = 10;
+	for (var i=0; i < players.length; i++) {
+		xp = players[i].coordinates.x;
+		yp = players[i].coordinates.y;
+		ctx.beginPath();
+		ctx.fillStyle = "blue";
+		ctx.fill();
+		ctx.arc(xp, yp, 5, 0, 2 * Math.PI);
+		ctx.stroke();
+	}
 };
 
 /* Affiche les pièges et bonus que le maître du labyrinthe peut placer (par drag'n'drop de préférence) dans le labyrinthe */
