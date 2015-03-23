@@ -193,7 +193,7 @@ function drawMaze() {
 	var cells = data.maze.cells;
 	var maze = data.maze;
 	var cell;
-	var c = document.getElementById("canvas");
+	var c = document.getElementById("maze");
 	var ctx = c.getContext("2d");
 	
 	cell = maze.cells[0];
@@ -237,15 +237,17 @@ function drawPlayers() {
 	var cells = data.maze.cells;
 	var maze = data.maze;
 	var cell;
-	var c = document.getElementById("canvas");
+	var c = document.getElementById("maze");
 	var ctx = c.getContext("2d");
 	for (var i=0; i < players.length; i++) {
 		var xp = players[i].coordinates.x;
 		var yp = players[i].coordinates.y;
 		
 	}
+	ctx.beginPath();
 	ctx.fillStyle = "blue";
-	ctx.fillRect(xp, yp, 10,10);
+	ctx.arc(xp, yp, 10,10, 5*Math.PI);
+	ctx.stroke();
 	// TODO
 };
 

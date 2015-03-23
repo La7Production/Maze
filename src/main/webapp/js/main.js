@@ -20,6 +20,8 @@ var player;
 var direction;
 // Taille en pixel d'une case qui sera a envoyer avec la direction
 var PIXEL_SIZE = 32;
+// Taille en pixel de la hitbox du joueur
+var HITBOX = 6;
 // Données envoyées par le serveur via une websocket
 var data;
 // Labyrinthe récupéré dans les données
@@ -30,6 +32,8 @@ var imaze;
 var ws = new WebSocket("ws://" + address + ":8080/maze/websocket");
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
 var items = [];
+
+
 
 window.addEventListener('keydown', actionPerformed, true);
 
@@ -48,6 +52,7 @@ function Player(playername) {
 function Direction(direction) {
 	this.direction = direction;
 	this.pixel = PIXEL_SIZE;
+	this.hitbox = HITBOX;
 }
 
 /***********************************************
@@ -268,7 +273,7 @@ function drawMaze() {
 /* Cette méthode est aussi utilisée pour effacer les traces des déplacements précédents des joueurs */
 function drawPlayer(ctx, player, color) {
 	ctx.beginPath();
-	ctx.arc(player.coordinates.x, player.coordinates.y, 1, 0, 2 * Math.PI);
+	ctx.arc(player.coordinates.x + HITBOX, player.coordinates.y + HITBOX, 1, 0, 2 * Math.PI);
 	ctx.fillStyle = color;
 	ctx.fill();
 	ctx.lineWidth = 5;
