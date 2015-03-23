@@ -268,7 +268,7 @@ function drawMaze() {
 /* Cette méthode est aussi utilisée pour effacer les traces des déplacements précédents des joueurs */
 function drawPlayer(ctx, player, color) {
 	ctx.beginPath();
-	ctx.arc(player.coordinates.x + (PIXEL_SIZE/2), player.coordinates.y + (PIXEL_SIZE/2), 1, 0, 2 * Math.PI);
+	ctx.arc(player.coordinates.x, player.coordinates.y, 1, 0, 2 * Math.PI);
 	ctx.fillStyle = color;
 	ctx.fill();
 	ctx.lineWidth = 5;

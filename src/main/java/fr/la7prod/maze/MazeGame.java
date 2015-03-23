@@ -12,11 +12,12 @@ import org.json.JSONObject;
 
 import fr.la7prod.maze.algorithms.RecursiveBT;
 import fr.la7prod.maze.entity.Player;
+import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
 
 public class MazeGame {
 	
-	public static final int MAX_SLOTS = 5;
+	public static final int MAX_SLOTS = 1;
 	
 	private boolean running;
 	private Maze maze;
@@ -77,13 +78,39 @@ public class MazeGame {
 		return this.master.equals(p);
 	}
 	
-	public Cell getLocation(Player p, final int PIXEL_SIZE) {
-		return p.getLocation(maze, PIXEL_SIZE);
+	public Cell getLocation(Player p, final int pixel_size) {
+		return p.getLocation(maze, pixel_size);
 	}
 	
-	public boolean canMove(Player p, Direction d, final int PIXEL_SIZE) {
-		Cell c = getLocation(p, PIXEL_SIZE);
-		return c != null && !c.hasWall(d);
+	public boolean canMove(Player p, Direction d, final int pixel_size, final int hitbox) {
+		Cell c = getLocation(p, pixel_size);
+		// 0 0 32 32
+		// 4 4
+		Coordinates pc = p.getCoordinates();
+		boolean hasWall = c.hasWall(d);
+		int h = hitbox + 1;
+		
+		if (hasWall) {
+			System.out.println("coucou");
+			if (d.equals(Direction.NORTH) && Math.abs(c.getY()*pixel_size - (pc.getY() + h)) > p.getHaste()) {
+				System.out.println("north");
+				return true;
+			}
+			if (d.equals(Direction.EAST) && Math.abs((c.getX()*pixel_size + pixel_size) - (pc.getX() + h)) > p.getHaste()) {
+				System.out.println("east");
+				return true;
+			}
+			if (d.equals(Direction.SOUTH) && Math.abs((c.getY()*pixel_size + pixel_size) - (pc.getY() + h)) > p.getHaste()) {
+				System.out.println("south");
+				return true;
+			}
+			if (d.equals(Direction.WEST) && Math.abs(c.getX()*pixel_size - (pc.getX() + h)) > p.getHaste()) {
+				System.out.println("west");
+				return true;
+			}
+			return false;
+		}
+		return true;
 	}
 	
 	public void move(Player p, Direction d) {
@@ -96,16 +123,16 @@ public class MazeGame {
 		this.map.clear();
 	}
 	
-	public boolean movePerformed(Player p, Direction d, final int PIXEL_SIZE) {
-		if (canMove(p, d, PIXEL_SIZE)) {
+	public boolean movePerformed(Player p, Direction d, final int pixel_size, final int hitbox) {
+		if (canMove(p, d, pixel_size, hitbox)) {
 			move(p, d);
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean win(Player p, final int PIXEL_SIZE) {
-		return getLocation(p, PIXEL_SIZE).equals(maze.getExit());
+	public boolean win(Player p, final int pixel_size) {
+		return getLocation(p, pixel_size).equals(maze.getExit());
 	}
 	
 	public void initPlayers() {
@@ -128,7 +155,7 @@ public class MazeGame {
 	
 	/*public MazeZone getZone(Player p) {
 		Coordinates c = p.getCoordinates();
-		return new MazeZone(maze, c.getX()/Cell.PIXEL_SIZE, c.getY()/Cell.PIXEL_SIZE);
+		return new MazeZone(maze, c.getX()/Cell.pixel_size, c.getY()/Cell.pixel_size);
 	}
 	
 	public JSONObject toJsonFromPlayer(Player p) {

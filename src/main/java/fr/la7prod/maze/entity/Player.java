@@ -62,11 +62,11 @@ public class Player {
 	}
 	
 	public void move(int x, int y) {
-		this.c = this.c.add((int)(x * haste), (int)(y * haste));
+		this.c = this.c.add(x, y);
 	}
 	
 	public void move(Direction d) {
-		this.c = this.c.add((int)(d.getX() * haste), (int)(d.getY() * haste));
+		this.c = this.c.add(d.getX(), d.getY());
 	}
 	
 	public void incHaste() {
@@ -74,7 +74,7 @@ public class Player {
 	}
 	
 	public void resetHaste() {
-		this.haste = 8.0;
+		this.haste = 1.0;
 	}
 	
 	public Cell getLocation(Maze maze, final int PIXEL_SIZE) {

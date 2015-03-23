@@ -87,6 +87,7 @@ public class MazeWebSocket extends GameService {
 			Player p = getFromGame(session);
 			Direction d;
 			int pixel;
+			int hitbox;
 			
 			// L'utilisateur référence son pseudo au serveur de jeu
 			// Il ne peut le référencé que s'il ne l'est pas déjà
@@ -96,13 +97,14 @@ public class MazeWebSocket extends GameService {
 			}
 			// L'utilisateur indique son intention de déplacer son personnage
 			else {
-				if (receive.has("direction") && receive.has("pixel")) {
+				if (receive.has("direction") && receive.has("pixel") && receive.has("hitbox")) {
 					d = toDirection(receive.getString("direction"));
 					pixel = receive.getInt("pixel");
+					hitbox = receive.getInt("hitbox");
 					if (d != null) {
 						// Si le joueur peut se déplacer
 						// on effectue les instructions suivantes
-						if (game.movePerformed(p, d, pixel)) {
+						if (game.movePerformed(p, d, pixel, hitbox)) {
 							//p.incHaste();
 						}
 						
