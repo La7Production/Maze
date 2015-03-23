@@ -4,6 +4,7 @@ body {
 	background-image: url(../img/maze.png);
 	background-repeat: no-repeat;
 	min-width:900px;
+	overflow: hidden;
 }
 
 #menuHead{
@@ -56,24 +57,29 @@ body {
 }
 
 #menuBar li:hover ul{
-	width:150px;
 	max-height:500px;
 	border-color: black;
 	overflow:hidden;
 }
 
-#menuBar li:first-child:hover  ul{
-	box-shadow: 1px 1px 0px black;
+#menuBar > li:first-child ul{
+	border-right: 1px solid;
+	border-bottom: 1px solid;
+	width:150px;
 }
 
-#menuBar li:nth-child(2):hover ul{
-	box-shadow: -1px 0px black;
-	border-right: thin solid black;
-	border-bottom: thin solid black;
+#menuBar > li:nth-child(2) ul {
+	border-right: thin solid;
+	border-bottom: thin solid;
+	border-left: thin solid;
+	margin-left: -1px;
+	width:150px;
 }
 
-#menuBar li:last-child:hover ul{
-	box-shadow: -1px 1px black;
+#menuBar > li:last-child ul{
+	border-left: thin solid;
+	border-bottom: thin solid;
+	width:150px;
 }
 
 #menuBar a{
@@ -84,14 +90,14 @@ body {
 	cursor: default;
 }
 
-#menuBar li:first-child{
+#menuBar > li:first-child{
 	width: 150px;
 	border-right: 1px solid;
 	border-color: black;
 	text-align: center;
 }
 
-#menuBar li:first-child li:nth-child(3){
+#menuBar > li:first-child li:nth-child(3){
 	cursor: pointer;
 	background: #A4A4A4;
 	margin-left: 17px;
@@ -102,16 +108,16 @@ body {
 	text-shadow: none;
 }
 
-#menuBar li:first-child li:nth-child(3):hover {
+#menuBar > li:first-child li:nth-child(3):hover {
 	border: 1px solid #424242;
 	background: #585858;
 	color: white;
 }
 
-#menuBar li:first-child li:last-child{
+#menuBar > li:first-child li:last-child{
 	cursor: pointer;
 	background: #A4A4A4;
-	margin-right: 15px;
+	margin-left: 17px;
 	padding: 3px;
 	width: 110px;
 	color:#2E2E2E;
@@ -121,23 +127,23 @@ body {
 	font-size: 10px;
 }
 
-#menuBar li:first-child li:last-child:hover {
+#menuBar > li:first-child li:last-child:hover {
 	border: 1px solid #424242;
 	background: #585858;
 	color: white;
 }
 
-#menuBar li:nth-child(2){
+#menuBar > li:nth-child(2){
 	width: 150px;
 	border-right: 1px solid;
 	border-color: black;
 	text-align: center;
 }
 
-#menuBar li:nth-child(2) li:last-child{
+#menuBar > li:nth-child(2) li:last-child{
 	cursor: pointer;
 	background: #A4A4A4;
-	margin-right: 16px;
+	margin-left: 17px;
 	padding: 3px;
 	width: 110px;
 	color:#2E2E2E;
@@ -146,13 +152,13 @@ body {
 	margin-bottom:10px;
 }
 
-#menuBar li:nth-child(2) li:last-child:hover{
+#menuBar > li:nth-child(2) li:last-child:hover{
 	border: 1px solid #424242;
 	background: #585858;
 	color: white;
 }
 
-#menuBar li:last-child{
+#menuBar > li:last-child{
 	width: 150px;
 	border-left:1px solid;
 	border-color: black;
@@ -174,7 +180,8 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	width: 56%;
-	height: 90%;
+	height: 800px;
+	max-height:100%;
 	border-left: thin solid #585858;
 	border-right: thin solid #585858;
 	box-shadow: 5px 6px 50px gray, -5px 6px 50px gray;
