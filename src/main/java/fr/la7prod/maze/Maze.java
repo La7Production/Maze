@@ -110,8 +110,8 @@ public class Maze {
 		JSONObject json = new JSONObject();
 		json.put("width", width);
 		json.put("height", height);
-		json.put("start", start);
-		json.put("exit", exit);
+		//json.put("start", start);
+		//json.put("exit", exit);
 		json.put("cells", this.getCells());
 		return json;
 	}

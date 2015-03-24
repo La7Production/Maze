@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import fr.la7prod.maze.Cell;
 import fr.la7prod.maze.MazeGame;
 import fr.la7prod.maze.entity.Player;
 import fr.la7prod.maze.util.Direction;
@@ -55,9 +56,10 @@ public class GameService {
 		session.getRemote().flush();
 	}
 	 
-	public JSONObject slotsToJSON() {
+	public JSONObject parametersToJSON() {
 		JSONObject json = new JSONObject();
 		json.put("slots", game.countPlayers() + "/" + MazeGame.MAX_SLOTS);
+		json.put("cellsize", Cell.PIXEL_SIZE);
 		return json;
 	}
 

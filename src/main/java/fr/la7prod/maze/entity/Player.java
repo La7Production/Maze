@@ -12,9 +12,9 @@ import fr.la7prod.maze.util.Direction;
 public class Player {
 	
 	public static final int MAX_HASTE = 8;
+	public static int NB_INSTANCE = 0;
 	
 	private static final List<String> colors = new ArrayList<String>();
-	public static int NB_INSTANCE = 0;
 	
 	static {
 		colors.add(toHex(Color.RED));
@@ -28,6 +28,8 @@ public class Player {
 	private static String toHex(Color color) {
 		return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
 	}
+	
+	public static final int DEFAULT_SIZE = 4;
 	
 	private String name;
 	private double haste;

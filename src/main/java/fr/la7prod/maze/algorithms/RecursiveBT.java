@@ -28,7 +28,7 @@ public class RecursiveBT implements MazeAlgorithm {
 		Maze maze = new Maze(width, height);
 		carve(maze.getCell(xstart, ystart), maze);
 		Cell[] cells = maze.getCells();
-		maze.setStart(cells[(int)(Math.random()*cells.length)]);
+		maze.setStart(cells[0]);
 		defineExit(maze);
 		return maze;
 	}

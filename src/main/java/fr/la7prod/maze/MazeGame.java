@@ -17,8 +17,7 @@ import fr.la7prod.maze.util.Direction;
 
 public class MazeGame {
 	
-	public static final int MAX_SLOTS = 3;	 // Nombre de participants maximum dans une partie
-	public static final int PIXEL_SIZE = 10; // Référence à la taille d'une case
+	public static final int MAX_SLOTS = 5;	 // Nombre de participants maximum dans une partie
 	
 	private boolean running;
 	private Maze maze;
@@ -81,7 +80,7 @@ public class MazeGame {
 	}
 	
 	public Cell getLocation(Player p) {
-		return p.getLocation(maze, PIXEL_SIZE);
+		return p.getLocation(maze, Cell.PIXEL_SIZE);
 	}
 	
 	public boolean canMove(Player p, Direction d) {
@@ -90,13 +89,13 @@ public class MazeGame {
 		boolean hasWall = c.hasWall(d);
 		
 		if (hasWall) {
-			if (d.equals(Direction.NORTH) && pc.getY() > c.getY()*PIXEL_SIZE)
+			if (d.equals(Direction.NORTH) && pc.getY() > c.getY()*Cell.PIXEL_SIZE)
 				return true;
-			if (d.equals(Direction.EAST) && pc.getX()+1 != (c.getX()+1)*PIXEL_SIZE)
+			if (d.equals(Direction.EAST) && pc.getX()+1 != (c.getX()+1)*Cell.PIXEL_SIZE)
 				return true;
-			if (d.equals(Direction.SOUTH) && pc.getY()+1 != (c.getY()+1)*PIXEL_SIZE)
+			if (d.equals(Direction.SOUTH) && pc.getY()+1 != (c.getY()+1)*Cell.PIXEL_SIZE)
 				return true;
-			if (d.equals(Direction.WEST) && pc.getX() > c.getX()*PIXEL_SIZE)
+			if (d.equals(Direction.WEST) && pc.getX() > c.getX()*Cell.PIXEL_SIZE)
 				return true;
 			return false;
 		}
@@ -128,8 +127,10 @@ public class MazeGame {
 	public void initPlayers() {
 		Cell start = maze.getStart();
 		this.setMazeMasterRandomly();
+		int i = 1;
 		for (Player p : map.values()) {
-			p.place(start);
+			p.place(start.getX()+1, start.getY()+i);
+			i++;
 		}
 	}
 	
@@ -145,7 +146,7 @@ public class MazeGame {
 	
 	/*public MazeZone getZone(Player p) {
 		Coordinates c = p.getCoordinates();
-		return new MazeZone(maze, c.getX()/PIXEL_SIZE, c.getY()/PIXEL_SIZE);
+		return new MazeZone(maze, c.getX()/Cell.PIXEL_SIZE, c.getY()/Cell.PIXEL_SIZE);
 	}
 	
 	public JSONObject toJsonFromPlayer(Player p) {

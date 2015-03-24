@@ -40,7 +40,7 @@ public class MazeWebSocket extends GameService {
 		else {
 			// La partie n'est pas encore commencée
 			// On renvoie les données des joueurs à tout le monde
-			data = slotsToJSON();
+			data = parametersToJSON();
 		}
 		
 		// On notifie la déconnexion à tout le monde en renvoyant les données souhaitées
@@ -60,11 +60,10 @@ public class MazeWebSocket extends GameService {
 		JSONObject data;
 		
 		if (game.availableSlots() > 0) {
-		
 			// On ajoute l'utilisateur à la partie via sa session
 			// Un objet Player sera associé à sa session pendant toute la partie
 			addToGame(session);
-			data = slotsToJSON();
+			data = parametersToJSON();
 			
 			// Pour chaque utilisateur présent dans la partie
 			// On envoit le nombre de joueurs connectés à chaque fois
@@ -72,6 +71,7 @@ public class MazeWebSocket extends GameService {
 			for (Session s : game.getSessions()) {
 				send(s, data);
 			}
+			
 			
 			// On commence la partie lorsque tous les joueurs nécessaires sont connectés
 			// On envoit donc le labyrinthe pour la première fois lorsque le dernier joueur
@@ -97,7 +97,7 @@ public class MazeWebSocket extends GameService {
 		System.out.println("Message from " + session.getRemoteAddress() + ": " + message);
 		
 		// Traitement des informations uniquement si le message est en JSON
-		if (isJSON(message)) {
+		if (isJSON(message) && getFromGame(session) != null) {
 			
 			JSONObject data;
 			JSONObject receive = new JSONObject(message);

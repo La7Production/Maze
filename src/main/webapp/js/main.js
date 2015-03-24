@@ -20,7 +20,10 @@ var player;
 var direction;
 // Taille en pixel d'une case qui sera a envoyer avec la direction
 var PIXEL_SIZE = 32;
-var CHARACTER_SIZE = PIXEL_SIZE/10;
+// Taille d'une case en pixel coté serveur servant de référence pour le client
+var SERVER_CELL_SIZE;
+// Ratio pour un affichage correct
+var ratio = function() { return PIXEL_SIZE/SERVER_CELL_SIZE; };
 // Données envoyées par le serveur via une websocket
 var data;
 // Labyrinthe récupéré dans les données
@@ -31,25 +34,29 @@ var imaze;
 var ws; //= new WebSocket("ws://" + address + ":8080/maze/websocket");
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
 var items = [];
+// Touches du clavier disponibles pour l'application
+var map = {37:false, 38:false, 39:false, 40:false};
 
 //window.addEventListener('keydown', actionPerformed, true);
 //window.addEventListener('keyup', actionPerformed, true);
 
-var map = {37:false, 38:false, 39:false, 40:false};
+function sendKey() {
+	if (map[38]) { ws.send(JSON.stringify(new Direction("NORTH"))); }
+    if (map[39]) { ws.send(JSON.stringify(new Direction("EAST"))); }
+    if (map[40]) { ws.send(JSON.stringify(new Direction("SOUTH"))); }
+    if (map[37]) { ws.send(JSON.stringify(new Direction("WEST"))); }
+}
+
 $(document).keydown(function(e) {
 	if (e.keyCode in map && ws !== undefined) {
 	    map[e.keyCode] = true;
-	    if (map[38]) { ws.send(JSON.stringify(new Direction("NORTH"))); }
-	    if (map[39]) { ws.send(JSON.stringify(new Direction("EAST"))); }
-	    if (map[40]) { ws.send(JSON.stringify(new Direction("SOUTH"))); }
-	    if (map[37]) { ws.send(JSON.stringify(new Direction("WEST"))); }
+	    
 	}
 }).keyup(function(e) {
 	if (e.keyCode in map && ws !== undefined) {
 	    map[e.keyCode] = false;
 	}
 });
-
 
 /********************************
  * PLAYER : représenté par un nom
@@ -75,7 +82,6 @@ function Item(name, url) {
 	this.name = name;
 	this.url = url;
 }
-
 
 /*************************
  * PARTIE REST VIA AJAX
@@ -167,6 +173,7 @@ function connectPlayer() {// Wait until the state of the socket is not ready and
 		// les données envoyées par le serveur (donc reçu par tous les clients) seront les données du jeu
 		// à savoir le maze, le master et les players
 		data = JSON.parse(evt.data);
+		
 
 		// Traiter l'information selon les deux cas
 		// 1) Tous les joueurs ne sont pas encore arrivés
@@ -176,11 +183,16 @@ function connectPlayer() {// Wait until the state of the socket is not ready and
 			drawMaze();
 			drawPlayers();
 		}
-		else if (data.slots !== undefined) {
-			waitPlayers(data.slots);
-		}
 		else if (data.winner !== undefined) {
 			console.log("Vainqueur: " + data.winner);
+		}
+		else {
+		 	if (data.slots !== undefined) {
+				waitPlayers(data.slots);
+			}
+			if (data.cellsize !== undefined) {
+				SERVER_CELL_SIZE = data.cellsize;
+			}
 		}
 	};
 
@@ -216,6 +228,8 @@ function connectPlayer() {// Wait until the state of the socket is not ready and
 	}
 	
 	sendMessage(JSON.stringify(player));
+	// Appelle la fonction de vérification des touches appuyées toutes les X secondes
+	setInterval("sendKey()", 100);
 }
 /*************************
  * PARTIE GRAPHIQUE
@@ -313,10 +327,8 @@ function drawMaze() {
 /* Cette méthode est aussi utilisée pour effacer les traces des déplacements précédents des joueurs */
 function drawPlayer(ctx, player) {
 	ctx.beginPath();
-	//ctx.arc(player.coordinates.x * (PIXEL_SIZE/10), player.coordinates.y * (PIXEL_SIZE/10), 1, 0, 2 * Math.PI);
-	//console.log(player.coordinates.x * (PIXEL_SIZE/10) + " " + player.coordinates.y * (PIXEL_SIZE/10));
 	ctx.fillStyle = player.color;
-	ctx.fillRect(player.coordinates.x * (PIXEL_SIZE/10), player.coordinates.y * (PIXEL_SIZE/10), CHARACTER_SIZE, CHARACTER_SIZE);
+	ctx.fillRect(player.coordinates.x * ratio(), player.coordinates.y * ratio(), ratio(), ratio());
 	ctx.fill();
 	ctx.lineWidth = 5;
 	ctx.strokeStyle = player.color;
