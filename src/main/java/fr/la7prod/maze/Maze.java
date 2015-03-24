@@ -12,6 +12,8 @@ public class Maze {
 	private int width;
 	private int height;
 	private Cell[] cells;
+	private Cell start;
+	private Cell exit;
 	
 	public Maze(int width, int height) {
 		this.width = width;
@@ -89,17 +91,27 @@ public class Maze {
 	}
 	
 	public Cell getStart() {
-		return cells[0];
+		return this.start;
+	}
+	
+	public void setStart(Cell start) {
+		this.start = start;
 	}
 	
 	public Cell getExit() {
-		return cells[size()-1];
+		return this.exit;
+	}
+	
+	public void setExit(Cell exit) {
+		this.exit = exit;
 	}
 	
 	public JSONObject toJson() {
 		JSONObject json = new JSONObject();
 		json.put("width", width);
 		json.put("height", height);
+		json.put("start", start);
+		json.put("exit", exit);
 		json.put("cells", this.getCells());
 		return json;
 	}

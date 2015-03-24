@@ -47,6 +47,8 @@ public class MazeZone {
 		}
 		JSONObject json = new JSONObject();
 		json.put("cells", cells);
+		json.put("width", range);
+		json.put("height", range);
 		return json;
 	}
 

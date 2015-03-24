@@ -13,7 +13,7 @@ import fr.la7prod.maze.util.Direction;
 
 public class GameService {
 	
-	public static MazeGame game = new MazeGame(10,10);
+	public static MazeGame game = new MazeGame(20,20);
 	
 	public void addToGame(Session session) {
 		game.addPlayer(session, new Player());
@@ -51,7 +51,8 @@ public class GameService {
 	}
 	
 	public void send(Session session, JSONObject json) throws IOException {
-		session.getRemote().sendString(json.toString());
+		session.getRemote().sendStringByFuture(json.toString());
+		session.getRemote().flush();
 	}
 	 
 	public JSONObject slotsToJSON() {

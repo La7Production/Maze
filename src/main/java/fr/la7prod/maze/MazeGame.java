@@ -17,7 +17,8 @@ import fr.la7prod.maze.util.Direction;
 
 public class MazeGame {
 	
-	public static final int MAX_SLOTS = 1;
+	public static final int MAX_SLOTS = 3;	 // Nombre de participants maximum dans une partie
+	public static final int PIXEL_SIZE = 10; // Référence à la taille d'une case
 	
 	private boolean running;
 	private Maze maze;
@@ -58,6 +59,7 @@ public class MazeGame {
 	}
 	
 	public Player removePlayer(Session s) {
+		Player.NB_INSTANCE--;
 		return map.remove(s);
 	}
 	
@@ -78,36 +80,24 @@ public class MazeGame {
 		return this.master.equals(p);
 	}
 	
-	public Cell getLocation(Player p, final int pixel_size) {
-		return p.getLocation(maze, pixel_size);
+	public Cell getLocation(Player p) {
+		return p.getLocation(maze, PIXEL_SIZE);
 	}
 	
-	public boolean canMove(Player p, Direction d, final int pixel_size, final int hitbox) {
-		Cell c = getLocation(p, pixel_size);
-		// 0 0 32 32
-		// 4 4
+	public boolean canMove(Player p, Direction d) {
+		Cell c = getLocation(p);
 		Coordinates pc = p.getCoordinates();
 		boolean hasWall = c.hasWall(d);
-		int h = hitbox + 1;
 		
 		if (hasWall) {
-			System.out.println("coucou");
-			if (d.equals(Direction.NORTH) && Math.abs(c.getY()*pixel_size - (pc.getY() + h)) > p.getHaste()) {
-				System.out.println("north");
+			if (d.equals(Direction.NORTH) && pc.getY() > c.getY()*PIXEL_SIZE)
 				return true;
-			}
-			if (d.equals(Direction.EAST) && Math.abs((c.getX()*pixel_size + pixel_size) - (pc.getX() + h)) > p.getHaste()) {
-				System.out.println("east");
+			if (d.equals(Direction.EAST) && pc.getX()+1 != (c.getX()+1)*PIXEL_SIZE)
 				return true;
-			}
-			if (d.equals(Direction.SOUTH) && Math.abs((c.getY()*pixel_size + pixel_size) - (pc.getY() + h)) > p.getHaste()) {
-				System.out.println("south");
+			if (d.equals(Direction.SOUTH) && pc.getY()+1 != (c.getY()+1)*PIXEL_SIZE)
 				return true;
-			}
-			if (d.equals(Direction.WEST) && Math.abs(c.getX()*pixel_size - (pc.getX() + h)) > p.getHaste()) {
-				System.out.println("west");
+			if (d.equals(Direction.WEST) && pc.getX() > c.getX()*PIXEL_SIZE)
 				return true;
-			}
 			return false;
 		}
 		return true;
@@ -123,16 +113,16 @@ public class MazeGame {
 		this.map.clear();
 	}
 	
-	public boolean movePerformed(Player p, Direction d, final int pixel_size, final int hitbox) {
-		if (canMove(p, d, pixel_size, hitbox)) {
+	public boolean movePerformed(Player p, Direction d) {
+		if (canMove(p, d)) {
 			move(p, d);
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean win(Player p, final int pixel_size) {
-		return getLocation(p, pixel_size).equals(maze.getExit());
+	public boolean win(Player p) {
+		return getLocation(p).equals(maze.getExit());
 	}
 	
 	public void initPlayers() {
@@ -155,14 +145,15 @@ public class MazeGame {
 	
 	/*public MazeZone getZone(Player p) {
 		Coordinates c = p.getCoordinates();
-		return new MazeZone(maze, c.getX()/Cell.pixel_size, c.getY()/Cell.pixel_size);
+		return new MazeZone(maze, c.getX()/PIXEL_SIZE, c.getY()/PIXEL_SIZE);
 	}
 	
 	public JSONObject toJsonFromPlayer(Player p) {
 		JSONObject json = new JSONObject();
 		json.put("maze", getZone(p).toJson());
-		json.put("master", master);
-		json.put("players", map.values());
+		json.put("players", map.values());;
+		if (master != null)
+			json.put("master", master.getName());
 		return json;
 	}*/
 	

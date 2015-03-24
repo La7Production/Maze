@@ -20,8 +20,7 @@ var player;
 var direction;
 // Taille en pixel d'une case qui sera a envoyer avec la direction
 var PIXEL_SIZE = 32;
-// Taille en pixel de la hitbox du joueur
-var HITBOX = 6;
+var CHARACTER_SIZE = PIXEL_SIZE/10;
 // Données envoyées par le serveur via une websocket
 var data;
 // Labyrinthe récupéré dans les données
@@ -29,13 +28,28 @@ var maze;
 // Image du labyrinthe
 var imaze;
 // La websocket (instanciée uniquement au succès de la fonction de connexion)
-var ws = new WebSocket("ws://" + address + ":8080/maze/websocket");
+var ws; //= new WebSocket("ws://" + address + ":8080/maze/websocket");
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
 var items = [];
 
+//window.addEventListener('keydown', actionPerformed, true);
+//window.addEventListener('keyup', actionPerformed, true);
 
+var map = {37:false, 38:false, 39:false, 40:false};
+$(document).keydown(function(e) {
+	if (e.keyCode in map && ws !== undefined) {
+	    map[e.keyCode] = true;
+	    if (map[38]) { ws.send(JSON.stringify(new Direction("NORTH"))); }
+	    if (map[39]) { ws.send(JSON.stringify(new Direction("EAST"))); }
+	    if (map[40]) { ws.send(JSON.stringify(new Direction("SOUTH"))); }
+	    if (map[37]) { ws.send(JSON.stringify(new Direction("WEST"))); }
+	}
+}).keyup(function(e) {
+	if (e.keyCode in map && ws !== undefined) {
+	    map[e.keyCode] = false;
+	}
+});
 
-window.addEventListener('keydown', actionPerformed, true);
 
 /********************************
  * PLAYER : représenté par un nom
@@ -51,8 +65,6 @@ function Player(playername) {
  
 function Direction(direction) {
 	this.direction = direction;
-	this.pixel = PIXEL_SIZE;
-	this.hitbox = HITBOX;
 }
 
 /***********************************************
@@ -114,7 +126,7 @@ function signin() {
 		},
 		success: function(data, textStatus, jqXHR) {
 			player = new Player(data.login);
-			ws.send(JSON.stringify(player));
+			connectPlayer();
 			document.getElementById("notif").innerHTML = "Bonjour " + data.login;
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -136,49 +148,75 @@ function signin() {
  * PARTIE WEBSOCKET
  *************************/
 
-/* Fonction appelée à l'ouverture d'une websocket */
-ws.onopen = function() {
-	console.log("Ouverture de la websocket reussie");
-};
+function connectPlayer() {// Wait until the state of the socket is not ready and send the message when it is...
 
-/* Fonction appelée lorsque des données sont envoyées du serveur au client */
-ws.onmessage = function (evt) {
-	// Toutes les données du jeu sont envoyées par le serveur au client
-	// Et sont mis au format JSON pour une meilleure manipulation
-	// Important:
-	// A la connexion du joueur, les données envoyées par le serveur seront le nombre de slots occupés sur le maximum
-	// Lorsque l'utilisateur aura envoyé un message via ws.send(JSON.stringify(String))
-	// les données envoyées par le serveur (donc reçu par tous les clients) seront les données du jeu
-	// à savoir le maze, le master et les players
-	data = JSON.parse(evt.data);
+	ws = new WebSocket("ws://" + address + ":8080/maze/websocket");
+
+	/* Fonction appelée à l'ouverture d'une websocket */
+	ws.onopen = function() {
+		console.log("Ouverture de la websocket reussie");
+	};
+
+	/* Fonction appelée lorsque des données sont envoyées du serveur au client */
+	ws.onmessage = function (evt) {
+		// Toutes les données du jeu sont envoyées par le serveur au client
+		// Et sont mis au format JSON pour une meilleure manipulation
+		// Important:
+		// A la connexion du joueur, les données envoyées par le serveur seront le nombre de slots occupés sur le maximum
+		// Lorsque l'utilisateur aura envoyé un message via ws.send(JSON.stringify(String))
+		// les données envoyées par le serveur (donc reçu par tous les clients) seront les données du jeu
+		// à savoir le maze, le master et les players
+		data = JSON.parse(evt.data);
+
+		// Traiter l'information selon les deux cas
+		// 1) Tous les joueurs ne sont pas encore arrivés
+		// 2) Tous les joueurs sont là
+		if (data.maze !== undefined) {
+			maze = data.maze;
+			drawMaze();
+			drawPlayers();
+		}
+		else if (data.slots !== undefined) {
+			waitPlayers(data.slots);
+		}
+		else if (data.winner !== undefined) {
+			console.log("Vainqueur: " + data.winner);
+		}
+	};
+
+	/* Fonction appelée lorsque la websocket est fermée */
+	ws.onclose = function() {
+		console.log("Fermeture de la websocket reussie");
+	};
+
+	/* Fonction appelée en cas d'erreur dans la websocket */
+	ws.onerror = function(err) {
+		console.log("Une erreur s'est produite dans la websocket")
+		console.log(err.data);
+	};
 	
-	// Traiter l'information selon les deux cas
-	// 1) Tous les joueurs ne sont pas encore arrivés
-	// 2) Tous les joueurs sont là
-	if (data.maze !== undefined) {
-		maze = data.maze;
-		drawMaze();
-		drawPlayers();
+	function sendMessage(msg) {
+		// Wait until the state of the socket is not ready and send the message when it is...
+		waitForSocketConnection(ws, function() {
+			ws.send(msg);
+		});
 	}
-	else if (data.slots !== undefined) {
-		waitPlayers(data.slots);
+
+	// Make the function wait until the connection is made...
+	function waitForSocketConnection(socket, callback) {
+		setTimeout(
+			function() {
+			    if (socket.readyState === 1) {
+			        if(callback != null)
+			            callback();
+			        return;
+			    } else
+			        waitForSocketConnection(socket, callback);
+			}, 5); // wait 5 milisecond for the connection...
 	}
-	else if (data.winner !== undefined) {
-		console.log("Vainqueur: " + data.winner);
-	}
-};
-
-/* Fonction appelée lorsque la websocket est fermée */
-ws.onclose = function() {
-	console.log("Fermeture de la websocket reussie");
-};
-
-/* Fonction appelée en cas d'erreur dans la websocket */
-ws.onerror = function(err) {
-	console.log("Une erreur s'est produite dans la websocket")
-	console.log(err.data);
-};
-
+	
+	sendMessage(JSON.stringify(player));
+}
 /*************************
  * PARTIE GRAPHIQUE
  *************************/
@@ -186,7 +224,7 @@ ws.onerror = function(err) {
 /* Fonction appelée lorsque l'utilisateur appuie sur des touches précises de son clavier */
 function actionPerformed(evt) {
 	//90 68 83 81
-	var key = evt.keyCode;
+	/*var key = evt.keyCode;
 	var s;
 	direction = null;
 	switch(key) {
@@ -200,7 +238,7 @@ function actionPerformed(evt) {
 		direction = new Direction(s);
 		ws.send(JSON.stringify(direction));
 		drawPlayers();
-	}
+	}*/
 };
 
 /* Fonction appelée lorsque l'utilisateur clique avec sa souris */
@@ -227,8 +265,10 @@ function drawMaze() {
 	else {
 		var c;
 		var cells = maze.cells;
-		ctx.canvas.width = PIXEL_SIZE * maze.width;
-		ctx.canvas.height = PIXEL_SIZE * maze.height;
+		canvas.width = PIXEL_SIZE * maze.width;
+		canvas.height = PIXEL_SIZE * maze.height;
+		ctx.fillStyle = "white";
+		ctx.fillRect(0,0,canvas.width,canvas.height);
 		var draw = function(cell,mx,my,px,py) {
 					ctx.moveTo(PIXEL_SIZE * cell.x + mx, PIXEL_SIZE * cell.y + my);
 					ctx.lineTo(PIXEL_SIZE * cell.x + px, PIXEL_SIZE * cell.y + py);
@@ -271,13 +311,15 @@ function drawMaze() {
 
 /* Dessine le joueur avec la couleur voulue */
 /* Cette méthode est aussi utilisée pour effacer les traces des déplacements précédents des joueurs */
-function drawPlayer(ctx, player, color) {
+function drawPlayer(ctx, player) {
 	ctx.beginPath();
-	ctx.arc(player.coordinates.x + HITBOX, player.coordinates.y + HITBOX, 1, 0, 2 * Math.PI);
-	ctx.fillStyle = color;
+	//ctx.arc(player.coordinates.x * (PIXEL_SIZE/10), player.coordinates.y * (PIXEL_SIZE/10), 1, 0, 2 * Math.PI);
+	//console.log(player.coordinates.x * (PIXEL_SIZE/10) + " " + player.coordinates.y * (PIXEL_SIZE/10));
+	ctx.fillStyle = player.color;
+	ctx.fillRect(player.coordinates.x * (PIXEL_SIZE/10), player.coordinates.y * (PIXEL_SIZE/10), CHARACTER_SIZE, CHARACTER_SIZE);
 	ctx.fill();
 	ctx.lineWidth = 5;
-	ctx.strokeStyle = color;
+	ctx.strokeStyle = player.color;
 	ctx.stroke();
 }
 
@@ -286,9 +328,8 @@ function drawPlayers() {
 	var players = data.players;
 	var canvas = document.getElementById("maze");
 	var ctx = canvas.getContext("2d");
-	var colors = ['red', 'blue', 'green', 'orange', 'grey'];
 	for (var i=0; i < players.length; i++) {
-		drawPlayer(ctx, players[i], colors[i%players.length]);
+		drawPlayer(ctx, players[i]);
 	}
 };
 
