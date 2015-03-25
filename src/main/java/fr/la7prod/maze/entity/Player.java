@@ -2,7 +2,6 @@ package fr.la7prod.maze.entity;
 
 import fr.la7prod.maze.Cell;
 import fr.la7prod.maze.Maze;
-import fr.la7prod.maze.util.ColorFactory;
 import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
 
@@ -18,7 +17,7 @@ public class Player extends HumanEntity {
 	public Player(String name, int x, int y) {
 		super(name);
 		this.c = new Coordinates(x,y);
-		this.color = ColorFactory.getColors().get(NB_INSTANCE++ % ColorFactory.getColors().size());
+		this.color = String.format("#%02x%02x%02x", Math.random()*255, Math.random()*255, Math.random()*255);
 		this.resetHaste();
 	}
 	

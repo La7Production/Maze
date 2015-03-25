@@ -26,6 +26,7 @@ public class App extends Application {
 		s.add(LoggingFilter.class);
 		s.add(UserResource.class);
 		s.add(UserDBIResource.class);
+		s.add(LobbyResource.class);
 		return s;
 	}
 

@@ -73,6 +73,15 @@ public class GameService {
 		}
 	}
 	
+	public void sendToAll(JSONObject json) throws IOException {
+		for (Session s : game.getPlayerSessions()) {
+			send(s, json);
+		}
+		for (Session s : game.getObserverSessions()) {
+			send(s, json);
+		}
+	}
+	
 	public JSONObject parametersToJSON() {
 		JSONObject json = new JSONObject();
 		json.put("slots", game.countPlayers() + "/" + game.maxSlots());

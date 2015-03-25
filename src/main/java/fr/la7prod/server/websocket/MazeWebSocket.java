@@ -110,7 +110,7 @@ public class MazeWebSocket extends GameService {
 				
 				// Cas 2.3 : on regarde s'il a gagné
 				if (game.win(p)) {
-					sendToPlayers(game.toJson());
+					sendToAll(game.toJson());
 					game.stop();
 					sendToPlayers(new JSONObject().put("winner", p.getName()));
 				}

@@ -24,19 +24,26 @@ public class MazeServer implements JSONable {
 	private String title;
 	private Maze maze;
 	private Player master;
-	private Map<Session, Player> players;
-	private Map<Session, Observer> observers;
+	private Map<Session, Player> playerMap;
+	private Map<Session, Observer> observerMap;
 	private int slots;
+	
+	public MazeServer() {
+		this.playerMap = new HashMap<Session, Player>();
+		this.observerMap = new HashMap<Session, Observer>();
+	}
 	
 	public MazeServer(String title, int slots) {
 		this.title = title;
-		this.players = new HashMap<Session, Player>();
-		this.observers = new HashMap<Session, Observer>();
 		this.slots = slots;
 	}
 	
-	public Maze getMaze() {
-		return this.maze;
+	public boolean isRunning() {
+		return this.running;
+	}
+	
+	public void setRunning(boolean running) {
+		this.running = running;
 	}
 	
 	public String getTitle() {
@@ -47,76 +54,88 @@ public class MazeServer implements JSONable {
 		this.title = title;
 	}
 	
-	public boolean isRunning() {
-		return this.running;
+	public Maze getMaze() {
+		return this.maze;
 	}
 	
-	public int availableSlots() {
-		return slots - players.size();
+	/*public void setMaze(Maze maze) {
+		this.maze = maze;
+	}*/
+	
+	public void setPlayerMap(Map<Session, Player> playerMap) {
+		this.playerMap = playerMap;
+	}
+	
+	public void setObserverMap(Map<Session, Observer> observerMap) {
+		this.observerMap = observerMap;
 	}
 	
 	public int maxSlots() {
 		return this.slots;
 	}
 	
-	public void setMaxSlots(int slots) {
+	public void setSlots(int slots) {
 		this.slots = slots;
 	}
 	
+	public int availableSlots() {
+		return slots - playerMap.size();
+	}
+	
 	public int countPlayers() {
-		return players.size();
+		return playerMap.size();
 	}
 	
 	public int countObservers() {
-		return observers.size();
+		return observerMap.size();
 	}
 	
 	public Set<Session> getPlayerSessions() {
-		return players.keySet();
+		return playerMap.keySet();
 	}
 	
 	public Set<Session> getObserverSessions() {
-		return observers.keySet();
+		return observerMap.keySet();
 	}
 	
 	public Set<Session> getSessions() {
-		Set<Session> sessions = new HashSet<Session>(players.keySet());
-		if (sessions.addAll(observers.keySet()))
+		Set<Session> sessions = new HashSet<Session>(playerMap.keySet());
+		if (sessions.addAll(observerMap.keySet()))
 			return sessions;
 		return null;
 	}
 	
 	public Collection<Player> getPlayers() {
-		return players.values();
+		return playerMap.values();
 	}
 	
 	public Collection<Observer> getObservers() {
-		return observers.values();
+		return observerMap.values();
 	}
 	
 	public Player addPlayer(Session s, Player p) {
-		return players.put(s, p);
+		return playerMap.put(s, p);
 	}
 	
 	public Observer addObserver(Session s, Observer o) {
-		return observers.put(s, o);
+		return observerMap.put(s, o);
 	}
 	
 	public Player removePlayer(Session s) {
 		Player.NB_INSTANCE--;
-		return players.remove(s);
+		return playerMap.remove(s);
 	}
 	
 	public Observer removeObserver(Session s) {
-		return observers.remove(s);
+		return observerMap.remove(s);
 	}
 	
 	public Player getPlayer(Session s) {
-		return players.get(s);
+		return playerMap.get(s);
 	}
 	
 	public Observer getObserver(Session s) {
-		return observers.get(s);
+		return observerMap.get(s);
 	}
 	
 	public void setMazeMaster(Player master) {
@@ -124,7 +143,7 @@ public class MazeServer implements JSONable {
 	}
 	
 	public void setMazeMasterRandomly() {
-		List<Player> ps = new ArrayList<Player>(this.players.values());
+		List<Player> ps = new ArrayList<Player>(this.playerMap.values());
 		this.master = ps.get((int)(Math.random()*ps.size()));
 	}
 	
@@ -161,8 +180,8 @@ public class MazeServer implements JSONable {
 	public void clearAll() {
 		this.maze = null;
 		this.master = null;
-		this.players.clear();
-		this.observers.clear();
+		this.playerMap.clear();
+		this.observerMap.clear();
 	}
 	
 	public boolean movePerformed(Player p, Direction d) {
@@ -181,7 +200,7 @@ public class MazeServer implements JSONable {
 		Cell start = maze.getStart();
 		this.setMazeMasterRandomly();
 		int i = 1;
-		for (Player p : players.values()) {
+		for (Player p : playerMap.values()) {
 			p.place(start.getX()*Cell.PIXEL_SIZE+1, start.getY()*Cell.PIXEL_SIZE+i);
 			i++;
 		}
@@ -199,18 +218,23 @@ public class MazeServer implements JSONable {
 	}
 	
 	@Override
-	public JSONObject toJson() {
-		JSONObject json = new JSONObject();
-		json.put("maze", maze.toJson());
-		json.put("players", players.values());
-		//if (master != null)
-		//	json.put("master", master.getName());
-		return json;
+	public boolean equals(Object o) {
+		return (o instanceof MazeServer) && ((MazeServer)o).title.equals(title);
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-		return (o instanceof MazeServer) && ((MazeServer)o).title == title;
+	public String toString() {
+		return String.format("%s(%d)\n\trunning:%s\n\tplayers:%s\n\tobservers:%s\n\t", title, slots, running, getPlayers(), getObservers());
+	}
+	
+	@Override
+	public JSONObject toJson() {
+		JSONObject json = new JSONObject();
+		json.put("maze", maze.toJson());
+		json.put("players", playerMap.values());
+		//if (master != null)
+		//	json.put("master", master.getName());
+		return json;
 	}
 	
 	/*public MazeZone getZone(Player p) {

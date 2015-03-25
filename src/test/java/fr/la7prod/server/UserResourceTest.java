@@ -120,7 +120,7 @@ public class UserResourceTest extends JerseyTest {
 	* Vérifie que la suppression d'un utilisateur inexistant renvoie 404
 	*/
 	@Test
-	public void test_H_DeleteIntexistantUser() {
+	public void test_H_DeleteInexistantUser() {
 		int notFound = target("/users").path("tking").request().delete().getStatus();
 		assertEquals(404, notFound);
 	}
