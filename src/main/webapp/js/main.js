@@ -235,26 +235,6 @@ function connectPlayer() {// Wait until the state of the socket is not ready and
  * PARTIE GRAPHIQUE
  *************************/
 
-/* Fonction appelée lorsque l'utilisateur appuie sur des touches précises de son clavier */
-function actionPerformed(evt) {
-	//90 68 83 81
-	/*var key = evt.keyCode;
-	var s;
-	direction = null;
-	switch(key) {
-		case 38:s = "NORTH"; break;
-		case 39:s = "EAST"; break;
-		case 40:s = "SOUTH"; break;
-		case 37:s = "WEST"; break;
-	}
-	
-	if (s !== undefined) {
-		direction = new Direction(s);
-		ws.send(JSON.stringify(direction));
-		drawPlayers();
-	}*/
-};
-
 /* Fonction appelée lorsque l'utilisateur clique avec sa souris */
 /* Cette fonction devrait être appelée uniquement si le client demandeur est le maître du labyrinthe (playername === data.master) */
 function mouseClicked() {
@@ -290,14 +270,14 @@ function drawMaze() {
 				};
 	
 		// Entrée
-		c = cells[0];
-		ctx.fillStyle = "rgba(255, 0, 0, .5)"
+		c = maze.start;
+		ctx.fillStyle = "rgba(0, 255, 0, .5)";
 		ctx.fillRect(PIXEL_SIZE*c.x,PIXEL_SIZE*c.y,PIXEL_SIZE,PIXEL_SIZE);
 		ctx.stroke();
 	
 		// Sortie
-		c = cells[cells.length-1];
-		ctx.fillStyle = "rgba(0, 255, 0, .5)";
+		c = maze.exit;
+		ctx.fillStyle = "rgba(255, 0, 0, .5)";
 		ctx.fillRect(PIXEL_SIZE*c.x,PIXEL_SIZE*c.y,PIXEL_SIZE,PIXEL_SIZE);	
 		ctx.stroke();
 	
@@ -326,9 +306,10 @@ function drawMaze() {
 /* Dessine le joueur avec la couleur voulue */
 /* Cette méthode est aussi utilisée pour effacer les traces des déplacements précédents des joueurs */
 function drawPlayer(ctx, player) {
+	var r = ratio();
 	ctx.beginPath();
 	ctx.fillStyle = player.color;
-	ctx.fillRect(player.coordinates.x * ratio(), player.coordinates.y * ratio(), ratio(), ratio());
+	ctx.fillRect(player.coordinates.x * r, player.coordinates.y * r, r, r);
 	ctx.fill();
 	ctx.lineWidth = 5;
 	ctx.strokeStyle = player.color;

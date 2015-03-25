@@ -1,5 +1,7 @@
 package fr.la7prod.maze;
 
+import org.json.JSONObject;
+
 import fr.la7prod.maze.entity.Actionable;
 import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
@@ -54,7 +56,15 @@ public class Cell extends Coordinates {
 	
 	@Override
 	public String toString() {
-		return "Cell:" + super.toString() + " Actionable: " + actionable.toString();
+		String s = "Cell:" + super.toString();
+		if (actionable != null)
+			s += " Actionable: " + actionable.toString();
+		return s;
+	}
+
+	@Override
+	public JSONObject toJson() {
+		return super.toJson().put("value", value);
 	}
 
 }

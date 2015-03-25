@@ -12,9 +12,11 @@ import org.skife.jdbi.v2.DBI;
 @ApplicationPath("/")
 public class App extends Application {
 	
-	public static final DBI dbi = new DBI("jdbc:sqlite:l7p_db");
+	public static DBI dbi;
 	
 	public App() {
+		if (dbi == null)
+			dbi = new DBI("jdbc:sqlite:l7p.db");
 		UserDAO dao = dbi.open(UserDAO.class);
 		dao.createTable();
 		dao.close();

@@ -3,8 +3,9 @@ package fr.la7prod.maze;
 import org.json.JSONObject;
 
 import fr.la7prod.maze.util.Direction;
+import fr.la7prod.maze.util.JSONable;
 
-public class Maze {
+public class Maze implements JSONable {
 	
 	public static final int DEFAULT_WIDTH = 10;
 	public static final int DEFAULT_HEIGHT = 10;
@@ -106,12 +107,13 @@ public class Maze {
 		this.exit = exit;
 	}
 	
+	@Override
 	public JSONObject toJson() {
 		JSONObject json = new JSONObject();
 		json.put("width", width);
 		json.put("height", height);
-		//json.put("start", start);
-		//json.put("exit", exit);
+		json.put("start", start.toJson());
+		json.put("exit", exit.toJson());
 		json.put("cells", this.getCells());
 		return json;
 	}

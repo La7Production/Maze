@@ -3,6 +3,7 @@ package fr.la7prod.maze;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,22 +12,26 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONObject;
 
 import fr.la7prod.maze.algorithms.RecursiveBT;
+import fr.la7prod.maze.entity.Observer;
 import fr.la7prod.maze.entity.Player;
 import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
+import fr.la7prod.maze.util.JSONable;
 
-public class MazeGame {
-	
-	public static final int MAX_SLOTS = 5;	 // Nombre de participants maximum dans une partie
+public class MazeGame implements JSONable {
 	
 	private boolean running;
 	private Maze maze;
 	private Player master;
-	private Map<Session, Player> map;
+	private Map<Session, Player> players;
+	private Map<Session, Observer> observers;
+	private int slots;
 	
-	public MazeGame(int width, int height) {
+	public MazeGame(int width, int height, int slots) {
 		this.maze = new RecursiveBT().generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
-		this.map = new HashMap<Session, Player>();
+		this.players = new HashMap<Session, Player>();
+		this.observers = new HashMap<Session, Observer>();
+		this.slots = slots;
 	}
 	
 	public Maze getMaze() {
@@ -38,32 +43,67 @@ public class MazeGame {
 	}
 	
 	public int availableSlots() {
-		return MAX_SLOTS - map.size();
+		return slots - players.size();
+	}
+	
+	public int maxSlots() {
+		return this.slots;
 	}
 	
 	public int countPlayers() {
-		return map.size();
+		return players.size();
+	}
+	
+	public int countObservers() {
+		return observers.size();
+	}
+	
+	public Set<Session> getPlayerSessions() {
+		return players.keySet();
+	}
+	
+	public Set<Session> getObserverSessions() {
+		return observers.keySet();
 	}
 	
 	public Set<Session> getSessions() {
-		return map.keySet();
+		Set<Session> sessions = new HashSet<Session>(players.keySet());
+		if (sessions.addAll(observers.keySet()))
+			return sessions;
+		return null;
 	}
 	
 	public Collection<Player> getPlayers() {
-		return map.values();
+		return players.values();
+	}
+	
+	public Collection<Observer> getObservers() {
+		return observers.values();
 	}
 	
 	public Player addPlayer(Session s, Player p) {
-		return map.put(s, p);
+		return players.put(s, p);
+	}
+	
+	public Observer addObserver(Session s, Observer o) {
+		return observers.put(s, o);
 	}
 	
 	public Player removePlayer(Session s) {
 		Player.NB_INSTANCE--;
-		return map.remove(s);
+		return players.remove(s);
+	}
+	
+	public Observer removeObserver(Session s) {
+		return observers.remove(s);
 	}
 	
 	public Player getPlayer(Session s) {
-		return map.get(s);
+		return players.get(s);
+	}
+	
+	public Observer getObserver(Session s) {
+		return observers.get(s);
 	}
 	
 	public void setMazeMaster(Player master) {
@@ -71,7 +111,7 @@ public class MazeGame {
 	}
 	
 	public void setMazeMasterRandomly() {
-		List<Player> ps = new ArrayList<Player>(this.map.values());
+		List<Player> ps = new ArrayList<Player>(this.players.values());
 		this.master = ps.get((int)(Math.random()*ps.size()));
 	}
 	
@@ -109,7 +149,8 @@ public class MazeGame {
 	public void clearAll() {
 		this.maze = null;
 		this.master = null;
-		this.map.clear();
+		this.players.clear();
+		this.observers.clear();
 	}
 	
 	public boolean movePerformed(Player p, Direction d) {
@@ -128,8 +169,8 @@ public class MazeGame {
 		Cell start = maze.getStart();
 		this.setMazeMasterRandomly();
 		int i = 1;
-		for (Player p : map.values()) {
-			p.place(start.getX()+1, start.getY()+i);
+		for (Player p : players.values()) {
+			p.place(start.getX()*Cell.PIXEL_SIZE+1, start.getY()*Cell.PIXEL_SIZE+i);
 			i++;
 		}
 	}
@@ -152,16 +193,17 @@ public class MazeGame {
 	public JSONObject toJsonFromPlayer(Player p) {
 		JSONObject json = new JSONObject();
 		json.put("maze", getZone(p).toJson());
-		json.put("players", map.values());;
+		json.put("players", map.values());
 		if (master != null)
 			json.put("master", master.getName());
 		return json;
 	}*/
 	
+	@Override
 	public JSONObject toJson() {
 		JSONObject json = new JSONObject();
 		json.put("maze", maze.toJson());
-		json.put("players", map.values());
+		json.put("players", players.values());
 		if (master != null)
 			json.put("master", master.getName());
 		return json;

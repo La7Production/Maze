@@ -1,5 +1,10 @@
 package fr.la7prod.maze.algorithms;
 
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+
 import fr.la7prod.maze.Cell;
 import fr.la7prod.maze.Maze;
 import fr.la7prod.maze.util.Direction;
@@ -28,14 +33,42 @@ public class RecursiveBT implements MazeAlgorithm {
 		Maze maze = new Maze(width, height);
 		carve(maze.getCell(xstart, ystart), maze);
 		Cell[] cells = maze.getCells();
-		maze.setStart(cells[0]);
+		maze.setStart(cells[(int)(Math.random()*cells.length)]);
 		defineExit(maze);
 		return maze;
 	}
 	
 	private void defineExit(Maze maze) {
-		Cell[] cells = maze.getCells();
-		maze.setExit(cells[(int)(Math.random()*cells.length)]);
+		Queue<Cell> q = new ArrayDeque<Cell>();
+		Map<Cell, Integer> m = new HashMap<Cell, Integer>();		
+		Cell c;
+		Cell n;
+		Cell max = maze.getStart();
+		int value;
+		
+		for (Cell cell : maze.getCells())
+			m.put(cell, 0);
+
+		q.offer(max);
+		
+		while (!q.isEmpty()) {
+			c = q.remove();
+			for (Direction d : Direction.values()) {
+				n = c.add(d);
+				if (!maze.hasWall(c, d) && maze.include(n)) {
+					n = maze.getCell(n.getX(), n.getY());
+					if (m.get(n) == 0) {
+						value = m.get(c) + 1;
+						m.put(n, value);
+						if (value > m.get(max)) {
+							max = n;
+						}
+						q.offer(n);
+					}
+				}
+			}		
+		}
+		maze.setExit(max);
 	}
 
 	@Override

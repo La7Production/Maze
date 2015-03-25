@@ -1,45 +1,24 @@
 package fr.la7prod.maze.entity;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.la7prod.maze.Cell;
 import fr.la7prod.maze.Maze;
+import fr.la7prod.maze.util.ColorFactory;
 import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
 
-public class Player {
+public class Player extends HumanEntity {
 	
 	public static final int MAX_HASTE = 8;
 	public static int NB_INSTANCE = 0;
 	
-	private static final List<String> colors = new ArrayList<String>();
-	
-	static {
-		colors.add(toHex(Color.RED));
-		colors.add(toHex(Color.BLUE));
-		colors.add(toHex(Color.ORANGE));
-		colors.add(toHex(Color.GREEN));
-		colors.add(toHex(Color.CYAN));
-		colors.add(toHex(Color.GRAY));
-	}
-	
-	private static String toHex(Color color) {
-		return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
-	}
-	
-	public static final int DEFAULT_SIZE = 4;
-	
-	private String name;
 	private double haste;
 	private Coordinates c;
 	private String color;
 	
 	public Player(String name, int x, int y) {
-		this.name = name;
+		super(name);
 		this.c = new Coordinates(x,y);
-		this.color = colors.get(NB_INSTANCE++ % colors.size());
+		this.color = ColorFactory.getColors().get(NB_INSTANCE++ % ColorFactory.getColors().size());
 		this.resetHaste();
 	}
 	
@@ -49,14 +28,6 @@ public class Player {
 	
 	public Player() {
 		this(null);
-	}
-	
-	public String getName() {
-		return this.name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	public double getHaste() {
@@ -117,12 +88,12 @@ public class Player {
 	
 	@Override
 	public boolean equals(Object o) {
-		return (o instanceof Player) && ((Player) o).name.equals(this.name) && ((Player) o).c.equals(this.c);
+		return super.equals(o) && (o instanceof Player) && ((Player) o).c.equals(this.c);
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("Player(%s) is in (x=%d,y=%d)", name, c.getX(), c.getY());
+		return String.format("%s is in (x=%d,y=%d)", super.toString(), c.getX(), c.getY());
 	}
 
 }

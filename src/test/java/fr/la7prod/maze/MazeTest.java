@@ -15,8 +15,8 @@ import fr.la7prod.maze.util.Direction;
 
 public class MazeTest {
 	
-	public static int width = 10;
-	public static int height = 10;
+	public static int width = 4;
+	public static int height = 3;
 	public static MazeAlgorithm algo;
 	public static Map<Cell, Boolean> visited;
 	
