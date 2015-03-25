@@ -30,7 +30,7 @@ public class LobbyResource {
 	
 	static {
 		lobby.add("Viath", 1);
-		lobby.add("catteze", 4);
+		lobby.add("catteze", 1);
 		//lobby.get("catteze").addPlayer(null, new Player("coucou"));
 	}
 

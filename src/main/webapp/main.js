@@ -20,10 +20,8 @@ var player;
 var direction;
 // Taille en pixel d'une case qui sera a envoyer avec la direction
 var PIXEL_SIZE = 32;
-// Taille d'une case en pixel coté serveur servant de référence pour le client
-var SERVER_CELL_SIZE;
-// Ratio pour un affichage correct
-var ratio = function() { return PIXEL_SIZE/SERVER_CELL_SIZE; };
+// Taille en pixel de la hitbox du joueur
+var HITBOX = 6;
 // Données envoyées par le serveur via une websocket
 var data;
 // Labyrinthe récupéré dans les données
@@ -31,32 +29,12 @@ var maze;
 // Image du labyrinthe
 var imaze;
 // La websocket (instanciée uniquement au succès de la fonction de connexion)
-var ws; //= new WebSocket("ws://" + address + ":8080/maze/websocket");
+var ws = new WebSocket("ws://" + address + ":8080/maze/websocket");
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
 var items = [];
-// Touches du clavier disponibles pour l'application
-var map = {37:false, 38:false, 39:false, 40:false};
 
-//window.addEventListener('keydown', actionPerformed, true);
-//window.addEventListener('keyup', actionPerformed, true);
 
-function sendKey() {
-	if (map[38]) { ws.send(JSON.stringify(new Direction("NORTH"))); }
-    if (map[39]) { ws.send(JSON.stringify(new Direction("EAST"))); }
-    if (map[40]) { ws.send(JSON.stringify(new Direction("SOUTH"))); }
-    if (map[37]) { ws.send(JSON.stringify(new Direction("WEST"))); }
-}
-
-$(document).keydown(function(e) {
-	if (e.keyCode in map && ws !== undefined) {
-	    map[e.keyCode] = true;
-	    
-	}
-}).keyup(function(e) {
-	if (e.keyCode in map && ws !== undefined) {
-	    map[e.keyCode] = false;
-	}
-});
+window.addEventListener('keydown', actionPerformed, true);
 
 /********************************
  * PLAYER : représenté par un nom
@@ -72,6 +50,8 @@ function Player(playername) {
  
 function Direction(direction) {
 	this.direction = direction;
+	this.pixel = PIXEL_SIZE;
+	this.hitbox = HITBOX;
 }
 
 /***********************************************
@@ -82,6 +62,7 @@ function Item(name, url) {
 	this.name = name;
 	this.url = url;
 }
+
 
 /*************************
  * PARTIE REST VIA AJAX
@@ -109,7 +90,6 @@ function signup() {
 	
 		success: function(data, textStatus, jqXHR) {
 			alert("Votre compte est désormais créé");
-			// Réinitialise les champs à vide
 			for(var i = 0; i <6;i++){
 				document.getElementById("signup").children[i].children[0].value = "";
 			}
@@ -136,15 +116,17 @@ function signin() {
 		},
 		success: function(data, textStatus, jqXHR) {
 			player = new Player(data.login);
-			//connectPlayer(); La connexion du joueur se fait lorsqu'il rejoins un serveur via le bouton "rejoindre"
-			document.getElementById("liSignup").style.display = "none";
-			document.getElementById("liSignin").style.display = "none";
-			document.getElementById("liProfil").style.display = "block";
-			document.getElementsByTagName("li")[1].innerHTML += data.login;
-			document.getElementsByTagName("li")[2].innerHTML += data.firstname;
-			document.getElementsByTagName("li")[3].innerHTML += data.lastname;
-			document.getElementsByTagName("li")[4].innerHTML += data.birthday;
-			document.getElementsByTagName("li")[5].innerHTML += data.email;
+			ws.send(JSON.stringify(player));
+			alert("Bonjour " + data.login);
+			var x = document.getElementById("menuBar");
+			x.getElementById("liSignup").style.display = "none";
+			x.getElementById("liSignin").style.display = "none";
+			x.getElementById("liProfil").style.display = "block";
+			x.getElementsByTagName("li")[1].innerHTML += data.login;
+			x.getElementsByTagName("li")[2].innerHTML += data.firstname;
+			x.getElementsByTagName("li")[3].innerHTML += data.lastname;
+			x.getElementsByTagName("li")[4].innerHTML += data.birthday;
+			x.getElementsByTagName("li")[5].innerHTML += data.email;
 			document.getElementById("jouer").style.display = "block";
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -166,98 +148,92 @@ function signin() {
  * PARTIE WEBSOCKET
  *************************/
 
-function connectPlayer(server) {// Wait until the state of the socket is not ready and send the message when it is...
+/* Fonction appelée à l'ouverture d'une websocket */
+ws.onopen = function() {
+	console.log("Ouverture de la websocket reussie");
+};
 
-	ws = new WebSocket("ws://" + address + ":8080/maze/websocket/" + server);
-
-	/* Fonction appelée à l'ouverture d'une websocket */
-	ws.onopen = function() {
-		console.log("Ouverture de la websocket reussie");
-	};
-
-	/* Fonction appelée lorsque des données sont envoyées du serveur au client */
-	ws.onmessage = function (evt) {
-		// Toutes les données du jeu sont envoyées par le serveur au client
-		// Et sont mis au format JSON pour une meilleure manipulation
-		// Important:
-		// A la connexion du joueur, les données envoyées par le serveur seront le nombre de slots occupés sur le maximum
-		// Lorsque l'utilisateur aura envoyé un message via ws.send(JSON.stringify(String))
-		// les données envoyées par le serveur (donc reçu par tous les clients) seront les données du jeu
-		// à savoir le maze, le master et les players
-		data = JSON.parse(evt.data);
-		
-
-		// Traiter l'information selon les deux cas
-		// 1) Tous les joueurs ne sont pas encore arrivés
-		// 2) Tous les joueurs sont là
-		if (data.maze !== undefined) {
-			maze = data.maze;
-			drawMaze();
-			drawPlayers();
-		}
-		else if (data.winner !== undefined) {
-			console.log("Vainqueur: " + data.winner);
-		}
-		else {
-		 	if (data.slots !== undefined) {
-				waitPlayers(data.slots);
-			}
-			if (data.cellsize !== undefined) {
-				SERVER_CELL_SIZE = data.cellsize;
-			}
-		}
-	};
-
-	/* Fonction appelée lorsque la websocket est fermée */
-	ws.onclose = function() {
-		console.log("Fermeture de la websocket reussie");
-	};
-
-	/* Fonction appelée en cas d'erreur dans la websocket */
-	ws.onerror = function(err) {
-		console.log("Une erreur s'est produite dans la websocket")
-		console.log(err.data);
-	};
+/* Fonction appelée lorsque des données sont envoyées du serveur au client */
+ws.onmessage = function (evt) {
+	// Toutes les données du jeu sont envoyées par le serveur au client
+	// Et sont mis au format JSON pour une meilleure manipulation
+	// Important:
+	// A la connexion du joueur, les données envoyées par le serveur seront le nombre de slots occupés sur le maximum
+	// Lorsque l'utilisateur aura envoyé un message via ws.send(JSON.stringify(String))
+	// les données envoyées par le serveur (donc reçu par tous les clients) seront les données du jeu
+	// à savoir le maze, le master et les players
+	data = JSON.parse(evt.data);
 	
-	function sendMessage(msg) {
-		// Wait until the state of the socket is not ready and send the message when it is...
-		waitForSocketConnection(ws, function() {
-			ws.send(msg);
-		});
+	// Traiter l'information selon les deux cas
+	// 1) Tous les joueurs ne sont pas encore arrivés
+	// 2) Tous les joueurs sont là
+	if (data.maze !== undefined) {
+		maze = data.maze;
+		drawMaze();
+		drawPlayers();
 	}
+	else if (data.slots !== undefined) {
+		waitPlayers(data.slots);
+	}
+	else if (data.winner !== undefined) {
+		console.log("Vainqueur: " + data.winner);
+	}
+};
 
-	// Make the function wait until the connection is made...
-	function waitForSocketConnection(socket, callback) {
-		setTimeout(
-			function() {
-			    if (socket.readyState === 1) {
-			        if(callback != null)
-			            callback();
-			        return;
-			    } else
-			        waitForSocketConnection(socket, callback);
-			}, 5); // wait 5 milisecond for the connection...
-	}
-	
-	sendMessage(JSON.stringify(player));
-	// Appelle la fonction de vérification des touches appuyées toutes les X secondes
-	setInterval("sendKey()", 50);
-}
+/* Fonction appelée lorsque la websocket est fermée */
+ws.onclose = function() {
+	console.log("Fermeture de la websocket reussie");
+};
+
+/* Fonction appelée en cas d'erreur dans la websocket */
+ws.onerror = function(err) {
+	console.log("Une erreur s'est produite dans la websocket")
+	console.log(err.data);
+};
+
 /*************************
  * PARTIE GRAPHIQUE
  *************************/
 
+/* Fonction appelée lorsque l'utilisateur appuie sur des touches précises de son clavier */
+function actionPerformed(evt) {
+	//90 68 83 81
+	var key = evt.keyCode;
+	var s;
+	direction = null;
+	switch(key) {
+		case 38:s = "NORTH"; break;
+		case 39:s = "EAST"; break;
+		case 40:s = "SOUTH"; break;
+		case 37:s = "WEST"; break;
+	}
+	
+	if (s !== undefined) {
+		direction = new Direction(s);
+		ws.send(JSON.stringify(direction));
+		drawPlayers();
+	}
+};
+
 /* Fonction appelée lorsque l'utilisateur clique avec sa souris */
 /* Cette fonction devrait être appelée uniquement si le client demandeur est le maître du labyrinthe (playername === data.master) */
 function mouseClicked() {
-	//TODO
+	maze=data.maze;
+	var x = event.offsetX==undefined?event.layerX:event.offsetX;
+	var y = event.offsetY==undefined?event.layerY:event.offsetY;
+	var caseX = Math.floor(x/PIXEL_SIZE);
+	var caseY = Math.floor(y/PIXEL_SIZE);
+	var infoCase = {
+		value : maze.cells[caseY*maze.width+caseX].value, 
+		x : maze.cells[caseY*maze.width+caseX].x,
+		y : maze.cells[caseY*maze.width+caseX].y
+	};
+	document.getElementById("infoCase").innerHTML = "Value : " + infoCase.value + " X : "+infoCase.x +" Y : "+ infoCase.y;
 };
 
 /* Affiche un message d'attente lorsque le nombre minimal de joueurs requis dans une partie n'est pas atteint */
 function waitPlayers(slots) {
-	var elemId = document.getElementById("listeServers");
-	elemId.getElementsByTagName("li")[0].innerHTML+="<span style=\"float:right\">"+slots+"</span>";
-	elemId.getElementsByTagName("li")[1].innerHTML+="<span style=\"float:right\">"+slots+"</span>";
+	
 };
 
 /* Dessine le labyrinthe vide en considérant la variable data comme définie (data.maze.cells)*/
@@ -266,17 +242,15 @@ function drawMaze() {
 	var canvas = document.getElementById("maze");
 	var ctx = canvas.getContext("2d");
 	if (imaze !== undefined) {
-		//ctx.fillStyle = "white";
-		//ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+		ctx.fillStyle = "white";
+		ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
 		ctx.drawImage(imaze, 0, 0);
 	}
 	else {
 		var c;
 		var cells = maze.cells;
-		canvas.width = PIXEL_SIZE * maze.width;
-		canvas.height = PIXEL_SIZE * maze.height;
-		ctx.fillStyle = "white";
-		ctx.fillRect(0,0,canvas.width,canvas.height);
+		ctx.canvas.width = PIXEL_SIZE * maze.width;
+		ctx.canvas.height = PIXEL_SIZE * maze.height;
 		var draw = function(cell,mx,my,px,py) {
 					ctx.moveTo(PIXEL_SIZE * cell.x + mx, PIXEL_SIZE * cell.y + my);
 					ctx.lineTo(PIXEL_SIZE * cell.x + px, PIXEL_SIZE * cell.y + py);
@@ -284,14 +258,14 @@ function drawMaze() {
 				};
 	
 		// Entrée
-		c = maze.start;
-		ctx.fillStyle = "rgba(0, 255, 0, .5)";
+		c = cells[0];
+		ctx.fillStyle = "rgba(255, 0, 0, .5)"
 		ctx.fillRect(PIXEL_SIZE*c.x,PIXEL_SIZE*c.y,PIXEL_SIZE,PIXEL_SIZE);
 		ctx.stroke();
 	
 		// Sortie
-		c = maze.exit;
-		ctx.fillStyle = "rgba(255, 0, 0, .5)";
+		c = cells[cells.length-1];
+		ctx.fillStyle = "rgba(0, 255, 0, .5)";
 		ctx.fillRect(PIXEL_SIZE*c.x,PIXEL_SIZE*c.y,PIXEL_SIZE,PIXEL_SIZE);	
 		ctx.stroke();
 	
@@ -319,16 +293,13 @@ function drawMaze() {
 
 /* Dessine le joueur avec la couleur voulue */
 /* Cette méthode est aussi utilisée pour effacer les traces des déplacements précédents des joueurs */
-function drawPlayer(ctx, p) {
-	var r = ratio();
+function drawPlayer(ctx, player, color) {
 	ctx.beginPath();
-	ctx.fillStyle = p.color;
+	ctx.arc(player.coordinates.x + HITBOX, player.coordinates.y + HITBOX, 1, 0, 2 * Math.PI);
+	ctx.fillStyle = color;
 	ctx.fill();
-	ctx.fillText(p.name, (p.coordinates.x * r)-(p.name.length*12/5), p.coordinates.y*r-5);	
-	ctx.fillRect(p.coordinates.x * r, p.coordinates.y * r, r, r);
-
 	ctx.lineWidth = 5;
-	ctx.strokeStyle = player.color;
+	ctx.strokeStyle = color;
 	ctx.stroke();
 }
 
@@ -337,8 +308,9 @@ function drawPlayers() {
 	var players = data.players;
 	var canvas = document.getElementById("maze");
 	var ctx = canvas.getContext("2d");
+	var colors = ['red', 'blue', 'green', 'orange', 'grey'];
 	for (var i=0; i < players.length; i++) {
-		drawPlayer(ctx, players[i]);
+		drawPlayer(ctx, players[i], colors[i%players.length]);
 	}
 };
 
@@ -348,51 +320,39 @@ function drawItems() {
 	//TODO
 };
 
-
-/****************************
- * GESTION D'AFFICHAGE by Sam
- ****************************/
- 
-function listServers() {
-	// On récupère les serveurs
-	var lobby = "";
-	var ds;
-	
-	$.ajax({
-		url: "/maze/servers/",
-		type: "GET",
-		dataType: "json",
-		success: function(data, textStatus, jqXHR) {
-			console.log(data);
-			for (var i=0; i < data.servers.length; i++) {
-				ds = data.servers[i];
-				lobby += "<li ondblclick='joinPressed(\"" + ds.title + "\")'>"
-				lobby += "<span style='float:left'>" + ds.title + "</span>"
-				lobby += "<span style='float:right'>" + ds.slots + ":";
-				if (ds.running === false)
-					lobby += "en attente de joueurs";
-				else
-					lobby += "partie en cours";
-				lobby += "</span></li>";
-			}
-			$("#listeServers").html(lobby);
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			alert("Erreur pendant le chargement des parties: " + errorThrown);
-		}
-	});
-}
- 
 // On appuie sur jouer
 function jouerPressed() {
+	alert("BOUYA CHICKA");
 	document.getElementById("sam").style.display="block";
 	document.getElementById("maze").style.display="none";
 	var elemId = document.getElementById("contentButton");
 	elemId.children[0].style.display="none";
-	for (var i = 1; i < elemId.children.length; i++) {
+	for (var i = 1; i < elemId.length; i++)
 		elemId.children[i].style.display="inline-block";
+	
+	//<li onClick="afficherInfoServer(0)"><span style="float:left">catteze</span></li>
+	// On récupère les serveurs
+	var lobby = "";
+	var ds;
+	
+	
+	
+	$.ajax({
+	url: "/maze/servers/",
+	type: "GET",
+	dataType: "json",
+	success: function(data, textStatus, jqXHR) {
+		console.log(data);
+		for (var i=0; i < data.servers.length; i++) {
+			ds = data.servers[i];
+			lobby += "<li onClick='afficherInfoServer('" + i + "')><span style='float:left'>" + ds.title + "</span><span style='float:right'>" + ds.slots + "</span></li>";
+		}
+		$("#listeServers").append(lobby);
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+		alert("Erreur pendant le chargement des parties: " + errorThrown);
 	}
-	listServers();
+});
 };
 
 // On appuie sur retour
@@ -405,6 +365,11 @@ function undoPressed() {
 	document.getElementById("sam").style.display="none";
 }
 
+// Lorsque l'on clique sur un serveur
+function afficherInfoServer() {
+	document.getElementById("infoServer").style.display="block";
+}
+
 function afficherPlayers() {
 	var listeBaseLobby = new Array('Fenrir','Leviathan','Alexandre','Phoénix','Marthym','Arkh','Bahamut','Odin','Ifrit','Shiva');
 	var listeLobby = "";
@@ -412,16 +377,25 @@ function afficherPlayers() {
   		listeLobby += listeBaseLobby[i] + ", ";
 	}
 	listeLobby = listeLobby.substring(0, listeLobby.length-2);
-	//document.getElementById("infoServer").innerHTML+=listeLobby;
+	document.getElementById("infoServer").innerHTML+=listeLobby;
 }
 
-// On double clic sur le serveur voulu
-function joinPressed(server) {
-	connectPlayer(server);
+// On appuie sur rejoindre
+function joinPressed() {
 	document.getElementById("sam").style.display="none";
+	document.getElementById("infoServer").style.display="none";
 	document.getElementById("maze").style.display="block";
 }
 
-function pressEnter(e, fct){
-	if(e.keyCode==13){ fct(); }
+// On appuie sur annuler
+function cancelPressed() {
+	document.getElementById("infoServer").style.display="none";
+}
+
+function myKeyPressForSignin(e){
+	if(e.keyCode==13){ signin(); }
+}
+
+function myKeyPressForSignup(e){
+	if(e.keyCode==13){ signup(); }
 }

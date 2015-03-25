@@ -49,7 +49,7 @@ public class MazeWebSocket extends GameService {
 				if (server.countPlayers() == 0)
 					stopGame();
 				else
-					sendToPlayers(server.toJson());	
+					sendToPlayers(server.toJson());
 			}
 			// Cas 4.2 : la partie n'a pas encore commencée
 			else {

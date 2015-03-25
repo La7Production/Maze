@@ -28,11 +28,11 @@ public class MazeServer implements JSONable {
 	private Player master;
 	private Map<Session, Player> playerMap;
 	private Map<Session, Observer> observerMap;
-	private int slots;
+	private int max_slots;
 	
-	public MazeServer(String title, int slots) {
+	public MazeServer(String title, int max_slots) {
 		this.title = title;
-		this.slots = slots;
+		this.max_slots = max_slots;
 		this.playerMap = new HashMap<Session, Player>();
 		this.observerMap = new HashMap<Session, Observer>();
 	}
@@ -82,19 +82,19 @@ public class MazeServer implements JSONable {
 	}
 	
 	public int getSlots() {
-		return this.slots;
+		return this.max_slots;
 	}
 	
 	public void setSlots(int slots) {
-		this.slots = slots;
+		this.max_slots = slots;
 	}
 	
 	public int maxSlots() {
-		return this.slots;
+		return this.max_slots;
 	}
 	
 	public int availableSlots() {
-		return slots - playerMap.size();
+		return max_slots - playerMap.size();
 	}
 	
 	public int countPlayers() {
@@ -247,7 +247,7 @@ public class MazeServer implements JSONable {
 	
 	@Override
 	public String toString() {
-		return String.format("%s(%d)\n\trunning:%s\n\tplayers:%s\n\tobservers:%s\n\t", title, slots, running, getPlayers(), getObservers());
+		return String.format("%s(%d)\n\trunning:%s\n\tplayers:%s\n\tobservers:%s\n\t", title, max_slots, running, getPlayers(), getObservers());
 	}
 	
 	@Override

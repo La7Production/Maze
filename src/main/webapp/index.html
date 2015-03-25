@@ -24,20 +24,20 @@
 			<li id="liSignin">
 				<a href="#">Connexion</a>
 				<ul id="signin">
-					<li><input type="text" name="login" size=15 placeholder="Pseudo" onkeypress="return myKeyPressForSignin(event)"></li>
-    				<li><input type="password" name="password" size=15 placeholder="Mot de passe" onkeypress="return myKeyPressForSignin(event)""></li>
+					<li><input type="text" name="login" size=15 placeholder="Pseudo" onkeypress="pressEnter(event, signin)"></li>
+    				<li><input type="password" name="password" size=15 placeholder="Mot de passe" onkeypress="pressEnter(event, signin)""></li>
     				<li onclick="signin()">Connexion</li>
     				<li>Mot de passe oublié ?</li>
 				</ul>
 			</li>
 			<li id="liSignup"><a href="#">Créer son compte</a>
 				<ul id="signup">
-					<li><input type="text" name="login" size=15 placeholder="Pseudo" onkeypress="return myKeyPressForSignup(event)"></li>
-    				<li><input type="password" name="password" size=15 placeholder="Mot de passe" onkeypress="return myKeyPressForSignup(event)"></li>
-    				<li><input type="text" name="firstname" size=15 placeholder="Prénom" onkeypress="return myKeyPressForSignup(event)"></li>
-    				<li><input type="text" name="lastname" size=15 placeholder="Nom" onkeypress="return myKeyPressForSignup(event)"></li>
-					<li><input type="text" name="birthday" size=15 placeholder="Date de naissance" onkeypress="return myKeyPressForSignup(event)"></li>
-    				<li><input type="email" name="email" size=15 placeholder="E-mail" onkeypress="return myKeyPressForSignup(event)"></li>
+					<li><input type="text" name="login" size=15 placeholder="Pseudo" onkeypress="pressEnter(event, signup)"></li>
+    				<li><input type="password" name="password" size=15 placeholder="Mot de passe" onkeypress="pressEnter(event, signup)"></li>
+    				<li><input type="text" name="firstname" size=15 placeholder="Prénom" onkeypress="pressEnter(event, signup)"></li>
+    				<li><input type="text" name="lastname" size=15 placeholder="Nom" onkeypress="pressEnter(event, signup)"></li>
+					<li><input type="text" name="birthday" size=15 placeholder="Date de naissance" onkeypress="pressEnter(event, signup)"></li>
+    				<li><input type="email" name="email" size=15 placeholder="E-mail" onkeypress="pressEnter(event, signup)"></li>
     				<li onclick="signup()">Envoyer</li>
 				</ul>
 			</li>
@@ -55,15 +55,12 @@
     <div id="content">
     	<div id="contentButton">	
 			<button id="jouer" onClick="jouerPressed()" style="display:none">Jouer</button>
-			<button onClick="undoPressed()" style="display:none">Retour</button>
-			<button onClick="refreshPressed()" style="display:none">Actualiser</button>
+			<button onClick="undoPressed()" style="display:none">Accueil</button>
+			<button onClick="listServers()" style="display:none">Serveurs</button>
 			<button onClick="newGamePressed()" style="display:none">Nouvelle Partie</button>
 		</div>
     	<div id="sam" style="display:none">
     		<ul id="listeServers">
-    			<li onClick="afficherInfoServer()"><span style="float:left">Serveur de blblbl</span></li>
-    			<li onClick="afficherInfoServer()"><span style="float:left">Serveur de blblbsl</span></li>
-    			<li id="infoServer" style="display:none"><h1>Liste des joueurs : <br></h1><br><button id="leave" onClick="leavePressed()"> Annuler </button><button id="join" onClick="joinPressed()"> Rejoindre </button></li>
     		</ul>	
     	</div>
     	<center>
