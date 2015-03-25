@@ -17,7 +17,7 @@ public class Player extends HumanEntity {
 	public Player(String name, int x, int y) {
 		super(name);
 		this.c = new Coordinates(x,y);
-		this.color = String.format("#%02x%02x%02x", Math.random()*255, Math.random()*255, Math.random()*255);
+		this.color = String.format("#%02x%02x%02x", (int)(Math.random()*128), (int)(Math.random()*128), (int)(Math.random()*128));
 		this.resetHaste();
 	}
 	

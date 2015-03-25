@@ -1,4 +1,4 @@
-package fr.la7prod.server.websocket;
+package fr.la7prod.maze;
 
 import java.io.IOException;
 
@@ -11,8 +11,12 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.JSONObject;
 
+import fr.la7prod.maze.entity.Observer;
 import fr.la7prod.maze.entity.Player;
 import fr.la7prod.maze.util.Direction;
+import fr.la7prod.server.LobbyResource;
+import fr.la7prod.server.websocket.GameService;
+import fr.la7prod.server.websocket.MazeServer;
 
 @WebSocket
 public class MazeWebSocket extends GameService {
@@ -21,25 +25,33 @@ public class MazeWebSocket extends GameService {
 	public void onClose(Session session, int statusCode, String reason) throws IOException {
 		System.out.println("Close: session=" + session.getRemoteAddress() + ", statusCode=" + statusCode + ", reason=" + reason);
 		
-		// Cas 1 : on supprime l'utilisateur du jeu
+		// Cas 0 : l'utilisateur se connecte à un MazeServer inconnu ou fait une erreur dans le nom
+		if (statusCode == StatusCode.BAD_DATA)
+			return;
+		
+		// Cas 1 : l'utilisateur est un observeur, on arrête son écoute du serveur
+		if (getFromGame(session) instanceof Observer)
+			((Observer)getFromGame(session)).closeListening();
+		
+		// Cas 2 : on supprime l'utilisateur du jeu
 		removeFromGame(session);
 		
-		// Cas 2 : le serveur s'est arrêté ou s'est redémarré
-		if (statusCode == StatusCode.SHUTDOWN || statusCode == StatusCode.SERVICE_RESTART || reason == null) {
+		// Cas 3 : le serveur s'est arrêté ou s'est redémarré
+		if (server.countPlayers() == 0 && (statusCode == StatusCode.SHUTDOWN || statusCode == StatusCode.SERVICE_RESTART)) {
 			stopGame();
 		}
 		
-		// Cas 3 : la déconnexion client/socket est normale
+		// Cas 4 : la déconnexion client/socket est normale
 		else if (statusCode == StatusCode.NORMAL) {
 			
-			// Cas 3.1 : le jeu est en cours
-			if (game.isRunning()) {
-				if (game.countPlayers() == 0)
+			// Cas 4.1 : le jeu est en cours
+			if (server.isRunning()) {
+				if (server.countPlayers() == 0)
 					stopGame();
 				else
-					sendToPlayers(game.toJson());	
+					sendToPlayers(server.toJson());	
 			}
-			// Cas 3.2 : la partie n'a pas encore commencée
+			// Cas 4.2 : la partie n'a pas encore commencée
 			else {
 				sendToPlayers(parametersToJSON());
 			}
@@ -55,6 +67,18 @@ public class MazeWebSocket extends GameService {
 	@OnWebSocketConnect
 	public void onConnect(Session session) throws IOException {
 		System.out.println("Connection from " + session.getRemoteAddress());
+		String s = session.getUpgradeRequest().getRequestURI().toString();
+		if (s.lastIndexOf("/") == s.length())
+			session.close(StatusCode.BAD_DATA, "Wrong name");
+		else {
+			s = s.substring(s.lastIndexOf("/") + 1);
+			MazeServer server = LobbyResource.getLobby().get(s);
+			if (server == null)
+				session.close(StatusCode.BAD_DATA, "Unknown server " + s);
+			else
+				this.setServer(server);
+		}
+		
 	}
 	
 	@OnWebSocketMessage
@@ -74,6 +98,10 @@ public class MazeWebSocket extends GameService {
 				if (json.has("observer")) {
 					addToGame(session, json);
 					send(session, parametersToJSON());
+					if (server.isRunning())
+						send(session, server.toJson());
+					((Observer)getFromGame(session)).openThread(session, server);
+					((Observer)getFromGame(session)).startListening();
 					return;
 				}
 				
@@ -96,7 +124,7 @@ public class MazeWebSocket extends GameService {
 			}
 			
 			// Cas 2 : l'utilisateur envoie une demande de direction
-			if (getFromGame(session) instanceof Player && json.has("direction")) {
+			if (server.isRunning() && getFromGame(session) instanceof Player && json.has("direction")) {
 				
 				// Cas 2.1 : on vérifie que la direction est correcte
 				Player p = (Player) getFromGame(session);
@@ -106,18 +134,18 @@ public class MazeWebSocket extends GameService {
 					return;
 				
 				// Cas 2.2 : on exécute le mouvement du joueur si il peut
-				game.movePerformed(p, d);
+				server.movePerformed(p, d);
 				
 				// Cas 2.3 : on regarde s'il a gagné
-				if (game.win(p)) {
-					sendToAll(game.toJson());
-					game.stop();
+				if (server.win(p)) {
+					sendToAll(server.toJson());
+					stopGame();
 					sendToPlayers(new JSONObject().put("winner", p.getName()));
 				}
 				
 				// Cas 2.4 : le jeu est en cours, on envoie les données du jeu
-				else if (game.isRunning()) {
-					sendToPlayers(game.toJson());
+				else {
+					sendToPlayers(server.toJson());
 				}
 			}
 		}

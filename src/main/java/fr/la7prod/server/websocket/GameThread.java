@@ -2,22 +2,53 @@ package fr.la7prod.server.websocket;
 
 import java.io.IOException;
 
+import org.eclipse.jetty.websocket.api.Session;
+
 public class GameThread extends Thread {
 	
 	public enum State {
 		ACTIVED, PAUSED, WAITING;
 	}
 	
-	private GameService service;
+	private Session session;
+	private MazeServer server;
 	private State state;
 	private long sleep;
 	
-	public GameThread(GameService service, long sleep) {
-		System.out.println("Création d'un thread de jeu...");
-		this.service = service;
+	public GameThread(long sleep) {
+		this(null, null, sleep);
+	}
+	
+	public GameThread(Session session, MazeServer server, long sleep) {
+		this.session = session;
+		this.server = server;
 		this.state = State.PAUSED;
 		this.sleep = sleep;
 		super.start();
+	}
+	
+	public synchronized Session getSession() {
+		return this.session;
+	}
+	
+	public synchronized void setSession(Session session) {
+		this.session = session;
+	}
+	
+	public synchronized MazeServer getServer() {
+		return this.server;
+	}
+	
+	public synchronized void setServer(MazeServer server) {
+		this.server = server;
+	}
+	
+	public synchronized long getSleepTime() {
+		return this.sleep;
+	}
+	
+	public synchronized void setSleepTime(long sleep) {
+		this.sleep = sleep;
 	}
 	
 	/**
@@ -63,9 +94,8 @@ public class GameThread extends Thread {
 	
 	/**
 	 * Met le thread en arrière plan en attendant d'être réutilisée.
-	 * Etre mis en arrière plan signifie que le modèle associé à le thread
-	 * n'est actuellement pas observé par l'utilisateur. La rotation automatique peut
-	 * donc être mis en pause en attendant que le modèle revienne au premier plan.
+	 * Etre mis en arrière plan signifie que le modèle associé au thread
+	 * n'est actuellement pas observé par l'utilisateur.
 	 */
 	public synchronized void waiting() {
 		this.state = State.WAITING;
@@ -93,7 +123,8 @@ public class GameThread extends Thread {
 		while (true) {
 			this.sleep();
 			try {
-				service.sendToObservers(GameService.game.toJson());
+				session.getRemote().sendString(server.toJson().toString());
+				session.getRemote().flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

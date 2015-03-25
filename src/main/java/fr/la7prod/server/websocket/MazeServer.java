@@ -1,4 +1,4 @@
-package fr.la7prod.maze;
+package fr.la7prod.server.websocket;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +11,8 @@ import java.util.Set;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONObject;
 
+import fr.la7prod.maze.Cell;
+import fr.la7prod.maze.Maze;
 import fr.la7prod.maze.algorithms.RecursiveBT;
 import fr.la7prod.maze.entity.Observer;
 import fr.la7prod.maze.entity.Player;
@@ -28,14 +30,15 @@ public class MazeServer implements JSONable {
 	private Map<Session, Observer> observerMap;
 	private int slots;
 	
-	public MazeServer() {
+	public MazeServer(String title, int slots) {
+		this.title = title;
+		this.slots = slots;
 		this.playerMap = new HashMap<Session, Player>();
 		this.observerMap = new HashMap<Session, Observer>();
 	}
 	
-	public MazeServer(String title, int slots) {
-		this.title = title;
-		this.slots = slots;
+	public MazeServer() {
+		this(null, 1);
 	}
 	
 	public boolean isRunning() {
@@ -62,20 +65,32 @@ public class MazeServer implements JSONable {
 		this.maze = maze;
 	}*/
 	
+	/*public Map<Session, Player> getPlayerMap() {
+		return this.playerMap;
+	}*/
+	
 	public void setPlayerMap(Map<Session, Player> playerMap) {
 		this.playerMap = playerMap;
 	}
+	
+	/*public Map<Session, Observer> getObserverMap() {
+		return this.observerMap;
+	}*/
 	
 	public void setObserverMap(Map<Session, Observer> observerMap) {
 		this.observerMap = observerMap;
 	}
 	
-	public int maxSlots() {
+	public int getSlots() {
 		return this.slots;
 	}
 	
 	public void setSlots(int slots) {
 		this.slots = slots;
+	}
+	
+	public int maxSlots() {
+		return this.slots;
 	}
 	
 	public int availableSlots() {
@@ -138,16 +153,20 @@ public class MazeServer implements JSONable {
 		return observerMap.get(s);
 	}
 	
-	public void setMazeMaster(Player master) {
+	/*public Player getMaster() {
+		return this.master;
+	}*/
+	
+	public void setMaster(Player master) {
 		this.master = master;
 	}
 	
-	public void setMazeMasterRandomly() {
+	public void setMasterRandomly() {
 		List<Player> ps = new ArrayList<Player>(this.playerMap.values());
 		this.master = ps.get((int)(Math.random()*ps.size()));
 	}
 	
-	public boolean isMazeMaster(Player p) {
+	public boolean isMaster(Player p) {
 		return this.master.equals(p);
 	}
 	
@@ -198,12 +217,16 @@ public class MazeServer implements JSONable {
 	
 	public void initPlayers() {
 		Cell start = maze.getStart();
-		this.setMazeMasterRandomly();
+		this.setMasterRandomly();
 		int i = 1;
 		for (Player p : playerMap.values()) {
 			p.place(start.getX()*Cell.PIXEL_SIZE+1, start.getY()*Cell.PIXEL_SIZE+i);
 			i++;
 		}
+	}
+	
+	public void initPlayer(Player p) {
+		p.place(maze.getStart().getX()*Cell.PIXEL_SIZE+1, maze.getStart().getY()*Cell.PIXEL_SIZE+1);
 	}
 	
 	public void start(int width, int height) {

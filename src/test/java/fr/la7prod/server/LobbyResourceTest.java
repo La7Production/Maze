@@ -17,7 +17,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import fr.la7prod.maze.MazeServer;
+import fr.la7prod.server.websocket.MazeServer;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LobbyResourceTest extends JerseyTest {

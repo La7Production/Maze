@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import fr.la7prod.maze.MazeServer;
 import fr.la7prod.maze.util.JSONable;
+import fr.la7prod.server.websocket.MazeServer;
 
 public class Lobby implements JSONable {
 	

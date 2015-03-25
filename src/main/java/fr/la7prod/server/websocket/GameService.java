@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.la7prod.maze.Cell;
-import fr.la7prod.maze.MazeServer;
 import fr.la7prod.maze.entity.HumanEntity;
 import fr.la7prod.maze.entity.Observer;
 import fr.la7prod.maze.entity.Player;
@@ -16,21 +15,16 @@ import fr.la7prod.maze.util.Direction;
 
 public class GameService {
 	
-	public static MazeServer game = new MazeServer("untitled", 2);
+	protected MazeServer server;
 	
-	private static GameThread thread;
+	public GameService() {}
 	
-	public GameService() {
-		if (thread == null)
-			thread = new GameThread(this, 1000);
+	public MazeServer getServer() {
+		return this.server;
 	}
 	
-	public static GameThread getThread() {
-		return thread;
-	}
-	
-	public static void setThread(GameThread thread) {
-		GameService.thread = thread;
+	public void setServer(MazeServer server) {
+		this.server = server;
 	}
 	
 	public boolean isJSON(String message) {
@@ -62,66 +56,67 @@ public class GameService {
 	}
 	
 	public void sendToPlayers(JSONObject json) throws IOException {
-		for (Session s : game.getPlayerSessions()) {
+		for (Session s : server.getPlayerSessions()) {
 			send(s, json);
 		}
 	}
 	
 	public void sendToObservers(JSONObject json) throws IOException {
-		for (Session s : game.getObserverSessions()) {
+		for (Session s : server.getObserverSessions()) {
 			send(s, json);
 		}
 	}
 	
 	public void sendToAll(JSONObject json) throws IOException {
-		for (Session s : game.getPlayerSessions()) {
+		for (Session s : server.getPlayerSessions()) {
 			send(s, json);
 		}
-		for (Session s : game.getObserverSessions()) {
+		for (Session s : server.getObserverSessions()) {
 			send(s, json);
 		}
 	}
 	
 	public JSONObject parametersToJSON() {
 		JSONObject json = new JSONObject();
-		json.put("slots", game.countPlayers() + "/" + game.maxSlots());
+		json.put("slots", server.countPlayers() + "/" + server.maxSlots());
 		json.put("cellsize", Cell.PIXEL_SIZE);
 		return json;
 	}
 	
 	public HumanEntity addToGame(Session session, JSONObject json) {
 		if (json.has("playername"))
-			return game.addPlayer(session, new Player(json.getString("playername")));
+			return server.addPlayer(session, new Player(json.getString("playername")));
 		if (json.has("observer"))
-			return game.addObserver(session, new Observer(json.getString("observer")));
+			return server.addObserver(session, new Observer(json.getString("observer")));
 		return null;
 	}
 	
 	public HumanEntity removeFromGame(Session session) {
-		HumanEntity e = game.removePlayer(session);
-		return e != null ? e : game.removeObserver(session);
+		HumanEntity e = server.removePlayer(session);
+		return e != null ? e : server.removeObserver(session);
 	}
 	
 	public HumanEntity getFromGame(Session session) {
-		HumanEntity e = game.getPlayer(session);
-		return e != null ? e : game.getObserver(session);
+		HumanEntity e = server.getPlayer(session);
+		return e != null ? e : server.getObserver(session);
 	}
 	
 	public int getAvailableSlots() {
-		return game.availableSlots();
+		return server.availableSlots();
 	}
 	
 	public void startGame(int width, int height) throws IOException {
-		if (!game.isRunning()) {
-			game.start(width, height);
-			thread.start();
-			sendToPlayers(game.toJson());
+		if (!server.isRunning()) {
+			server.start(width, height);
+			sendToPlayers(server.toJson());
 		}
 	}
 	
 	public void stopGame() {
-		thread.pause();
-		game.stop();
+		server.stop();
+		for (Observer o : server.getObservers()) {
+			o.closeListening();
+		}
 	}
 
 }

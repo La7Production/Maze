@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import fr.la7prod.maze.MazeServer;
+import fr.la7prod.server.websocket.MazeServer;
 
 /**
 * Ressource MazeServer (accessible avec le chemin "/servers")
@@ -25,6 +25,14 @@ import fr.la7prod.maze.MazeServer;
 public class LobbyResource {
 		
 	private static Lobby lobby = new Lobby();
+	
+	public static Lobby getLobby() { return lobby; }
+	
+	static {
+		lobby.add("Viath", 1);
+		lobby.add("catteze", 4);
+		//lobby.get("catteze").addPlayer(null, new Player("coucou"));
+	}
 
 	// L'annotation @Context permet de récupérer des informations sur le contexte d'exécution de la ressource.
 	// Ici, on récupère les informations concernant l'URI de la requête HTTP, ce qui nous permettra de manipuler

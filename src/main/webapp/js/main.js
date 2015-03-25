@@ -156,7 +156,7 @@ function signin() {
 
 function connectPlayer() {// Wait until the state of the socket is not ready and send the message when it is...
 
-	ws = new WebSocket("ws://" + address + ":8080/maze/websocket");
+	ws = new WebSocket("ws://" + address + ":8080/maze/websocket/catteze");
 
 	/* Fonction appelée à l'ouverture d'une websocket */
 	ws.onopen = function() {
@@ -229,7 +229,7 @@ function connectPlayer() {// Wait until the state of the socket is not ready and
 	
 	sendMessage(JSON.stringify(player));
 	// Appelle la fonction de vérification des touches appuyées toutes les X secondes
-	setInterval("sendKey()", 100);
+	setInterval("sendKey()", 50);
 }
 /*************************
  * PARTIE GRAPHIQUE
@@ -252,8 +252,8 @@ function drawMaze() {
 	var canvas = document.getElementById("maze");
 	var ctx = canvas.getContext("2d");
 	if (imaze !== undefined) {
-		ctx.fillStyle = "white";
-		ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+		//ctx.fillStyle = "white";
+		//ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
 		ctx.drawImage(imaze, 0, 0);
 	}
 	else {
@@ -305,12 +305,14 @@ function drawMaze() {
 
 /* Dessine le joueur avec la couleur voulue */
 /* Cette méthode est aussi utilisée pour effacer les traces des déplacements précédents des joueurs */
-function drawPlayer(ctx, player) {
+function drawPlayer(ctx, p) {
 	var r = ratio();
 	ctx.beginPath();
-	ctx.fillStyle = player.color;
-	ctx.fillRect(player.coordinates.x * r, player.coordinates.y * r, r, r);
+	ctx.fillStyle = p.color;
 	ctx.fill();
+	ctx.fillText(p.name, (p.coordinates.x * r)-(p.name.length*12/5), p.coordinates.y*r-5);	
+	ctx.fillRect(p.coordinates.x * r, p.coordinates.y * r, r, r);
+
 	ctx.lineWidth = 5;
 	ctx.strokeStyle = player.color;
 	ctx.stroke();

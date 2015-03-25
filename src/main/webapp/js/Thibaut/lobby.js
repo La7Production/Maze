@@ -48,8 +48,18 @@ function init(){
   $.ajax({
 		url: "/maze/servers/",
 		type: "GET",
+		dataType: "json",
 		success: function(data, textStatus, jqXHR) {
 			document.getElementById("notif").innerHTML = "Recuperation des parties réussie !";
+			console.log(data);
+			for (var i=0; i < data.servers.length; i++) {
+				listeLobby += "<tr><td>" + data.servers[i].title + "</td>";
+				listeLobby += "<td> places restantes  :  " + data.servers[i].slots + "</td>";
+				listeLobby += "<td> actif  :  " + data.servers[i].running + "</td>";
+				listeLobby += "<td><button id="+"rejoindre"+" onclick="+"hide_lobby();hide_crea();animation();"+">";
+				listeLobby += "Rejoindre</button></td></tr>";
+			}
+			$("#tab_lobby").append(listeLobby);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			document.getElementById("notif").innerHTML = "Erreur pendant le chargement des parties: " + errorThrown;

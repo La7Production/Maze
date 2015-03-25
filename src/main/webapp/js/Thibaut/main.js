@@ -29,7 +29,7 @@ var maze;
 // Image du labyrinthe
 var imaze;
 // La websocket (instanciée uniquement au succès de la fonction de connexion)
-var ws = new WebSocket("ws://" + address + ":8080/maze/websocket");
+var ws = new WebSocket("ws://" + address + ":8080/maze/websocket/catteze");
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
 var items = [];
 // clics de l'utilisateur
