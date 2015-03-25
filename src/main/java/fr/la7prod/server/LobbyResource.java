@@ -29,9 +29,8 @@ public class LobbyResource {
 	public static Lobby getLobby() { return lobby; }
 	
 	static {
-		lobby.add("Viath", 1);
-		lobby.add("catteze", 1);
-		//lobby.get("catteze").addPlayer(null, new Player("coucou"));
+		lobby.add("Serveur-par-défaut", 5);
+		lobby.add("Serveur-test", 1);
 	}
 
 	// L'annotation @Context permet de récupérer des informations sur le contexte d'exécution de la ressource.

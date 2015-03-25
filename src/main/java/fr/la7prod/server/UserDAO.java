@@ -25,7 +25,7 @@ public interface UserDAO {
 	@SqlUpdate("delete from users where login = :login")
 	public void removeUser(@BindBean User user);
 	
-	@SqlUpdate("drop table users")
+	@SqlUpdate("drop table if exists users")
 	public void dropTable();
 	
 	@SqlUpdate("update users set password = :password, firstname = :firstname, lastname = :lastname,"

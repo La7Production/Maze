@@ -1,23 +1,9 @@
-// Méthodes utiles
-// JSON.stringify(json)
-// JSON.parse(string)
-
-// Données à envoyer au serveur
-// 1) référencé le nom du joueur au serveur : ws.send(JSON.stringify(player)";
-// 2) envoyer le déplacement du joueur : ws.send(JSON.stringify([direction, {"pixel" : PIXEL_SIZE}]));
-// 3) envoyer les placements du maître : {coming soon}
-
-
 /***********************************************
  * VARIABLES : utilisées dans tout le client JS
  ***********************************************/
 
-// Adresse du serveur
-var address = location.hostname;
 // Le joueur client
 var player;
-// Direction du joueur dans le labyrinthe
-var direction;
 // Taille en pixel d'une case qui sera a envoyer avec la direction
 var PIXEL_SIZE = 32;
 // Taille d'une case en pixel coté serveur servant de référence pour le client
@@ -26,12 +12,10 @@ var SERVER_CELL_SIZE;
 var ratio = function() { return PIXEL_SIZE/SERVER_CELL_SIZE; };
 // Données envoyées par le serveur via une websocket
 var data;
-// Labyrinthe récupéré dans les données
-var maze;
 // Image du labyrinthe
 var imaze;
-// La websocket (instanciée uniquement au succès de la fonction de connexion)
-var ws; //= new WebSocket("ws://" + address + ":8080/maze/websocket");
+// La websocket (instanciée lorsque le joueur rejoins une partie)
+var ws;
 // Les items (pièges et bonus) que peut placer le maître du labyrinthe
 var items = [];
 // Touches du clavier disponibles pour l'application
@@ -50,7 +34,6 @@ function sendKey() {
 $(document).keydown(function(e) {
 	if (e.keyCode in map && ws !== undefined) {
 	    map[e.keyCode] = true;
-	    
 	}
 }).keyup(function(e) {
 	if (e.keyCode in map && ws !== undefined) {
@@ -83,16 +66,17 @@ function Item(name, url) {
 	this.url = url;
 }
 
-/*************************
- * PARTIE REST VIA AJAX
- *************************/
+/**********************
+ * PARTIE (DE)CONNEXION
+ **********************/
 
 /* Crée un nouvel utilisateur dans le serveur */
 /* On récupèrera les données suivantes : login, password, firstname, lastname, birthday, email */
 /* Ces données sont contenues dans le div d'id = "signin" */
 /* On peut donc parcourir le div comme un formulaire avec form[i].value (cf. fichier 'exemple_form') */
 function signup() {	
-	var form = function(i) { return document.getElementById("signup").children.item(i).children[0].value; }
+	var labels = $("#signup").children().children();
+	var form = function(i) { return labels.get(i).value; }
 	$.ajax({
 		url: "/maze/usersdb",
 		type: "POST",
@@ -110,8 +94,8 @@ function signup() {
 		success: function(data, textStatus, jqXHR) {
 			alert("Votre compte est désormais créé");
 			// Réinitialise les champs à vide
-			for(var i = 0; i <6;i++){
-				document.getElementById("signup").children[i].children[0].value = "";
+			for(var i = 0; i < labels.length; i++){
+				form(i).value = "";
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -124,7 +108,8 @@ function signup() {
 /* De la même manière, on récupèrera les données du div "signup" */
 /* Ce div servant de formulaire contient le login et le password de l'utilisateur */
 function signin() {
-	var form = function(i) { return document.getElementById("signin").children.item(i).children[0].value; }
+	var form = function(i) { return $("#signin").children().children().get(i).value; }
+	var profil = $("#profil").children();
 	$.ajax({
 		url: "/maze/usersdb/" + form(0),
 		type: "POST",
@@ -136,16 +121,15 @@ function signin() {
 		},
 		success: function(data, textStatus, jqXHR) {
 			player = new Player(data.login);
-			//connectPlayer(); La connexion du joueur se fait lorsqu'il rejoins un serveur via le bouton "rejoindre"
-			document.getElementById("liSignup").style.display = "none";
-			document.getElementById("liSignin").style.display = "none";
-			document.getElementById("liProfil").style.display = "block";
-			document.getElementsByTagName("li")[1].innerHTML += data.login;
-			document.getElementsByTagName("li")[2].innerHTML += data.firstname;
-			document.getElementsByTagName("li")[3].innerHTML += data.lastname;
-			document.getElementsByTagName("li")[4].innerHTML += data.birthday;
-			document.getElementsByTagName("li")[5].innerHTML += data.email;
-			document.getElementById("jouer").style.display = "block";
+			$("#liSignup").hide();
+			$("#liSignin").hide();
+			$("#liProfil").show();
+			$("#jouer").show();
+			profil.get(0).innerHTML = "<h1>" + data.login + "</h1>";
+			profil.get(1).innerHTML = data.firstname;
+			profil.get(2).innerHTML = data.lastname;
+			profil.get(3).innerHTML = data.birthday;
+			profil.get(4).innerHTML = data.email;
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			alert("Nom d'utilisateur ou mot de passe incorrect");
@@ -168,7 +152,7 @@ function signin() {
 
 function connectPlayer(server) {// Wait until the state of the socket is not ready and send the message when it is...
 
-	ws = new WebSocket("ws://" + address + ":8080/maze/websocket/" + server);
+	ws = new WebSocket("ws://" + location.hostname + ":8080/maze/websocket/" + server);
 
 	/* Fonction appelée à l'ouverture d'une websocket */
 	ws.onopen = function() {
@@ -191,12 +175,11 @@ function connectPlayer(server) {// Wait until the state of the socket is not rea
 		// 1) Tous les joueurs ne sont pas encore arrivés
 		// 2) Tous les joueurs sont là
 		if (data.maze !== undefined) {
-			maze = data.maze;
 			drawMaze();
 			drawPlayers();
 		}
 		else if (data.winner !== undefined) {
-			console.log("Vainqueur: " + data.winner);
+			alert("Vainqueur: " + data.winner);
 		}
 		else {
 		 	if (data.slots !== undefined) {
@@ -255,16 +238,15 @@ function mouseClicked() {
 
 /* Affiche un message d'attente lorsque le nombre minimal de joueurs requis dans une partie n'est pas atteint */
 function waitPlayers(slots) {
-	var elemId = document.getElementById("listeServers");
-	elemId.getElementsByTagName("li")[0].innerHTML+="<span style=\"float:right\">"+slots+"</span>";
-	elemId.getElementsByTagName("li")[1].innerHTML+="<span style=\"float:right\">"+slots+"</span>";
+	
 };
 
 /* Dessine le labyrinthe vide en considérant la variable data comme définie (data.maze.cells)*/
 /* On préviligiera un parcours à 1 seul indice cells[i] et on récupèrera x et y (cells[i].x et cells[i].y) pour dessiner */
 function drawMaze() {
-	var canvas = document.getElementById("maze");
+	var canvas = $("canvas")[0];
 	var ctx = canvas.getContext("2d");
+	var maze = data.maze;
 	if (imaze !== undefined) {
 		//ctx.fillStyle = "white";
 		//ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
@@ -326,7 +308,6 @@ function drawPlayer(ctx, p) {
 	ctx.fill();
 	ctx.fillText(p.name, (p.coordinates.x * r)-(p.name.length*12/5), p.coordinates.y*r-5);	
 	ctx.fillRect(p.coordinates.x * r, p.coordinates.y * r, r, r);
-
 	ctx.lineWidth = 5;
 	ctx.strokeStyle = player.color;
 	ctx.stroke();
@@ -335,7 +316,7 @@ function drawPlayer(ctx, p) {
 /* Dessine les joueurs dans le labyrinthe */
 function drawPlayers() {
 	var players = data.players;
-	var canvas = document.getElementById("maze");
+	var canvas = $("canvas")[0];
 	var ctx = canvas.getContext("2d");
 	for (var i=0; i < players.length; i++) {
 		drawPlayer(ctx, players[i]);
@@ -354,16 +335,13 @@ function drawItems() {
  ****************************/
  
 function listServers() {
-	// On récupère les serveurs
 	var lobby = "";
 	var ds;
-	
 	$.ajax({
 		url: "/maze/servers/",
 		type: "GET",
 		dataType: "json",
 		success: function(data, textStatus, jqXHR) {
-			console.log(data);
 			for (var i=0; i < data.servers.length; i++) {
 				ds = data.servers[i];
 				lobby += "<li ondblclick='joinPressed(\"" + ds.title + "\")'>"
@@ -385,43 +363,31 @@ function listServers() {
  
 // On appuie sur jouer
 function jouerPressed() {
-	document.getElementById("sam").style.display="block";
-	document.getElementById("maze").style.display="none";
-	var elemId = document.getElementById("contentButton");
-	elemId.children[0].style.display="none";
-	for (var i = 1; i < elemId.children.length; i++) {
-		elemId.children[i].style.display="inline-block";
-	}
+	$("#sam").show();
+	$("#contentButton").find(":button").show();
+	$(":button#jouer").hide();
+	$("canvas").hide();
 	listServers();
 };
 
 // On appuie sur retour
 function undoPressed() {
-	var elemId = document.getElementById("contentButton");
-	elemId.children[0].style.display="block";
-	elemId.children[1].style.display="none";
-	elemId.children[2].style.display="none";
-	elemId.children[3].style.display="none";
-	document.getElementById("sam").style.display="none";
+	$("#sam").hide();
+	$("#contentButton").find(":button").hide();
+	$(":button#jouer").show();
 }
 
-function afficherPlayers() {
-	var listeBaseLobby = new Array('Fenrir','Leviathan','Alexandre','Phoénix','Marthym','Arkh','Bahamut','Odin','Ifrit','Shiva');
-	var listeLobby = "";
-  	for (var i=0; i<listeBaseLobby.length; i++) {
-  		listeLobby += listeBaseLobby[i] + ", ";
-	}
-	listeLobby = listeLobby.substring(0, listeLobby.length-2);
-	//document.getElementById("infoServer").innerHTML+=listeLobby;
+function showPlayers() {
+	
 }
 
 // On double clic sur le serveur voulu
 function joinPressed(server) {
 	connectPlayer(server);
-	document.getElementById("sam").style.display="none";
-	document.getElementById("maze").style.display="block";
+	$("#sam").hide();
+	$("canvas").show();
 }
 
-function pressEnter(e, fct){
+function pressEnter(e, fct) {
 	if(e.keyCode==13){ fct(); }
 }

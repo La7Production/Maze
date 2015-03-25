@@ -6,13 +6,13 @@
     <script src='js/jquery-2.1.3.js'></script>
 	<script src='js/main.js'></script>
     </head> 
-  <body onLoad="afficherPlayers()">
+  <body>
     <div id="menuHead">
 		<ul id="menuBar">
-			<li id="liProfil" style="display:none">
+			<li id="liProfil">
 				<a href="#">Profil</a>
 				<ul id="profil">
-					<li><h1></h1></li>
+					<li></li>
     				<li></li>
     				<li></li>
     				<li></li>
@@ -24,20 +24,21 @@
 			<li id="liSignin">
 				<a href="#">Connexion</a>
 				<ul id="signin">
-					<li><input type="text" name="login" size=15 placeholder="Pseudo" onkeypress="pressEnter(event, signin)"></li>
-    				<li><input type="password" name="password" size=15 placeholder="Mot de passe" onkeypress="pressEnter(event, signin)""></li>
+					<li><input type="text" size=15 placeholder="Pseudo" onkeypress="pressEnter(event, signin)"></li>
+    				<li><input type="password" size=15 placeholder="Mot de passe" onkeypress="pressEnter(event, signin)""></li>
     				<li onclick="signin()">Connexion</li>
     				<li>Mot de passe oublié ?</li>
 				</ul>
 			</li>
-			<li id="liSignup"><a href="#">Créer son compte</a>
+			<li id="liSignup">
+				<a href="#">Créer son compte</a>
 				<ul id="signup">
-					<li><input type="text" name="login" size=15 placeholder="Pseudo" onkeypress="pressEnter(event, signup)"></li>
-    				<li><input type="password" name="password" size=15 placeholder="Mot de passe" onkeypress="pressEnter(event, signup)"></li>
-    				<li><input type="text" name="firstname" size=15 placeholder="Prénom" onkeypress="pressEnter(event, signup)"></li>
-    				<li><input type="text" name="lastname" size=15 placeholder="Nom" onkeypress="pressEnter(event, signup)"></li>
-					<li><input type="text" name="birthday" size=15 placeholder="Date de naissance" onkeypress="pressEnter(event, signup)"></li>
-    				<li><input type="email" name="email" size=15 placeholder="E-mail" onkeypress="pressEnter(event, signup)"></li>
+					<li><input type="text" size=15 placeholder="Pseudo" onkeypress="pressEnter(event, signup)"></li>
+    				<li><input type="password" size=15 placeholder="Mot de passe" onkeypress="pressEnter(event, signup)"></li>
+    				<li><input type="text" size=15 placeholder="Prénom" onkeypress="pressEnter(event, signup)"></li>
+    				<li><input type="text" size=15 placeholder="Nom" onkeypress="pressEnter(event, signup)"></li>
+					<li><input type="text" size=15 placeholder="Date de naissance" onkeypress="pressEnter(event, signup)"></li>
+    				<li><input type="email" size=15 placeholder="E-mail" onkeypress="pressEnter(event, signup)"></li>
     				<li onclick="signup()">Envoyer</li>
 				</ul>
 			</li>
@@ -54,17 +55,17 @@
     </div>
     <div id="content">
     	<div id="contentButton">	
-			<button id="jouer" onClick="jouerPressed()" style="display:none">Jouer</button>
-			<button onClick="undoPressed()" style="display:none">Accueil</button>
-			<button onClick="listServers()" style="display:none">Serveurs</button>
-			<button onClick="newGamePressed()" style="display:none">Nouvelle Partie</button>
+			<button id="jouer" onClick="jouerPressed()">Jouer</button>
+			<button onClick="undoPressed()">Accueil</button>
+			<button onClick="listServers()">Serveurs</button>
+			<button onClick="newGamePressed()">Nouvelle Partie</button>
 		</div>
-    	<div id="sam" style="display:none">
+    	<div id="sam">
     		<ul id="listeServers">
     		</ul>	
     	</div>
     	<center>
-    		<canvas onclick="mouseClicked()" id="maze" style="display:none";></canvas>
+    		<canvas onclick="mouseClicked()"></canvas>
     	</center>
     	<div id="infoCase"></div>
     </div>

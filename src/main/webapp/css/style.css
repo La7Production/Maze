@@ -98,6 +98,7 @@ body {
 #menuBar > li:first-child ul li:first-child h1{
 	padding: 0;
 	margin:0;
+	font-size: 14px;
 }
 
 #menuBar > li:first-child ul li:nth-child(6){
@@ -248,6 +249,7 @@ body {
 
 #content {
 	background-color: white;
+	padding-top: 30px;
 	margin-left: auto;
 	margin-right: auto;
 	width: 50%;
@@ -257,7 +259,6 @@ body {
 	box-shadow: 5px 6px 50px gray, -5px 6px 50px gray;
 	min-width: 900px;
 	min-height: 900px;
-	margin-top: 40px;
 }
 
 #contentButton {
@@ -267,6 +268,7 @@ body {
 }
 
 #contentButton > button {
+	display: none;
 	position:relative;
 	top:20px;
 	width: 140px;
@@ -300,6 +302,7 @@ body {
 }
 
 #content #sam {
+	display: none;
 	position:relative;
 	top:40px;
 	margin-left: auto;
@@ -333,8 +336,13 @@ body {
 	opacity:0.7;
 }
 
+#liProfil {
+	display: none;
+}
+
 canvas {
-	padding-top: 40px;
+	display: none;
+	padding-top: 30px;
 	margin-left: auto;
 	margin-right: auto;
 }
