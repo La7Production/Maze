@@ -8,7 +8,7 @@
 	<script src='lobby.js'></script>
 	<script src='processing.min.js'></script>
     </head> 
-  <body onload="init();">
+  <body onload="hide_new_serv();">
     <div id="menuHead">
 		<ul id="menuBar">
 			<li>
@@ -47,11 +47,11 @@
     	<div id="nouvelle_partie">
 			<input type="text" id="new_serv_name" name="login" size=15 placeholder="Nom du serveur"/>
 			<input type="number" id="new_serv_num" name="login" size=15 placeholder="Nombre de joueurs maximum"/>
-			<button onclick="ajoutLobby();">Créer un serveur</button>
+			<button onclick="ajoutLobby();">Je suis un lama</button>
     	</div>
-    	<center><div id="notif"></div></center>
+    	<div id="notif"></div>
     	<br>
-    	<div id="liste_lobby" >
+    	<div id="liste_lobby">
     	<p id="texte">Liste des serveurs : </p>
 		<table id="tab_lobby" border="solid 1px">
 		</table>    	

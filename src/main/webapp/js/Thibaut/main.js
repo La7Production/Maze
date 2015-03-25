@@ -221,7 +221,7 @@ function mouseClicked() {
 
 /* Affiche un message d'attente lorsque le nombre minimal de joueurs requis dans une partie n'est pas atteint */
 function waitPlayers(slots) {
-	document.getElementById("slots").innerHTML = slots;
+	document.getElementById("notif").innerHTML = slots;
 };
 
 /* Dessine le labyrinthe vide en considérant la variable data comme définie (data.maze.cells)*/
