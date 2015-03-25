@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.la7prod.maze.Cell;
-import fr.la7prod.maze.MazeGame;
+import fr.la7prod.maze.MazeServer;
 import fr.la7prod.maze.entity.HumanEntity;
 import fr.la7prod.maze.entity.Observer;
 import fr.la7prod.maze.entity.Player;
@@ -16,7 +16,7 @@ import fr.la7prod.maze.util.Direction;
 
 public class GameService {
 	
-	public static MazeGame game = new MazeGame(2);
+	public static MazeServer game = new MazeServer("untitled", 2);
 	
 	private static GameThread thread;
 	
@@ -113,7 +113,6 @@ public class GameService {
 	public void stopGame() {
 		thread.pause();
 		game.stop();
-		game.clearAll();
 	}
 
 }

@@ -1,35 +1,36 @@
 package fr.la7prod.server;
 
-import fr.la7prod.maze.MazeGame;
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.la7prod.maze.MazeServer;
 
 public class Lobby {
 	
-	private String title;
-	private MazeGame game;
-	private int slots;
+	private List<MazeServer> servers;
 	
-	public String getTitle() {
-		return title;
+	public Lobby() {
+		this.servers = new ArrayList<MazeServer>();
 	}
 	
-	public void setTitle(String title) {
-		this.title = title;
+	public boolean contains(MazeServer server) {
+		return servers.contains(server);
 	}
 	
-	public MazeGame getGame() {
-		return game;
+	public MazeServer getServer(int i) {
+		return servers.get(i);
 	}
 	
-	public void setGame(MazeGame game) {
-		this.game = game;
+	public boolean addServer(MazeServer server) {
+		return servers.add(server);
 	}
 	
-	public int getSlots() {
-		return slots;
+	public MazeServer removeServer(int i) {
+		return servers.remove(i);
 	}
 	
-	public void setSlots(int slots) {
-		this.slots = slots;
+	public boolean removeServer(MazeServer server) {
+		return servers.remove(server);
 	}
 	
 }

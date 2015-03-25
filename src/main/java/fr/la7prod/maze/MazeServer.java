@@ -18,16 +18,18 @@ import fr.la7prod.maze.util.Coordinates;
 import fr.la7prod.maze.util.Direction;
 import fr.la7prod.maze.util.JSONable;
 
-public class MazeGame implements JSONable {
+public class MazeServer implements JSONable {
 	
 	private boolean running;
+	private String title;
 	private Maze maze;
 	private Player master;
 	private Map<Session, Player> players;
 	private Map<Session, Observer> observers;
 	private int slots;
 	
-	public MazeGame(int slots) {
+	public MazeServer(String title, int slots) {
+		this.title = title;
 		this.players = new HashMap<Session, Player>();
 		this.observers = new HashMap<Session, Observer>();
 		this.slots = slots;
@@ -35,6 +37,14 @@ public class MazeGame implements JSONable {
 	
 	public Maze getMaze() {
 		return this.maze;
+	}
+	
+	public String getTitle() {
+		return this.title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	
 	public boolean isRunning() {
@@ -47,6 +57,10 @@ public class MazeGame implements JSONable {
 	
 	public int maxSlots() {
 		return this.slots;
+	}
+	
+	public void setMaxSlots(int slots) {
+		this.slots = slots;
 	}
 	
 	public int countPlayers() {
@@ -125,9 +139,8 @@ public class MazeGame implements JSONable {
 	public boolean canMove(Player p, Direction d) {
 		Cell c = getLocation(p);
 		Coordinates pc = p.getCoordinates();
-		boolean hasWall = c.hasWall(d);
 		
-		if (hasWall) {
+		if (c.hasWall(d)) {
 			if (d.equals(Direction.NORTH) && pc.getY() > c.getY()*Cell.PIXEL_SIZE)
 				return true;
 			if (d.equals(Direction.EAST) && pc.getX()+1 != (c.getX()+1)*Cell.PIXEL_SIZE)
@@ -175,15 +188,29 @@ public class MazeGame implements JSONable {
 	}
 	
 	public void start(int width, int height) {
-		// TODO
 		this.maze = new RecursiveBT().generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
 		this.initPlayers();
 		this.running = true;
 	}
 	
 	public void stop() {
-		// TODO
 		this.running = false;
+		this.clearAll();
+	}
+	
+	@Override
+	public JSONObject toJson() {
+		JSONObject json = new JSONObject();
+		json.put("maze", maze.toJson());
+		json.put("players", players.values());
+		//if (master != null)
+		//	json.put("master", master.getName());
+		return json;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		return (o instanceof MazeServer) && ((MazeServer)o).title == title;
 	}
 	
 	/*public MazeZone getZone(Player p) {
@@ -199,15 +226,5 @@ public class MazeGame implements JSONable {
 			json.put("master", master.getName());
 		return json;
 	}*/
-	
-	@Override
-	public JSONObject toJson() {
-		JSONObject json = new JSONObject();
-		json.put("maze", maze.toJson());
-		json.put("players", players.values());
-		if (master != null)
-			json.put("master", master.getName());
-		return json;
-	}
 
 }
