@@ -16,7 +16,22 @@ import fr.la7prod.maze.util.Direction;
 
 public class GameService {
 	
-	public static MazeGame game = new MazeGame(20,20,1);
+	public static MazeGame game = new MazeGame(2);
+	
+	private static GameThread thread;
+	
+	public GameService() {
+		if (thread == null)
+			thread = new GameThread(this, 1000);
+	}
+	
+	public static GameThread getThread() {
+		return thread;
+	}
+	
+	public static void setThread(GameThread thread) {
+		GameService.thread = thread;
+	}
 	
 	public boolean isJSON(String message) {
 		try {
@@ -46,16 +61,15 @@ public class GameService {
 		session.getRemote().flush();
 	}
 	
-	public void sendByTime(Session session, JSONObject json) throws IOException {
-		
-	}
-	
-	public void sendToAll(JSONObject json) throws IOException {
+	public void sendToPlayers(JSONObject json) throws IOException {
 		for (Session s : game.getPlayerSessions()) {
 			send(s, json);
 		}
+	}
+	
+	public void sendToObservers(JSONObject json) throws IOException {
 		for (Session s : game.getObserverSessions()) {
-			sendByTime(s, json);
+			send(s, json);
 		}
 	}
 	
@@ -88,12 +102,18 @@ public class GameService {
 		return game.availableSlots();
 	}
 	
-	public void startGame() throws IOException {
+	public void startGame(int width, int height) throws IOException {
 		if (!game.isRunning()) {
-			game.initPlayers();
-			game.start();
-			sendToAll(game.toJson());
+			game.start(width, height);
+			thread.start();
+			sendToPlayers(game.toJson());
 		}
+	}
+	
+	public void stopGame() {
+		thread.pause();
+		game.stop();
+		game.clearAll();
 	}
 
 }

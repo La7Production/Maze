@@ -1,4 +1,6 @@
-package fr.la7prod.maze.util;
+package fr.la7prod.server.websocket;
+
+import java.io.IOException;
 
 public class GameThread extends Thread {
 	
@@ -6,17 +8,20 @@ public class GameThread extends Thread {
 		ACTIVED, PAUSED, WAITING;
 	}
 	
+	private GameService service;
 	private State state;
-	private int sleep;
+	private long sleep;
 	
-	public GameThread(int sleep) {
+	public GameThread(GameService service, long sleep) {
+		System.out.println("Création d'un thread de jeu...");
+		this.service = service;
 		this.state = State.PAUSED;
 		this.sleep = sleep;
 		super.start();
 	}
 	
 	/**
-	 * Indique si le thread est activée
+	 * Indique si le thread est activé
 	 * @return vrai si le thread est à l'état ACTIVED
 	 */
 	public synchronized boolean isActived() {
@@ -41,7 +46,7 @@ public class GameThread extends Thread {
 	
 	/**
 	 * Active le thread et en informe
-	 * les observers susceptibles d'avoir un regard sur le thread.
+	 * les observers susceptibles d'avoirsleep un regard sur le thread.
 	 */
 	public synchronized void start() {
 		this.state = State.ACTIVED;
@@ -87,6 +92,11 @@ public class GameThread extends Thread {
 	public void run() {
 		while (true) {
 			this.sleep();
+			try {
+				service.sendToObservers(GameService.game.toJson());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

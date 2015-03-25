@@ -27,8 +27,7 @@ public class MazeGame implements JSONable {
 	private Map<Session, Observer> observers;
 	private int slots;
 	
-	public MazeGame(int width, int height, int slots) {
-		this.maze = new RecursiveBT().generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
+	public MazeGame(int slots) {
 		this.players = new HashMap<Session, Player>();
 		this.observers = new HashMap<Session, Observer>();
 		this.slots = slots;
@@ -175,8 +174,10 @@ public class MazeGame implements JSONable {
 		}
 	}
 	
-	public void start() {
+	public void start(int width, int height) {
 		// TODO
+		this.maze = new RecursiveBT().generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
+		this.initPlayers();
 		this.running = true;
 	}
 	
