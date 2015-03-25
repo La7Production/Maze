@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Index</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src='js/jquery-2.1.3.js'></script>
+	<script src='js/main.js'></script>
+    </head> 
+  <body onLoad="afficherPlayers()">
+    <div id="menuHead">
+		<ul id="menuBar">
+			<li id="liProfil" style="display:none">
+				<a href="#">Profil</a>
+				<ul id="profil">
+					<li><h1></h1></li>
+    				<li></li>
+    				<li></li>
+    				<li></li>
+    				<li></li>
+    				<li onclick="signout()">Déconnexion</li>
+    				<li><img src="img/avatar.png" id="avatar"/></li>
+				</ul>
+			</li>
+			<li id="liSignin">
+				<a href="#">Connexion</a>
+				<ul id="signin">
+					<li><input type="text" name="login" size=15 placeholder="Pseudo" onkeypress="return myKeyPressForSignin(event)"></li>
+    				<li><input type="password" name="password" size=15 placeholder="Mot de passe" onkeypress="return myKeyPressForSignin(event)""></li>
+    				<li onclick="signin()">Connexion</li>
+    				<li>Mot de passe oublié ?</li>
+				</ul>
+			</li>
+			<li id="liSignup"><a href="#">Créer son compte</a>
+				<ul id="signup">
+					<li><input type="text" name="login" size=15 placeholder="Pseudo" onkeypress="return myKeyPressForSignup(event)"></li>
+    				<li><input type="password" name="password" size=15 placeholder="Mot de passe" onkeypress="return myKeyPressForSignup(event)"></li>
+    				<li><input type="text" name="firstname" size=15 placeholder="Prénom" onkeypress="return myKeyPressForSignup(event)"></li>
+    				<li><input type="text" name="lastname" size=15 placeholder="Nom" onkeypress="return myKeyPressForSignup(event)"></li>
+					<li><input type="text" name="birthday" size=15 placeholder="Date de naissance" onkeypress="return myKeyPressForSignup(event)"></li>
+    				<li><input type="email" name="email" size=15 placeholder="E-mail" onkeypress="return myKeyPressForSignup(event)"></li>
+    				<li onclick="signup()">Envoyer</li>
+				</ul>
+			</li>
+			<li><a href="#">Autres</a>
+				<ul>
+					<li>blblbl</li>
+    				<li>blblbl</li>
+    				<li>blblbl</li>
+    				<li>blblbl</li>
+				</ul>
+			</li>
+		</ul>
+		<h1 id="title">Maze</h1>
+    </div>
+    <div id="content">
+    	<div id="contentButton">	
+			<button id="jouer" onClick="jouerPressed()" style="display:none">Jouer</button>
+			<button onClick="undoPressed()" style="display:none">Retour</button>
+			<button onClick="refreshPressed()" style="display:none">Actualiser</button>
+			<button onClick="newGamePressed()" style="display:none">Nouvelle Partie</button>
+		</div>
+    	<div id="sam" style="display:none">
+    		<ul id="listeServers">
+    			<li onClick="afficherInfoServer()"><span style="float:left">Serveur de blblbl</span></li>
+    			<li onClick="afficherInfoServer()"><span style="float:left">Serveur de blblbsl</span></li>
+    			<li id="infoServer" style="display:none"><h1>Liste des joueurs : <br></h1><br><button id="leave" onClick="leavePressed()"> Annuler </button><button id="join" onClick="joinPressed()"> Rejoindre </button></li>
+    		</ul>	
+    	</div>
+    	<center>
+    		<canvas onclick="mouseClicked()" id="maze" style="display:none";></canvas>
+    	</center>
+    	<div id="infoCase"></div>
+    </div>
+  </body>
+</html>

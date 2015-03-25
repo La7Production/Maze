@@ -1,0 +1,376 @@
+body {
+	padding: 0;
+	margin: 0;
+	/*background-image: url(../img/sides.png);*/
+	background-color:#6E6E6E;
+	background-repeat: no-repeat;
+	overflow: hidden;
+}
+
+#menuHead{
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	background-image: linear-gradient(#BDBDBD,#D8D8D8);
+	border-bottom: 1px solid;
+	border-color: black;
+	font-family: 'Arial';
+	text-shadow: #E6E6E6 0px 1px 0;
+	color: #2E2E2E;
+	min-width: 900px;
+}
+
+#menuBar, #menuBar ul{
+	padding:0;
+	margin:0;
+	list-style:none;
+	text-align:center;
+}
+
+#menuBar ul{
+	position:absolute;
+	background-color: #BDBDBD;
+	max-height:0;
+	left: 0;
+	right: 0;
+	overflow:hidden;
+	transition: 0.8s;
+}
+
+#menuBar > li{
+	position:relative;
+	float: left;
+	transition-delay: 0.7s;
+}
+
+#menuBar ul li{
+	width:150px;
+	margin-top: 10px;
+	font-size:12px;
+}
+
+#menuBar li:hover{
+	transition: 0.7s;
+	background-color: #BDBDBD; 
+}
+
+#menuBar > li:first-child{
+	transition: 0.6s;
+}
+
+#menuBar > li:first-child:hover{
+	width:300px;
+	background-color: #BDBDBD;
+}
+
+#menuBar li:hover ul {
+	max-height:500px;
+	border-color: black;
+	overflow:hidden;
+}
+
+
+#menuBar > li:first-child ul{
+	border-right: 1px solid;
+	border-bottom: 1px solid;
+	text-align:left;
+	padding:0;
+	width:300px;
+}
+
+#menuBar > li:first-child ul li {
+	margin-left:10px;
+	margin-bottom:10px;
+}
+
+#menuBar > li:first-child ul li:first-child{
+	font-size:20px;
+	position: relative;
+	padding: 0;
+	font-family:arial;
+	color:#585858;
+	float:left;
+}
+
+#menuBar > li:first-child ul li:first-child h1{
+	padding: 0;
+	margin:0;
+}
+
+#menuBar > li:first-child ul li:nth-child(6){
+	cursor: pointer;
+	background: #A4A4A4;
+	margin-left: 17px;
+	padding: 3px;
+	width: 110px;
+	color:#2E2E2E;
+	border: 1px solid #A4A4A4;
+	text-shadow: none;
+	text-align:center;
+}
+
+#menuBar > li:first-child li:nth-child(6):hover {
+	border: 1px solid #424242;
+	background: #585858;
+	color: white;
+}
+
+#menuBar > li:first-child li:last-child {
+	position:absolute;
+	right:-20;
+	top:5;
+}
+
+#menuBar > li:nth-child(2) ul{
+	border-right: 1px solid;
+	border-bottom: 1px solid;
+	width:150px;
+}
+
+#menuBar > li:nth-child(3) ul {
+	border-right: 1px solid;
+	border-bottom: 1px solid;
+	border-left: 1px solid;
+	margin-left: -1px;
+	width:150px;
+}
+
+#menuBar > li:last-child ul{
+	border-left: thin solid;
+	border-bottom: thin solid;
+	width:150px;
+	margin-left:-1px;
+}
+
+#menuBar a{
+	text-decoration:none;
+	color:#2E2E2E;
+	font-family:arial;
+	line-height:40px;
+	min-height:40px;
+	cursor: default;
+}
+
+#menuBar > li:first-child {
+	width: 150px;
+	border-right: 1px solid;
+	border-color: black;
+	text-align: center;
+}
+
+#menuBar > li:nth-child(2){
+	width: 150px;
+	border-right: 1px solid;
+	border-color: black;
+	text-align: center;
+}
+
+#menuBar > li:nth-child(2) li:nth-child(3){
+	cursor: pointer;
+	background: #A4A4A4;
+	margin-left: 17px;
+	padding: 3px;
+	width: 110px;
+	color:#2E2E2E;
+	border: 1px solid #A4A4A4;
+	text-shadow: none;
+}
+
+#menuBar > li:nth-child(2) li:nth-child(3):hover {
+	border: 1px solid #424242;
+	background: #585858;
+	color: white;
+}
+
+#menuBar > li:nth-child(2) li:last-child{
+	cursor: pointer;
+	background: #A4A4A4;
+	margin-left: 17px;
+	padding: 3px;
+	width: 110px;
+	color:#2E2E2E;
+	border: 1px solid #A4A4A4;
+	text-shadow: none;
+	margin-bottom: 10px;
+	font-size: 10px;
+}
+
+#menuBar > li:nth-child(2) li:last-child:hover {
+	border: 1px solid #424242;
+	background: #585858;
+	color: white;
+}
+
+#menuBar > li:nth-child(3){
+	width: 150px;
+	border-right: 1px solid;
+	border-color: black;
+	text-align: center;
+}
+
+#menuBar > li:nth-child(3) li:last-child{
+	cursor: pointer;
+	background: #A4A4A4;
+	margin-left: 17px;
+	padding: 3px;
+	width: 110px;
+	color:#2E2E2E;
+	border: 1px solid #A4A4A4;
+	text-shadow: none;
+	margin-bottom:10px;
+}
+
+#menuBar > li:nth-child(3) li:last-child:hover{
+	border: 1px solid #424242;
+	background: #585858;
+	color: white;
+}
+
+#menuBar > li:last-child{
+	width: 150px;
+	border-left:1px solid;
+	border-color: black;
+	text-align: center;
+	float:right;
+}
+
+#title {
+	position:absolute;
+	right:48.5%;
+	padding:0;
+	margin:0;
+	line-height:40px;
+	font-size:20px;
+}
+
+#content {
+	background-color: white;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+	height: 100%;
+	border-left: 1px solid #585858;
+	border-right: 1px solid #585858;
+	box-shadow: 5px 6px 50px gray, -5px 6px 50px gray;
+	min-width: 900px;
+	min-height: 900px;
+	margin-top: 40px;
+}
+
+#contentButton {
+	width:100%;
+	height:50px;
+	text-align:center;
+}
+
+#contentButton > button {
+	position:relative;
+	top:20px;
+	width: 140px;
+	height: 40px;
+	padding:0;
+	font-size: 18px;
+	color:white;
+	text-align: center;
+	cursor: pointer;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	background: #454545;
+	border: 0;
+	border-bottom: 2px solid #2f2e2e;
+	cursor: pointer;
+	-webkit-box-shadow: inset 0 -2px #2f2e2e;
+	box-shadow: inset 0 -2px #2f2e2e;
+	margin-left: auto;
+	margin-right:auto;
+}
+
+
+#contentButton > button:first-child {
+	font-size:22px;
+}
+
+#contentButton > button:active {
+	top: 19px;
+	outline: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+#content #sam {
+	position:relative;
+	top:40px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px;
+	height:500px;
+	background-image: url(../img/maze_img_sombre.png);
+	border: 1px solid black;
+}
+
+#content #sam ul {
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+
+#content #sam ul li{
+	display:block;
+	line-height:60px;
+	width:500px;
+	height:60px;
+	background-color: black;
+	border-bottom:1px solid black;
+	opacity:0.5;
+	color:white;
+	font-family:arial;
+}
+
+#content #sam ul li:hover {
+	background-color: black;
+	opacity:0.7;
+}
+
+#content #sam ul li:last-child {
+	position:absolute;
+	height:120px;
+	width:500px;
+	margin:0;
+	bottom:0;
+	background:#1C1C1C;
+	opacity:1;
+}
+
+#content #sam ul li:last-child h1 {
+	position:absolute;
+	top:0;
+	margin-top:5px;
+	font-size: 16px;
+}
+
+#content #sam ul li:last-child #join {
+	position:absolute;
+	bottom:0;
+	right:0;
+	padding: 5px;
+	width:100px;
+	margin-right:10px;
+	margin-bottom:10px
+}
+
+#content #sam ul li:last-child #leave {
+	position:absolute;
+	bottom:0;
+	right:100;
+	padding: 5px;
+	width:100px;
+	margin-right:20px;
+	margin-bottom:10px
+}
+
+#maze {
+	margin-left: auto;
+	margin-right: auto;
+}
