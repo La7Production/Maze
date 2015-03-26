@@ -170,6 +170,8 @@ function connectPlayer(server) {// Wait until the state of the socket is not rea
 		console.log("Fermeture de la websocket reussie");
 		// On arrête le timer des touches du clavier
 		clearInterval(timer);
+		// On met le timer sur le raffraichissement des serveurs
+		timer = setInterval("listServers()", 5000);
 		// On efface l'appuie des touches du clavier
 		for (var p in map) {
 			map[p] = false;
@@ -379,12 +381,33 @@ function listServers() {
 					lobby += "serveur plein";
 				else
 					lobby += "partie en cours";
-				lobby += "</span></li>";
+				if (ds.players.length === 0) {
+					lobby += "<button id='remove' onclick='removeServer(\"" + ds.title + "\")'>X</button>";
+				}
+				lobby += "</span></li>"
 			}
 			$("#listeServers").html(lobby);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			alert("Erreur pendant le chargement des parties: " + errorThrown);
+			if (timer !== undefined) {
+				clearInterval(timer);
+			}
+		}
+	});
+}
+
+function removeServer(server) {
+	var lobby = "";
+	var ds;
+	$.ajax({
+		url: "/maze/servers/" + server,
+		type: "DELETE",
+		success: function(data, textStatus, jqXHR) {
+			listServers();
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert("Erreur lors de la suppression de " + server + ". Erreur: "+ errorThrown);
 		}
 	});
 }
@@ -394,6 +417,10 @@ function jouerPressed() {
 	if (ws !== undefined) {
 		ws.close();
 	}
+	if (timer !== undefined) {
+		clearInterval(timer);
+	}
+	timer = setInterval("listServers()", 5000);
 	$("#sam").show();
 	$("#contentButton").find(":button").show();
 	$(":button#jouer").hide();

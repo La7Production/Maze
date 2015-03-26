@@ -379,6 +379,15 @@ body {
 	display: none;
 }
 
+#remove {
+	width: 30px;
+	height: 30px;
+	color: red;
+	float: right;
+	margin-top: 15px;
+	margin-left: 10px;
+}
+
 canvas {
 	display: none;
 	padding-top: 30px;
