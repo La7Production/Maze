@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.la7prod.maze.Cell;
+import fr.la7prod.maze.MazeServer;
 import fr.la7prod.maze.entity.HumanEntity;
 import fr.la7prod.maze.entity.Observer;
 import fr.la7prod.maze.entity.Player;
@@ -50,24 +51,24 @@ public class GameService {
 		return d;
 	}
 	
-	public void send(Session session, JSONObject json) throws IOException {
-		session.getRemote().sendStringByFuture(json.toString());
+	public void send(Session session, String json) throws IOException {
+		session.getRemote().sendStringByFuture(json);
 		session.getRemote().flush();
 	}
 	
-	public void sendToPlayers(JSONObject json) throws IOException {
+	public void sendToPlayers(String json) throws IOException {
 		for (Session s : server.getPlayerSessions()) {
 			send(s, json);
 		}
 	}
 	
-	public void sendToObservers(JSONObject json) throws IOException {
+	public void sendToObservers(String json) throws IOException {
 		for (Session s : server.getObserverSessions()) {
 			send(s, json);
 		}
 	}
 	
-	public void sendToAll(JSONObject json) throws IOException {
+	public void sendToAll(String json) throws IOException {
 		for (Session s : server.getPlayerSessions()) {
 			send(s, json);
 		}
@@ -85,10 +86,10 @@ public class GameService {
 	
 	public HumanEntity addToGame(Session session, JSONObject json) {
 		if (json.has("playername"))
-			return server.addPlayer(session, new Player(json.getString("playername")));
-		if (json.has("observer"))
-			return server.addObserver(session, new Observer(json.getString("observer")));
-		return null;
+			server.addPlayer(session, new Player(json.getString("playername")));
+		else if (json.has("observer"))
+			server.addObserver(session, new Observer(json.getString("observer")));
+		return getFromGame(session);
 	}
 	
 	public HumanEntity removeFromGame(Session session) {
@@ -108,7 +109,7 @@ public class GameService {
 	public void startGame(int width, int height) throws IOException {
 		if (!server.isRunning()) {
 			server.start(width, height);
-			sendToPlayers(server.toJson());
+			sendToPlayers(server.toJsonString());
 		}
 	}
 	

@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.eclipse.jetty.websocket.api.Session;
 
+import fr.la7prod.maze.MazeServer;
+
 public class GameThread extends Thread {
 	
 	public enum State {
@@ -123,7 +125,7 @@ public class GameThread extends Thread {
 		while (true) {
 			this.sleep();
 			try {
-				session.getRemote().sendString(server.toJson().toString());
+				session.getRemote().sendString(server.toJsonString().toString());
 				session.getRemote().flush();
 			} catch (IOException e) {
 				e.printStackTrace();

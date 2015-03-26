@@ -1,9 +1,12 @@
 package fr.la7prod.maze.util;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public interface JSONable {
+public abstract class JSONable {
 	
-	public JSONObject toJson();
+	public String toJsonString() throws JsonProcessingException {
+		return new ObjectMapper().writeValueAsString(this);
+	}
 
 }

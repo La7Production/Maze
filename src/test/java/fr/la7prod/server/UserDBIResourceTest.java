@@ -26,9 +26,6 @@ public class UserDBIResourceTest extends JerseyTest {
 	*/
 	@Override
 	protected Application configure() {
-		UserDAO dao = App.dbi.open(UserDAO.class);
-		dao.dropTable();
-		dao.close();
 		return new App();
 	}
 
@@ -37,6 +34,9 @@ public class UserDBIResourceTest extends JerseyTest {
 	*/
 	@Test
 	public void test_A_GetEmptyListofUsers() {
+		UserDAO dao = App.dbi.open(UserDAO.class);
+		dao.removeAll();
+		dao.close();
 		List<User> list = target("/usersdb").request().get(new GenericType<List<User>>(){});
 		assertTrue(list.isEmpty());
 	}

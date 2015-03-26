@@ -57,8 +57,14 @@
     	<div id="contentButton">	
 			<button id="jouer" onClick="jouerPressed()">Jouer</button>
 			<button onClick="undoPressed()">Accueil</button>
-			<button onClick="listServers()">Serveurs</button>
+			<button onClick="listServers()">Actualiser</button>
 			<button onClick="newGamePressed()">Nouvelle Partie</button>
+			<div>
+				<input type="text" size=15 placeholder="Nom du serveur"/>
+				<input type="number" min="0" max="10" step="1" value="1" size="6"/>
+				<button onClick="cancelServerPressed()">Annuler</button>
+				<button onClick="createServerPressed()">Créer</button>
+			</div>
 		</div>
     	<div id="sam">
     		<ul id="listeServers">

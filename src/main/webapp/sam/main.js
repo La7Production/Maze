@@ -388,6 +388,7 @@ function newGamePressed() {
 	$("#contentButton").find(":button").hide();
 	$("#contentButton").find("div").show();
 	$("#contentButton").find("div").find(":button").show();
+	$("#contentButton").find("div").find("input")[0].focus();
 }
 
 //On appuie sur annuler dans le menu new game

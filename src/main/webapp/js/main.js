@@ -20,6 +20,8 @@ var ws;
 var items = [];
 // Touches du clavier disponibles pour l'application
 var map = {37:false, 38:false, 39:false, 40:false};
+// Timer pour les touches
+var timer;
 
 //window.addEventListener('keydown', actionPerformed, true);
 //window.addEventListener('keyup', actionPerformed, true);
@@ -95,7 +97,7 @@ function signup() {
 			alert("Votre compte est désormais créé");
 			// Réinitialise les champs à vide
 			for(var i = 0; i < labels.length; i++){
-				form(i).value = "";
+				labels.get(i).value = "";
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -157,6 +159,29 @@ function connectPlayer(server) {// Wait until the state of the socket is not rea
 	/* Fonction appelée à l'ouverture d'une websocket */
 	ws.onopen = function() {
 		console.log("Ouverture de la websocket reussie");
+		// Appelle la fonction de vérification des touches appuyées toutes les X secondes
+		if (timer !== undefined)
+			clearInterval(timer);
+		timer = setInterval("sendKey()", 50);
+	};
+	
+	/* Fonction appelée lorsque la websocket est fermée */
+	ws.onclose = function() {
+		console.log("Fermeture de la websocket reussie");
+		// On arrête le timer des touches du clavier
+		clearInterval(timer);
+		// On efface l'appuie des touches du clavier
+		for (var p in map) {
+			map[p] = false;
+		}
+		// On n'oublie pas de réinitialiser l'image du labyrinthe
+		imaze = undefined;
+	};
+
+	/* Fonction appelée en cas d'erreur dans la websocket */
+	ws.onerror = function(err) {
+		console.log("Une erreur s'est produite dans la websocket")
+		console.log(err.data);
 	};
 
 	/* Fonction appelée lorsque des données sont envoyées du serveur au client */
@@ -174,12 +199,26 @@ function connectPlayer(server) {// Wait until the state of the socket is not rea
 		// Traiter l'information selon les deux cas
 		// 1) Tous les joueurs ne sont pas encore arrivés
 		// 2) Tous les joueurs sont là
-		if (data.maze !== undefined) {
-			drawMaze();
-			drawPlayers();
+		if (data.error !== undefined) {
+			alert(data.error);
+			listServers();
 		}
 		else if (data.winner !== undefined) {
 			alert("Vainqueur: " + data.winner);
+			if (ws !== undefined) {
+				ws.close();
+			}
+			$("#jouer").click();
+			listServers();
+		}
+		else if (data.maze !== undefined) {
+			drawMaze();
+			drawPlayers();
+			$("#sam").hide();
+			$("canvas").show();
+			$("#contentButton").find(":button").hide();
+			$(":button#jouer")[0].innerHTML = "Quitter";
+			$(":button#jouer").show();
 		}
 		else {
 		 	if (data.slots !== undefined) {
@@ -189,17 +228,6 @@ function connectPlayer(server) {// Wait until the state of the socket is not rea
 				SERVER_CELL_SIZE = data.cellsize;
 			}
 		}
-	};
-
-	/* Fonction appelée lorsque la websocket est fermée */
-	ws.onclose = function() {
-		console.log("Fermeture de la websocket reussie");
-	};
-
-	/* Fonction appelée en cas d'erreur dans la websocket */
-	ws.onerror = function(err) {
-		console.log("Une erreur s'est produite dans la websocket")
-		console.log(err.data);
 	};
 	
 	function sendMessage(msg) {
@@ -223,8 +251,6 @@ function connectPlayer(server) {// Wait until the state of the socket is not rea
 	}
 	
 	sendMessage(JSON.stringify(player));
-	// Appelle la fonction de vérification des touches appuyées toutes les X secondes
-	setInterval("sendKey()", 50);
 }
 /*************************
  * PARTIE GRAPHIQUE
@@ -344,11 +370,13 @@ function listServers() {
 		success: function(data, textStatus, jqXHR) {
 			for (var i=0; i < data.servers.length; i++) {
 				ds = data.servers[i];
-				lobby += "<li ondblclick='joinPressed(\"" + ds.title + "\")'>"
+				lobby += "<li ondblclick='connectPlayer(\"" + ds.title + "\")'>"
 				lobby += "<span style='float:left'>" + ds.title + "</span>"
-				lobby += "<span style='float:right'>" + ds.slots + ":";
+				lobby += "<span style='float:right; margin-right: 25px'>" + ds.players.length + "/" + ds.slots + ":";
 				if (ds.running === false)
 					lobby += "en attente de joueurs";
+				else if (ds.players.length == ds.slots)
+					lobby += "serveur plein";
 				else
 					lobby += "partie en cours";
 				lobby += "</span></li>";
@@ -363,6 +391,9 @@ function listServers() {
  
 // On appuie sur jouer
 function jouerPressed() {
+	if (ws !== undefined) {
+		ws.close();
+	}
 	$("#sam").show();
 	$("#contentButton").find(":button").show();
 	$(":button#jouer").hide();
@@ -372,20 +403,58 @@ function jouerPressed() {
 
 // On appuie sur retour
 function undoPressed() {
+	if (ws !== undefined) {
+		ws.close();
+	}
 	$("#sam").hide();
 	$("#contentButton").find(":button").hide();
 	$(":button#jouer").show();
+	$("#maze").hide();
+	$(":button#jouer")[0].innerHTML = "Jouer";
 }
 
 function showPlayers() {
 	
 }
 
-// On double clic sur le serveur voulu
-function joinPressed(server) {
-	connectPlayer(server);
-	$("#sam").hide();
-	$("canvas").show();
+// On appuie sur nouvelle partie
+function newGamePressed() {
+	$("#contentButton").find(":button").hide();
+	$("#contentButton").find("div").show();
+	$("#contentButton").find("div").find(":button").show();
+}
+
+//On appuie sur annuler dans le menu new game
+function cancelServerPressed() {
+	$("#contentButton").find(":button").show();
+	$(":button#jouer").hide();
+	$("#contentButton").find("div").hide();
+	$("#contentButton").find("div").find(":button").hide();
+}
+
+//On appuie sur créer dans le menu new game
+function createServerPressed() {
+	var form = function(i) { return $("#contentButton").find("div").find("input").get(i).value; };
+	$.ajax({
+		url: "/maze/servers/",
+		type: "POST",
+		data : {
+			"title" : form(0),
+			"slots" : form(1)
+		},
+		success: function(data, textStatus, jqXHR) {
+			// On raffraichit les serveurs
+			listServers();
+			$("#contentButton").find("div").hide();
+			$("#contentButton").find(":button").show();
+			$("#contentButton").find("div").find(":button").hide();
+			$(":button#jouer").hide();
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert("Erreur lors de la création du serveur " + form(0) + ". Code: " + errorThrown);
+		}
+	
+	});
 }
 
 function pressEnter(e, fct) {

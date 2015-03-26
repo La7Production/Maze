@@ -5,7 +5,6 @@ import javax.servlet.annotation.WebServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
-import fr.la7prod.maze.MazeWebSocket;
 
 @WebServlet(name="MazeWebServlet", urlPatterns = { "/maze/websocket/*" })
 public class MazeWebServlet extends WebSocketServlet {

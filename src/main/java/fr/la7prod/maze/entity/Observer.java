@@ -2,8 +2,8 @@ package fr.la7prod.maze.entity;
 
 import org.eclipse.jetty.websocket.api.Session;
 
+import fr.la7prod.maze.MazeServer;
 import fr.la7prod.server.websocket.GameThread;
-import fr.la7prod.server.websocket.MazeServer;
 
 
 public class Observer extends HumanEntity {
@@ -26,8 +26,10 @@ public class Observer extends HumanEntity {
 		this.thread.start();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void closeListening() {
 		this.thread.pause();
+		this.thread.stop();
 	}
 
 }

@@ -1,6 +1,6 @@
 package fr.la7prod.maze;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import fr.la7prod.maze.entity.Actionable;
 import fr.la7prod.maze.util.Coordinates;
@@ -11,6 +11,8 @@ public class Cell extends Coordinates {
 	public static final int PIXEL_SIZE = 5; // Référence à la taille d'une case en pixel
 	
 	private int value;
+	
+	@JsonIgnore
 	private Actionable actionable;
 	
 	public Cell(int x, int y) {
@@ -60,11 +62,6 @@ public class Cell extends Coordinates {
 		if (actionable != null)
 			s += " Actionable: " + actionable.toString();
 		return s;
-	}
-
-	@Override
-	public JSONObject toJson() {
-		return super.toJson().put("value", value);
 	}
 
 }

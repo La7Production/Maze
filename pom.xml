@@ -51,10 +51,30 @@
 			<artifactId>jersey-server</artifactId>
 		</dependency>
 		-->
-		<!-- Jersey Media (json/xml support for tests)-->
+		<!-- Jackson  -->
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<!-- Jersey Media (json/xml support for tests) -->
+		<!-- <dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-moxy</artifactId>
+		</dependency>-->
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
 		</dependency>
 		<!-- Jersey Tests -->
 		<dependency>
@@ -126,6 +146,7 @@
 	</dependencies>
 	
 	<properties>
+		<jackson.version>2.5.1</jackson.version>
 		<jersey.version>2.17</jersey.version>
 		<jetty.version>9.2.10.v20150310</jetty.version>
 		<websocket.version>1.1</websocket.version>

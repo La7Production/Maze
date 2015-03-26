@@ -17,7 +17,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import fr.la7prod.server.websocket.MazeServer;
+import fr.la7prod.maze.MazeServer;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LobbyResourceTest extends JerseyTest {
@@ -128,7 +128,7 @@ public class LobbyResourceTest extends JerseyTest {
 
 
 	@Test
-	public void test_K_CreateUserFromForm() {
+	public void test_K_CreateServerFromForm() {
 		Form form = new Form();
 		form.param("title", "L7PServ");
 		form.param("slots", "7");
@@ -142,10 +142,10 @@ public class LobbyResourceTest extends JerseyTest {
 	/**
 	* Vérifie qu'on récupère bien un serveur de jeu avec le type MIME application/xml
 	*/
-	//@Test
-	//public void test_L_GetServerAsXml() { 
-	//	int code = target("/servers").path("L7PServ").request(MediaType.APPLICATION_XML).get().getStatus();
-	//	assertEquals(200, code);
-	//}
+	@Test
+	public void test_L_GetServerAsXml() { 
+		int code = target("/servers").path("L7PServ").request(MediaType.APPLICATION_XML).get().getStatus();
+		assertEquals(200, code);
+	}
 	
 }

@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.json.JSONObject;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import fr.la7prod.maze.MazeServer;
 import fr.la7prod.maze.util.JSONable;
-import fr.la7prod.server.websocket.MazeServer;
 
-public class Lobby implements JSONable {
+@XmlRootElement
+public class Lobby extends JSONable {
 	
 	private List<MazeServer> servers;
 	
@@ -93,20 +94,6 @@ public class Lobby implements JSONable {
 	@Override
 	public String toString() {
 		return "Lobby: " + servers.toString();
-	}
-
-	@Override
-	public JSONObject toJson() {
-		JSONObject json = new JSONObject();
-		JSONObject tmp;
-		for (MazeServer s : servers) {
-			tmp = new JSONObject();
-			tmp.put("slots", s.countPlayers() + "/" + s.maxSlots());
-			tmp.put("players", s.getPlayers());
-			tmp.put("observers", s.getObservers());
-			json.put(s.getTitle(), tmp);
-		}
-		return json;
 	}
 	
 }

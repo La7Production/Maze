@@ -1,11 +1,11 @@
 package fr.la7prod.maze;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.la7prod.maze.util.Direction;
 import fr.la7prod.maze.util.JSONable;
 
-public class Maze implements JSONable {
+public class Maze extends JSONable {
 	
 	public static final int DEFAULT_WIDTH = 10;
 	public static final int DEFAULT_HEIGHT = 10;
@@ -59,6 +59,11 @@ public class Maze implements JSONable {
 		this.cells = cells;
 	}
 	
+	@JsonProperty("cellsize")
+	public int getCellSize() {
+		return Cell.PIXEL_SIZE;
+	}
+	
 	public boolean include(int x, int y) {
 		return y >= 0 && y < height && x >= 0 && x < width;
 	}
@@ -105,17 +110,6 @@ public class Maze implements JSONable {
 	
 	public void setExit(Cell exit) {
 		this.exit = exit;
-	}
-	
-	@Override
-	public JSONObject toJson() {
-		JSONObject json = new JSONObject();
-		json.put("width", width);
-		json.put("height", height);
-		json.put("start", start.toJson());
-		json.put("exit", exit.toJson());
-		json.put("cells", this.getCells());
-		return json;
 	}
 
 }

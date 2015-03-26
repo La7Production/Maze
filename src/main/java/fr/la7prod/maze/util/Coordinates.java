@@ -1,8 +1,7 @@
 package fr.la7prod.maze.util;
 
-import org.json.JSONObject;
 
-public class Coordinates implements JSONable {
+public class Coordinates extends JSONable {
 	
 	private int x;
 	private int y;
@@ -52,13 +51,6 @@ public class Coordinates implements JSONable {
 	@Override
 	public String toString() {
 		return String.format("(x:%d,y:%d)", x, y);
-	}
-
-	public JSONObject toJson() {
-		JSONObject json = new JSONObject();
-		json.put("x", this.getX());
-		json.put("y", this.getY());
-		return json;
 	}
 
 }

@@ -80,14 +80,6 @@ public class MazeTest {
 		
 		return false;
 	}
-
-	@Test
-	public void test_RecursiveBT() {
-		Maze maze;
-		algo = new RecursiveBT();
-		maze = algo.generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
-		System.out.println(algo.toString(maze));
-	}
 	
 	@Test
 	public void test_RecursiveBT_cheminValide() {
@@ -105,14 +97,6 @@ public class MazeTest {
 		algo = new RecursiveBT();
 		maze = algo.generate(width, height, (int)(Math.random()*width), (int)(Math.random()*height));
 		assertTrue(checkPath(maze, randomCell(maze), randomCell(maze)));
-	}
-	
-	@Test
-	public void test_JSON() {
-		Maze m = new RecursiveBT().generate(10, 10, 0, 0);
-		MazeZone zone = new MazeZone(m, 3, 3);
-		System.out.println(m.toJson());
-		System.out.println(zone.toJson());
 	}
 
 }
