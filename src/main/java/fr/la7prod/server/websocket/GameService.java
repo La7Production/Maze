@@ -119,5 +119,24 @@ public class GameService {
 			o.closeListening();
 		}
 	}
+	
+	/**
+	 * Vérifie l'état actif du jeu.
+	 * Si le jeu est en cours et qu'il y a au moins 1 joueur, on envoie le labyrinthe
+	 * Sinon on arrête la partie
+	 * @throws IOException pour l'envoie du labyrinthe
+	 * @return vrai si le serveur est toujours actif après la vérification
+	 */
+	public boolean checkGameStatus() throws IOException {
+		if (server.isRunning()) {
+			if (server.countPlayers() > 0) {
+				sendToPlayers(server.toJsonString());
+				return true;
+			}
+			else
+				stopGame();
+		}
+		return false;
+	}
 
 }

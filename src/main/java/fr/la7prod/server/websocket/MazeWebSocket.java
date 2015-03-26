@@ -31,12 +31,7 @@ public class MazeWebSocket extends GameService {
 		// Cas 1 : le client se déconnecte lui même sans envoyer de données au serveur
 		if (statusCode == StatusCode.NO_CODE) {
 			removeFromGame(session);
-			if (server.isRunning()) {
-				if (server.countPlayers() > 0)
-					sendToPlayers(server.toJsonString());
-				else
-					stopGame();
-			}
+			checkGameStatus();
 			return;
 		}
 		
@@ -54,16 +49,9 @@ public class MazeWebSocket extends GameService {
 		
 		// Cas 5 : la déconnexion client/socket est normale
 		else if (statusCode == StatusCode.NORMAL) {
-			
-			// Cas 5.1 : le jeu est en cours
-			if (server.isRunning()) {
-				if (server.countPlayers() == 0)
-					stopGame();
-				else
-					sendToPlayers(server.toJsonString());
-			}
-			// Cas 5.2 : la partie n'a pas encore commencée
-			else {
+		
+			// la partie n'a pas encore commencée
+			if (!checkGameStatus()) {
 				sendToPlayers(parametersToJSON().toString());
 			}
 			
