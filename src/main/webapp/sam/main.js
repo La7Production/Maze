@@ -346,7 +346,7 @@ function listServers() {
 				ds = data.servers[i];
 				lobby += "<li ondblclick='joinPressed(\"" + ds.title + "\")'>"
 				lobby += "<span style='float:left'>" + ds.title + "</span>"
-				lobby += "<span style='float:right'>" + ds.slots + ":";
+				lobby += "<span style='float:right; margin-right: 25px'>" + ds.slots + ":";
 				if (ds.running === false)
 					lobby += "en attente de joueurs";
 				else
@@ -376,6 +376,7 @@ function undoPressed() {
 	$("#contentButton").find(":button").hide();
 	$(":button#jouer").show();
 	$("#maze").hide();
+	$(":button#jouer")[0].innerHTML = "Jouer";
 }
 
 function showPlayers() {
@@ -410,6 +411,10 @@ function createServerPressed() {
 		success: function(data, textStatus, jqXHR) {
 			// On raffraichit les serveurs
 			listServers();
+			$("#contentButton").find("div").hide();
+			$("#contentButton").find(":button").show();
+			$("#contentButton").find("div").find(":button").hide();
+			$(":button#jouer").hide();
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			alert("Erreur lors de la création du serveur " + form(0) + ". Code: " + errorThrown);
@@ -423,6 +428,9 @@ function joinPressed(server) {
 	connectPlayer(server);
 	$("#sam").hide();
 	$("canvas").show();
+	$("#contentButton").find(":button").hide();
+	$(":button#jouer")[0].innerHTML = "Quitter";
+	$(":button#jouer").show();
 }
 
 function pressEnter(e, fct) {

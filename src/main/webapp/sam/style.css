@@ -347,6 +347,8 @@ body {
 	height:500px;
 	background-image: url(../img/maze_img_sombre.png);
 	border: 1px solid black;
+	overflow-y : auto;
+	overflow-x : hidden;
 }
 
 #content #sam ul {
@@ -370,6 +372,7 @@ body {
 #content #sam ul li:hover {
 	background-color: black;
 	opacity:0.7;
+	cursor:pointer;
 }
 
 #liProfil {
