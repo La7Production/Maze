@@ -208,12 +208,9 @@ public class MazeServer extends JSONable {
 	}
 	
 	public void initPlayers() {
-		Cell start = maze.getStart();
 		this.setMasterRandomly();
-		int i = 1;
 		for (Player p : playerMap.values()) {
-			p.place(start.getX()*Cell.PIXEL_SIZE+1, start.getY()*Cell.PIXEL_SIZE+i);
-			i++;
+			initPlayer(p);
 		}
 	}
 	

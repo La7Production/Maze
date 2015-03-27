@@ -35,22 +35,22 @@ public class MazeWebSocket extends GameService {
 			return;
 		}
 		
-		// Cas 2 : l'utilisateur est un observeur, on arrête son écoute du serveur
-		if (getFromGame(session) instanceof Observer)
-			((Observer)getFromGame(session)).closeListening();
-		
-		// Cas 3 : on supprime l'utilisateur du jeu
-		removeFromGame(session);
-		
-		// Cas 4 : le serveur s'est arrêté ou s'est redémarré
+		// Cas 2 : le serveur s'est arrêté ou s'est redémarré
 		if (server.countPlayers() == 0 && (statusCode == StatusCode.SHUTDOWN || statusCode == StatusCode.SERVICE_RESTART)) {
 			stopGame();
+			return;
 		}
 		
-		// Cas 5 : la déconnexion client/socket est normale
-		else if (statusCode == StatusCode.NORMAL) {
-		
-			// la partie n'a pas encore commencée
+		// Cas 3 : l'utilisateur quitte normalement
+		if (statusCode == StatusCode.NORMAL) {
+			
+			// Cas 3.1 : l'utilisateur est un observeur
+			if (getFromGame(session) instanceof Observer)
+				((Observer)getFromGame(session)).closeListening();
+			
+			removeFromGame(session);
+			
+			// Cas 3.2 : la partie n'a pas encore commencée
 			if (!checkGameStatus()) {
 				sendToPlayers(parametersToJSON().toString());
 			}
@@ -126,7 +126,7 @@ public class MazeWebSocket extends GameService {
 					// Cas 1.5 : c'est le dernier utilisateur attendu pour pouvoir lancer la partie
 					// On commence la partie et on envoie les informations complètes du jeu
 					if (getAvailableSlots() == 0)
-						startGame(20,20);
+						startGame(25,25);
 				}
 			}
 			

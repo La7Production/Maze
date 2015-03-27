@@ -4,8 +4,8 @@
 
 // Le joueur client
 var player;
-// Taille en pixel d'une case qui sera a envoyer avec la direction
-var PIXEL_SIZE = 32;
+// Taille en pixel d'une case coté client
+var PIXEL_SIZE;
 // Taille d'une case en pixel coté serveur servant de référence pour le client
 var SERVER_CELL_SIZE;
 // Ratio pour un affichage correct
@@ -283,8 +283,10 @@ function drawMaze() {
 	else {
 		var c;
 		var cells = maze.cells;
-		canvas.width = PIXEL_SIZE * maze.width;
-		canvas.height = PIXEL_SIZE * maze.height;
+		
+		canvas.width = screen.width / 3;
+		canvas.height = canvas.width;
+		PIXEL_SIZE = canvas.width / maze.width;
 		ctx.fillStyle = "white";
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		var draw = function(cell,mx,my,px,py) {
