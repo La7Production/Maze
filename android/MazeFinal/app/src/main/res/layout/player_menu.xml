@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ViewSwitcher
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/viewSwitcher"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearLayout2">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/profil_view">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profil"
+                android:id="@+id/textView"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Pseudo"
+                android:id="@+id/pseudoJoueur"
+                android:layout_below="@+id/textView"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Prenom"
+                android:id="@+id/prenomJoueur"
+                android:layout_below="@+id/pseudoJoueur"
+                android:layout_toRightOf="@+id/textView"
+                android:layout_toEndOf="@+id/textView"
+                android:layout_marginTop="51dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Statistiques"
+                android:id="@+id/stats"
+                android:layout_marginTop="93dp"
+                android:layout_below="@+id/emailJoueur"
+                android:layout_alignLeft="@+id/nbParties"
+                android:layout_alignStart="@+id/nbParties" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="nbParties"
+                android:id="@+id/nbParties"
+                android:layout_below="@+id/stats"
+                android:layout_alignLeft="@+id/emailJoueur" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="nbVictoires/nbParties"
+                android:id="@+id/txVictory"
+                android:layout_below="@+id/nbParties"
+                android:layout_alignLeft="@+id/emailJoueur" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Nom"
+                android:id="@+id/nomJoueur"
+                android:layout_below="@+id/prenomJoueur"
+                android:layout_alignLeft="@+id/prenomJoueur"
+                android:layout_alignStart="@+id/prenomJoueur" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Date de Naissance"
+                android:id="@+id/dateJoueur"
+                android:layout_below="@+id/nomJoueur"
+                android:layout_alignLeft="@+id/nomJoueur"
+                android:layout_alignStart="@+id/nomJoueur" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Email"
+                android:id="@+id/emailJoueur"
+                android:layout_below="@+id/dateJoueur"
+                android:layout_alignLeft="@+id/dateJoueur"
+                android:layout_alignStart="@+id/dateJoueur" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="400px"
+                android:layout_height="70px"
+                android:text="Changer mot de passe"
+                android:id="@+id/mdpJoueur"
+                android:layout_below="@+id/emailJoueur"
+                android:layout_alignLeft="@+id/emailJoueur"
+                android:layout_alignStart="@+id/emailJoueur"
+                android:onClick="change_password" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/observer_view">
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Actualiser"
+                android:id="@+id/button"
+                android:onClick="actualiser"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="false"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/serverList"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentStart="false"
+                android:layout_marginTop="64dp"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="false"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal">
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinner"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="50dp"
+                    android:layout_marginTop="10dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Observer"
+                    android:id="@+id/observer"
+                    android:onClick="startObserving" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ViewSwitcher>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout2">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profil"
+            android:id="@+id/profil_button"
+            android:onClick="switch_view_profil" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Observer"
+            android:id="@+id/observer_button"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:onClick="switch_view_observer" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/login_screen"
+        android:src="@drawable/maze_login_screen_image"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="25dp"
+            android:id="@+id/identifiant"
+            android:background="#ff414141"
+            android:hint="@string/identifiant"
+            android:textColorHint="#ff6e6e6e"
+            android:layout_row="10"
+            android:layout_column="29"
+            android:layout_gravity="center"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentEnd="false"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:textColor="#ffcacaca" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="25dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/password"
+            android:background="#ff414141"
+            android:textColorHint="#ff6e6e6e"
+            android:hint="@string/password"
+            android:layout_row="8"
+            android:layout_column="1"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:textColor="#ffcacaca" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:id="@+id/login"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/create"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                android:background="#ff414141"
+                android:textColor="#ffcacaca"
+                android:onClick="login"
+                />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/create"
+                android:id="@+id/create"
+                android:layout_row="0"
+                android:layout_column="9"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="#ff414141"
+                android:textColor="#ffcacaca"
+                android:layout_marginLeft="10dp"
+                android:onClick="createUser"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/create_user_background"
+        android:src="@drawable/maze_login_screen_image"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/linearLayout">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/create_user_login"
+            android:layout_gravity="center_horizontal"
+            android:background="#ff414141"
+            android:layout_marginBottom="5dp"
+            android:hint="Login"
+            android:textColorHint="#ff6e6e6e"
+            android:textColor="#ffcacaca" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:inputType="textPassword"
+            android:id="@+id/create_user_password"
+            android:layout_gravity="center_horizontal"
+            android:background="#ff414141"
+            android:layout_marginBottom="5dp"
+            android:hint="Mot de passe"
+            android:textColorHint="#ff6e6e6e"
+            android:textColor="#ffcacaca" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/create_user_prenom"
+            android:layout_gravity="center_horizontal"
+            android:background="#ff414141"
+            android:layout_marginBottom="5dp"
+            android:hint="Prénom"
+            android:textColorHint="#ff6e6e6e"
+            android:textColor="#ffcacaca" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/create_user_nom"
+            android:layout_gravity="center_horizontal"
+            android:background="#ff414141"
+            android:layout_marginBottom="5dp"
+            android:hint="Nom"
+            android:textColorHint="#ff6e6e6e"
+            android:textColor="#ffcacaca" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/create_user_naissance"
+            android:layout_gravity="center_horizontal"
+            android:background="#ff414141"
+            android:layout_marginBottom="5dp"
+            android:hint="Date de Naissance"
+            android:textColorHint="#ff6e6e6e"
+            android:textColor="#ffcacaca" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/create_user_email"
+            android:layout_gravity="center_horizontal"
+            android:background="#ff414141"
+            android:layout_marginBottom="15dp"
+            android:hint="Email"
+            android:textColorHint="#ff6e6e6e"
+            android:textColor="#ffcacaca" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="5dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="Annuler"
+                android:id="@+id/create_user_annuler"
+                android:layout_toRightOf="@+id/linearLayout"
+                android:layout_toEndOf="@+id/linearLayout"
+                android:background="#ff414141"
+                android:textColor="#ffcacaca"
+                android:onClick="annuler"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="Reset"
+                android:id="@+id/create_user_reset"
+                android:layout_toRightOf="@+id/linearLayout"
+                android:layout_toEndOf="@+id/linearLayout"
+                android:background="#ff414141"
+                android:layout_marginLeft="10dp"
+                android:textColor="#ffcacaca"
+                android:onClick="reset"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="189dp"
+            android:layout_height="30dp"
+            android:text="Valider"
+            android:id="@+id/create_user_valider"
+            android:layout_above="@+id/linearLayout"
+            android:layout_toLeftOf="@+id/linearLayout"
+            android:layout_toStartOf="@+id/linearLayout"
+            android:layout_marginBottom="39dp"
+            android:background="#ff414141"
+            android:textColor="#ffcacaca"
+            android:onClick="valider"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
