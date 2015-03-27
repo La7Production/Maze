@@ -38,7 +38,7 @@ public class MazeWebSocket extends GameService {
 		if (statusCode == StatusCode.NO_CODE || statusCode == StatusCode.SHUTDOWN) {
 			removeFromGame(session);
 			if (!checkGameStatus()) {
-				sendToPlayers(parametersToJSON().toString());
+				sendToAll(parametersToJSON().toString());
 			}
 			return;
 		}
@@ -54,7 +54,7 @@ public class MazeWebSocket extends GameService {
 			
 			// Cas 3.2 : la partie n'a pas encore commencée
 			if (!checkGameStatus()) {
-				sendToPlayers(parametersToJSON().toString());
+				sendToAll(parametersToJSON().toString());
 			}
 			
 		}

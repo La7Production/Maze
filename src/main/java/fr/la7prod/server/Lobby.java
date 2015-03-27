@@ -7,10 +7,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import fr.la7prod.maze.MazeServer;
-import fr.la7prod.maze.util.JSONable;
 
 @XmlRootElement
-public class Lobby extends JSONable {
+public class Lobby {
 	
 	private List<MazeServer> servers;
 	
