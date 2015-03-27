@@ -23,8 +23,9 @@ var map = {37:false, 38:false, 39:false, 40:false};
 // Timer pour les touches
 var timer;
 
-//window.addEventListener('keydown', actionPerformed, true);
-//window.addEventListener('keyup', actionPerformed, true);
+$(document).ready(function() {
+	$("#content").css("margin-top", $("#menuHead").height()).css("height", $(window).height() - $("#menuHead").height() - $("footer").height());
+});
 
 function sendKey() {
 	if (map[38]) { ws.send(JSON.stringify(new Direction("NORTH"))); }
@@ -217,9 +218,10 @@ function connectPlayer(server) {// Wait until the state of the socket is not rea
 			drawMaze();
 			drawPlayers();
 			$("#sam").hide();
+			$("canvas").removeAttr("data-processing-sources");
 			$("canvas").show();
 			$("#contentButton").find(":button").hide();
-			$(":button#jouer")[0].innerHTML = "Quitter";
+			//$(":button#jouer")[0].innerHTML = "Quitter";
 			$(":button#jouer").show();
 		}
 		else {
@@ -266,7 +268,10 @@ function mouseClicked() {
 
 /* Affiche un message d'attente lorsque le nombre minimal de joueurs requis dans une partie n'est pas atteint */
 function waitPlayers(slots) {
-	
+	$("#sam").html("<div><h1>En attente de joueurs...</h1><h2>Nombre de joueurs: " + slots + "</h2></div>");
+	$("#contentButton").find(":button").hide();
+	$(":button#jouer").show();
+	$(":button#jouer")[0].innerHTML = "Quitter";
 };
 
 /* Dessine le labyrinthe vide en considérant la variable data comme définie (data.maze.cells)*/
@@ -336,7 +341,7 @@ function drawPlayer(ctx, p) {
 	ctx.beginPath();
 	ctx.fillStyle = p.color;
 	ctx.fill();
-	ctx.fillText(p.name, (p.coordinates.x * r)-(p.name.length*12/5), p.coordinates.y*r-5);	
+	ctx.fillText(p.name, (p.coordinates.x * r)-(p.name.length*12/5), p.coordinates.y*r-5);
 	ctx.fillRect(p.coordinates.x * r, p.coordinates.y * r, r, r);
 	ctx.lineWidth = 5;
 	ctx.strokeStyle = player.color;
@@ -388,7 +393,7 @@ function listServers() {
 				}
 				lobby += "</span></li>"
 			}
-			$("#listeServers").html(lobby);
+			$("#sam").html("<ul id='listeServers'>" + lobby + "</ul>");
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			alert("Erreur pendant le chargement des parties: " + errorThrown);

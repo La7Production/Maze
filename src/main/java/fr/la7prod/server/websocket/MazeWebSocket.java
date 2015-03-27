@@ -28,16 +28,18 @@ public class MazeWebSocket extends GameService {
 		if (statusCode == StatusCode.BAD_DATA)
 			return;
 		
-		// Cas 1 : le client se déconnecte lui même sans envoyer de données au serveur
-		if (statusCode == StatusCode.NO_CODE) {
-			removeFromGame(session);
-			checkGameStatus();
-			return;
-		}
-		
 		// Cas 2 : le serveur s'est arrêté ou s'est redémarré
 		if (server.countPlayers() == 0 && (statusCode == StatusCode.SHUTDOWN || statusCode == StatusCode.SERVICE_RESTART)) {
 			stopGame();
+			return;
+		}
+		
+		// Cas 1 : le client se déconnecte lui même sans envoyer de données au serveur
+		if (statusCode == StatusCode.NO_CODE || statusCode == StatusCode.SHUTDOWN) {
+			removeFromGame(session);
+			if (!checkGameStatus()) {
+				sendToPlayers(parametersToJSON().toString());
+			}
 			return;
 		}
 		
@@ -110,7 +112,13 @@ public class MazeWebSocket extends GameService {
 					return;
 				}
 				
-				// Cas 1.3 : on ajoute l'utilisateur
+				// Cas 1.3 : on ajoute l'utilisateur si il n'existe pas déjà dans la partie
+				if (server.getPlayers().contains(new Player(json.getString("playername")))) {
+					send(session, new JSONObject().put("error", "un utilisateur du même nom est déjà dans cette partie").toString());
+					session.close(StatusCode.TRY_AGAIN_LATER, "User already in game");
+					return;
+				}
+				
 				Player p = (Player) addToGame(session, json);
 				
 				// Cas 1.4 : l'utilisateur rejoins une partie déjà commencée
@@ -126,7 +134,7 @@ public class MazeWebSocket extends GameService {
 					// Cas 1.5 : c'est le dernier utilisateur attendu pour pouvoir lancer la partie
 					// On commence la partie et on envoie les informations complètes du jeu
 					if (getAvailableSlots() == 0)
-						startGame(25,25);
+						startGame(20,20);
 				}
 			}
 			

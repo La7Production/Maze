@@ -4,10 +4,20 @@ body {
 	/*background-image: url(../img/sides.png);*/
 	background-color:#6E6E6E;
 	background-repeat: no-repeat;
-	overflow: hidden;
+	font-family: Arial;
 }
 
-#menuHead{
+footer {
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+	text-align: center;
+	background-image: linear-gradient(#BDBDBD,#D8D8D8);
+	font-size: 10px;
+	min-width: 900px;
+}
+
+#menuHead {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -17,7 +27,6 @@ body {
 	background-image: linear-gradient(#BDBDBD,#D8D8D8);
 	border-bottom: 1px solid;
 	border-color: black;
-	font-family: 'Arial';
 	text-shadow: #E6E6E6 0px 1px 0;
 	color: #2E2E2E;
 	min-width: 900px;
@@ -90,7 +99,6 @@ body {
 	font-size:20px;
 	position: relative;
 	padding: 0;
-	font-family:arial;
 	color:#585858;
 	float:left;
 }
@@ -149,7 +157,6 @@ body {
 #menuBar a{
 	text-decoration:none;
 	color:#2E2E2E;
-	font-family:arial;
 	line-height:40px;
 	min-height:40px;
 	cursor: default;
@@ -249,16 +256,13 @@ body {
 
 #content {
 	background-color: white;
-	padding-top: 30px;
 	margin-left: auto;
 	margin-right: auto;
 	width: 50%;
-	height: 100%;
 	border-left: 1px solid #585858;
 	border-right: 1px solid #585858;
 	box-shadow: 5px 6px 50px gray, -5px 6px 50px gray;
 	min-width: 900px;
-	min-height: 900px;
 }
 
 #contentButton {
@@ -366,13 +370,22 @@ body {
 	border-bottom:1px solid black;
 	opacity:0.5;
 	color:white;
-	font-family:arial;
 }
 
 #content #sam ul li:hover {
 	background-color: black;
 	opacity:0.7;
 	cursor:pointer;
+}
+
+#content #sam div {
+	background: rgba(80,80,80,0.8);
+}
+
+#content #sam div h1, #content #sam div h2 {
+	text-align: center;
+	color: white;
+	font-weight: bold;
 }
 
 #liProfil {

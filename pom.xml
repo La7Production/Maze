@@ -45,12 +45,6 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Uncomment to get Jersey Core
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-server</artifactId>
-		</dependency>
-		-->
 		<!-- Jackson  -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -68,10 +62,6 @@
 			<version>${jackson.version}</version>
 		</dependency>
 		<!-- Jersey Media (json/xml support for tests) -->
-		<!-- <dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-moxy</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
@@ -82,13 +72,6 @@
 			<artifactId>jersey-test-framework-provider-jetty</artifactId>
 		</dependency>	
 		<!-- Jetty Rest, Websocket, Http request -->
-		<!-- Uncomment to have full Jetty Packages
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-maven-plugin</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		-->
 		<!-- To write basic websockets against -->
 	    <dependency>
 	    	<groupId>org.eclipse.jetty.websocket</groupId>
