@@ -70,44 +70,18 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
 			<artifactId>jersey-test-framework-provider-jetty</artifactId>
-		</dependency>	
-		<!-- Jetty Rest, Websocket, Http request -->
-		<!-- To write basic websockets against -->
+		</dependency>
+		<!-- Jetty Websocket - Enable full-duplex communications channel between server and client -->
+		<dependency>
+			<groupId>org.eclipse.jetty.websocket</groupId>
+			<artifactId>websocket-server</artifactId>
+			<version>${jetty.version}</version>
+	    </dependency>
 	    <dependency>
 	    	<groupId>org.eclipse.jetty.websocket</groupId>
 	    	<artifactId>websocket-api</artifactId>
 	    	<version>${jetty.version}</version>
 	    </dependency>
-	    <!-- To run servlets in embedded server -->
-	    <dependency>
-			<groupId>org.eclipse.jetty.websocket</groupId>
-			<artifactId>websocket-servlet</artifactId>
-			<version>${jetty.version}</version>
-	    </dependency>
-	    <!-- To run websockets in embedded server -->
-	    <dependency>
-			<groupId>org.eclipse.jetty.websocket</groupId>
-			<artifactId>websocket-server</artifactId>
-			<version>${jetty.version}</version>
-	    </dependency>
-	    <!-- To run websockets client -->
-	    <dependency>
-	    	<groupId>org.eclipse.jetty.websocket</groupId>
-	    	<artifactId>websocket-client</artifactId>
-	    	<version>${jetty.version}</version>
-	    </dependency>
-	    <!-- To run http request -->
-	    <dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-http</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<!-- Other util stuff -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
 		<!-- JSON simple library -->
 		<dependency>
 			<groupId>org.json</groupId>
